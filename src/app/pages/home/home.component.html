@@ -1,0 +1,58 @@
+<section class="header-above-only">
+  <header class="header">
+    <!-- Desktop background -->
+    <div class="desktop-only">
+      <div class="background-fallback" *ngIf="!iframeLoaded"></div>
+      <iframe
+        class="background-iframe"
+        width="100%"
+        height="100%"
+        frameborder="0"
+        allow="xr-spatial-tracking; gyroscope; accelerometer"
+        allowfullscreen
+        scrolling="no"
+        [src]="kuulaUrl"
+        (load)="onIframeLoad()"
+        (error)="onIframeError()">
+      </iframe>
+    </div>
+    
+    <!-- Mobile background -->
+    <div class="mobile-only background-fallback"></div>
+    
+    <app-header></app-header>
+    
+    <!-- Hero content -->
+    <div class="hero-content">
+      <!-- Left side text -->
+      <div class="top__text" appAnimation>
+        <span class="step1">EXPLORE</span>
+        <span class="step2">THE</span>
+        <span class="step3">WORLD</span>
+      </div>
+      
+      <!-- Main title -->
+      <div class="main-title">
+        <h1 appAnimation>Beyond</h1>
+        <h2 appAnimation>The</h2>
+        <h1 appAnimation>Boundaries</h1>
+      </div>
+    </div>
+    
+  <section class="tour-filter-section">
+    <!-- <div class="tour-filter-container"> -->
+      <app-tour-filter (searchTriggered)="handleSearch($event)"></app-tour-filter>
+    <!-- </div> -->
+  </section>
+    <app-destinations></app-destinations>
+   <!-- <button (click)="openTripPlanner()">Plan My Trip</button> -->
+  </header>
+</section>
+
+<!-- Main content components -->
+<app-testimonials></app-testimonials>
+<app-services></app-services>
+<app-why-us></app-why-us>
+<app-chat-widget></app-chat-widget>
+<app-map></app-map>
+<app-footer></app-footer>

@@ -1,0 +1,70 @@
+.newsletter {
+    background: linear-gradient(135deg, var(--dark-pink), var(--light-pink));
+    color: var(--white);
+    padding: 60px 0;
+  }
+  
+  .newsletter-content {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  
+    h2 {
+      color: white;
+    }
+  
+    p {
+      color: #ddd;
+      margin-bottom: 30px;
+    }
+  }
+  
+  .newsletter-form {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: var(--white);
+    border-radius: 50px;
+    overflow: hidden;
+  
+    input {
+      flex: 1;
+      padding: 15px 20px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      font-family: 'Manrope', sans-serif;
+    }
+  
+    button {
+      padding: 15px 30px;
+      background-color: var(--dark-color);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
+      transition: all 0.3s ease;
+  
+      &:hover {
+        background-color: var(--gold);
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .newsletter-form {
+      flex-direction: column;
+      border-radius: 10px;
+  
+      input {
+        border-radius: 10px 10px 0 0;
+        margin-bottom: 0;
+      }
+  
+      button {
+        border-radius: 0 0 10px 10px;
+        width: 100%;
+      }
+    }
+  }

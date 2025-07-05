@@ -1,0 +1,105 @@
+<div class="header-box">
+  <app-navbar></app-navbar>
+  
+  <!-- Mobile Menu Toggle Button -->
+  <button class="mobile-menu-toggle" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+  
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()"></div>
+  
+  <!-- Desktop Nav -->
+  <div class="header-right">
+    <nav class="header__menu">
+      <ul class="menu__list">
+        <!-- Destinations Dropdown -->
+        <li class="dropdown-nav" [class.active]="isDropdownOpen" (mouseenter)="openDropdown()" (click)="toggleDropdown($event)">
+          <a href="javascript:void(0)" class="dropdown-label">{{ destinationGroup.label }}</a>
+          <div class="dropdown-content-nav">
+            <div class="two-pane">
+              <ul class="continent-column">
+                <li *ngFor="let destination of destinationGroup.destinations" 
+                    [class.active]="selectedContinent === destination" 
+                    (click)="selectContinent(destination)">
+                  {{ destination.name }} 
+                </li>
+              </ul>
+              <div class="country-column" *ngIf="selectedContinent">
+                <div class="continent-header">
+                  <a [routerLink]="selectedContinent.route" [queryParams]="selectedContinent.queryParams">
+                    {{ selectedContinent.name }} Destinations
+                  </a>
+                  <span class="arrow-indicator"></span>
+                </div>
+                <ul>
+                  <li *ngFor="let location of selectedContinent.locations">
+                    <a [routerLink]="location.route" [queryParams]="location.queryParams">{{ location.name }}</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="continent-image" *ngIf="selectedContinent?.image_url">
+                <img [src]="selectedContinent?.image_url" [alt]="selectedContinent?.name" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- Info Links -->
+        <li><a routerLink="/contact" (click)="navigateTo('/contact')">FAQ | Help?</a></li>
+        <li><a routerLink="/careers" (click)="navigateTo('/careers')">Careers</a></li>
+        <li><a routerLink="/aboutUs" (click)="navigateTo('/aboutUs')">About us</a></li>
+        <li><a routerLink="/travelGuide" (click)="navigateTo('/travelGuide')">Travel Guides</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.active]="isMobileMenuOpen">
+    <div class="mobile-menu-header">
+      <button class="back-button" (click)="toggleMobileMenu()">
+        <span class="back-arrow"></span>
+        {{ destinationGroup.label }}
+      </button>
+    </div>
+    <ul class="mobile-menu-list">
+      <li 
+        class="mobile-destinations"
+        *ngFor="let destination of destinationGroup.destinations"
+        [class.expanded]="expandedContinent === destination"
+      >
+        <div class="mobile-dropdown-toggle" (click)="toggleContinent(destination)">
+          {{ destination.name }}
+          <span class="arrow-right" [class.rotated]="expandedContinent === destination"></span>
+        </div>
+        <div class="mobile-dropdown-content" [class.active]="expandedContinent === destination">
+          <ul class="mobile-countries">
+            <li *ngFor="let location of destination.locations">
+              <a 
+                [routerLink]="location.route"
+                [queryParams]="location.queryParams"
+                (click)="navigateTo(location.route)"
+              >
+                {{ location.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- Info Links in Mobile Menu -->
+      <li class="mobile-info-links">
+        <a routerLink="/contact" (click)="navigateTo('/contact')">FAQ | Help?</a>
+      </li>
+      <li class="mobile-info-links">
+        <a routerLink="/careers" (click)="navigateTo('/careers')">Careers</a>
+      </li>
+      <li class="mobile-info-links">
+        <a routerLink="/aboutUs" (click)="navigateTo('/aboutUs')">About us</a>
+      </li>
+      <li class="mobile-info-links">
+        <a routerLink="/travelGuide" (click)="navigateTo('/travelGuide')">Travel Guides</a>
+      </li>
+    </ul>
+  </div>
+</div>

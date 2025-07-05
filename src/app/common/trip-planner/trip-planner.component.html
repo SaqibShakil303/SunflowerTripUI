@@ -1,0 +1,387 @@
+<div class="planner-overlay">
+  <div class="planner-container">
+    <div class="planner-header">
+      <h2 class="planner-title">
+        <i class="icon-plane"></i>
+        Plan Your Dream Trip
+      </h2>
+      <button class="close-btn" (click)="dialogRef.close()" aria-label="Close">
+        <i class="icon-close">×</i>
+      </button>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-steps">
+        <div class="step" [class.active]="step >= 0" [class.completed]="step > 0">
+          <span class="step-number">1</span>
+          <span class="step-label">Personal Info</span>
+        </div>
+        <div class="step" [class.active]="step >= 1" [class.completed]="step > 1">
+          <span class="step-number">2</span>
+          <span class="step-label">Travel Details</span>
+        </div>
+        <div class="step" [class.active]="step >= 2" [class.completed]="step > 2">
+          <span class="step-number">3</span>
+          <span class="step-label">Preferences</span>
+        </div>
+        <div class="step" [class.active]="step >= 3">
+          <span class="step-number">4</span>
+          <span class="step-label">Review</span>
+        </div>
+      </div>
+      <div class="progress-line">
+        <div class="progress-fill" [style.width.%]="(step / 3) * 100"></div>
+      </div>
+    </div>
+
+    <div class="scroll-wrapper">
+      <form [formGroup]="tripForm" (ngSubmit)="submitForm()" class="trip-form">
+        <ng-container [ngSwitch]="step">
+
+          <!-- Step 1: Personal Information -->
+          <div *ngSwitchCase="0" class="form-step">
+            <h3 class="step-title">Personal Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="full_name">
+                  <i class="icon-user"></i>
+                  Full Name *
+                </label>
+                <input 
+                  id="full_name"
+                  formControlName="full_name" 
+                  type="text" 
+                  placeholder="Enter your full name"
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="email">
+                  <i class="icon-email"></i>
+                  Email Address *
+                </label>
+                <input 
+                  id="email"
+                  formControlName="email" 
+                  type="email" 
+                  placeholder="your@email.com"
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="phone">
+                  <i class="icon-phone"></i>
+                  Phone/WhatsApp *
+                </label>
+                <input 
+                  id="phone"
+                  formControlName="phone_number" 
+                  type="tel" 
+                  placeholder="+91 98765 43210"
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="country">
+                  <i class="icon-globe"></i>
+                  Preferred Country
+                </label>
+                <input 
+                  id="country"
+                  formControlName="preferred_country" 
+                  type="text" 
+                  placeholder="e.g., Thailand, Japan"
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="city">
+                  <i class="icon-location"></i>
+                  Preferred City
+                </label>
+                <input 
+                  id="city"
+                  formControlName="preferred_city" 
+                  type="text" 
+                  placeholder="e.g., Bangkok, Tokyo"
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="airport">
+                  <i class="icon-plane"></i>
+                  Departure Airport
+                </label>
+                <input 
+                  id="airport"
+                  formControlName="departure_airport" 
+                  type="text" 
+                  placeholder="e.g., Delhi (DEL)"
+                  class="form-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Travel Details -->
+          <div *ngSwitchCase="1" class="form-step">
+            <h3 class="step-title">Travel Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="departure_date">
+                  <i class="icon-calendar"></i>
+                  Departure Date *
+                </label>
+                <input 
+                  id="departure_date"
+                  formControlName="departure_date" 
+                  type="date" 
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="return_date">
+                  <i class="icon-calendar"></i>
+                  Return Date
+                </label>
+                <input 
+                  id="return_date"
+                  formControlName="return_date" 
+                  type="date" 
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="days">
+                  <i class="icon-time"></i>
+                  Number of Days *
+                </label>
+                <input 
+                  id="days"
+                  formControlName="number_of_days" 
+                  type="number" 
+                  min="1" 
+                  class="form-input"
+                />
+              </div>
+
+              <div class="travelers-section">
+                <h4>Travelers</h4>
+                <div class="travelers-grid">
+                  <div class="form-group">
+                    <label for="adults">
+                      <i class="icon-adult"></i>
+                      Adults
+                    </label>
+                    <input 
+                      id="adults"
+                      formControlName="number_of_adults" 
+                      type="number" 
+                      min="0"
+                      class="form-input"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="children">
+                      <i class="icon-child"></i>
+                      Children
+                    </label>
+                    <input 
+                      id="children"
+                      formControlName="number_of_children" 
+                      type="number" 
+                      min="0"
+                      class="form-input"
+                    />
+                  </div>
+                </div>
+
+                <div class="gender-section">
+                  <h5>Gender Distribution (Optional)</h5>
+                  <div class="gender-grid">
+                    <div class="form-group">
+                      <label for="male">Male</label>
+                      <input 
+                        id="male"
+                        formControlName="number_of_male" 
+                        type="number" 
+                        min="0"
+                        class="form-input"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="female">Female</label>
+                      <input 
+                        id="female"
+                        formControlName="number_of_female" 
+                        type="number" 
+                        min="0"
+                        class="form-input"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="other">Other</label>
+                      <input 
+                        id="other"
+                        formControlName="number_of_other" 
+                        type="number" 
+                        min="0"
+                        class="form-input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Preferences -->
+          <div *ngSwitchCase="2" class="form-step">
+            <h3 class="step-title">Accommodation & Preferences</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="hotel_rating">
+                  <i class="icon-star"></i>
+                  Hotel Rating
+                </label>
+                <select id="hotel_rating" formControlName="hotel_rating" class="form-select">
+                  <option value="3">3 Star ⭐⭐⭐</option>
+                  <option value="4">4 Star ⭐⭐⭐⭐</option>
+                  <option value="5">5 Star ⭐⭐⭐⭐⭐</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="meal_plan">
+                  <i class="icon-utensils"></i>
+                  Meal Plan
+                </label>
+                <select id="meal_plan" formControlName="meal_plan" class="form-select">
+                  <option value="EP">EP (No Meals)</option>
+                  <option value="CP">CP (Breakfast Only)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="room_type">
+                  <i class="icon-bed"></i>
+                  Room Type
+                </label>
+                <select id="room_type" formControlName="room_type" class="form-select">
+                  <option value="Single">Single Room</option>
+                  <option value="Double">Double Room</option>
+                  <option value="Triple">Triple Room</option>
+                  <option value="Suite">Suite</option>
+                </select>
+              </div>
+
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    formControlName="need_flight"
+                    class="checkbox-input"
+                  />
+                  <span class="checkmark"></span>
+                  <i class="icon-plane"></i>
+                  Need International Flight?
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="trip_type">
+                  <i class="icon-heart"></i>
+                  Trip Type
+                </label>
+                <input 
+                  id="trip_type"
+                  formControlName="trip_type" 
+                  type="text" 
+                  placeholder="e.g., Family, Honeymoon, Adventure"
+                  class="form-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Review & Submit -->
+          <div *ngSwitchCase="3" class="form-step">
+            <h3 class="step-title">Review & Submit</h3>
+            <div class="estimate-section">
+              <button 
+                type="button" 
+                (click)="calculateEstimate()" 
+                class="estimate-btn"
+                *ngIf="!estimate"
+              >
+                <i class="icon-calculator"></i>
+                Calculate Estimate
+              </button>
+              
+              <div *ngIf="estimate" class="estimate-box">
+                <div class="estimate-header">
+                  <i class="icon-money"></i>
+                  <h4>Estimated Cost</h4>
+                </div>
+                <div class="estimate-amount">{{ estimate }}</div>
+                <p class="estimate-note">*This is a rough estimate. Final pricing may vary based on availability and specific requirements.</p>
+              </div>
+            </div>
+
+            <div class="submit-section">
+              <button 
+                type="submit" 
+                [disabled]="isSubmitting || tripForm.invalid" 
+                class="submit-btn"
+              >
+                <span *ngIf="!isSubmitting">
+                  <i class="icon-send"></i>
+                  Submit Trip Request
+                </span>
+                <span *ngIf="isSubmitting">
+                  <i class="icon-loading"></i>
+                  Submitting...
+                </span>
+              </button>
+            </div>
+          </div>
+
+        </ng-container>
+      </form>
+    </div>
+
+    <div class="step-controls">
+      <button 
+        type="button" 
+        (click)="prevStep()" 
+        [disabled]="step === 0" 
+        class="control-btn secondary"
+      >
+        <i class="icon-arrow-left"></i>
+        Back
+      </button>
+      
+      <div class="step-indicator">
+        Step {{ step + 1 }} of 4
+      </div>
+      
+      <button 
+        type="button" 
+        (click)="nextStep()" 
+        *ngIf="step < 3" 
+        class="control-btn primary"
+      >
+        Next
+        <i class="icon-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

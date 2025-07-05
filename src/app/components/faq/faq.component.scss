@@ -1,0 +1,64 @@
+
+  @import 'mixins';
+  .faq-section {
+    padding-left: 5rem;
+    padding-right: 5rem;
+    margin-top: 3rem;
+
+    h2 {
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .faq-item {
+      @include glass-card;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &.active {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .faq-question {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #fff;
+      }
+
+      .faq-answer {
+        margin-top: 0.5rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  animation: fadeIn 0.3s ease-in-out;
+      }
+    }
+  }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+  @media (max-width: 768px) {
+    .contact-container {
+      flex-direction: column;
+    }
+
+    .contact-info,
+    .contact-form {
+      flex: 1 1 100%;
+    }
+
+    .section-title {
+      h2 {
+        font-size: 2rem;
+      }
+    }
+  }

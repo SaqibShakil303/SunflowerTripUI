@@ -1,0 +1,213 @@
+<div class="bookings-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Bookings Management</h1>
+        <p class="page-description">Manage tour bookings and customer details</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search bookings by name, email, or tour ID..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshBookings()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="exportBookings()">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-calendar-alt"></i>
+                All Bookings ({{ filteredBookings.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="name">Sort by Name</option>
+                    <option value="email">Sort by Email</option>
+                    <option value="tourId">Sort by Tour ID</option>
+                    <option value="travelDate">Sort by Travel Date</option>
+                    <option value="createdDate">Sort by Created Date</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredBookings.length > 0; else noBookings">
+            <table class="bookings-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-tour-id">Tour ID</th>
+                        <th class="col-name">Name</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-travel-date">Travel Date</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let booking of paginatedBookings; let i = index; trackBy: trackByBookingId">
+                        <tr class="booking-row" [class.deleting]="booking.isDeleting">
+                            <td class="col-serial">
+                                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                            </td>
+                            <td class="col-tour-id">
+                                <span class="tour-id-text">{{ booking.tourId }}</span>
+                            </td>
+                            <td class="col-name">
+                                <div class="name-cell">
+                                    <i class="fas fa-user user-avatar"></i>
+                                    <span class="name-text">{{ booking.name }}</span>
+                                </div>
+                            </td>
+                            <td class="col-email">
+                                <span class="email-text">{{ booking.email }}</span>
+                            </td>
+                            <td class="col-travel-date">
+                                <span class="date-text">{{ formatDate(booking.travelDate) }}</span>
+                            </td>
+                            <td class="col-actions">
+                                <button class="btn btn-sm btn-info expand-btn" (click)="toggleExpanded(booking)"
+                                    [title]="booking.isExpanded ? 'Collapse details' : 'View details'">
+                                    <i class="fas" [class.fa-chevron-down]="!booking.isExpanded"
+                                       [class.fa-chevron-up]="booking.isExpanded"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" (click)="deleteBooking(booking)"
+                                    [disabled]="booking.isDeleting" [title]="'Delete booking from ' + booking.name">
+                                    <i class="fas fa-spinner fa-spin" *ngIf="booking.isDeleting"></i>
+                                    <i class="fas fa-trash" *ngIf="!booking.isDeleting"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Expanded Details Row -->
+                        <tr *ngIf="booking.isExpanded" class="details-row">
+                            <td colspan="6">
+                                <div class="details-content">
+                                    <div class="details-grid">
+                                        <div class="detail-item">
+                                            <label class="detail-label">Phone:</label>
+                                            <span class="detail-value">{{ booking.phone || 'Not provided' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Days:</label>
+                                            <span class="detail-value">{{ booking.days || 'Not specified' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">No. of Adults:</label>
+                                            <span class="detail-value">{{ booking.numAdults || 'Not specified' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">No. of Children:</label>
+                                            <span class="detail-value">{{ booking.numChildren || '0' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Child Ages:</label>
+                                            <span class="detail-value">{{ booking.childAges || 'None' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Hotel Rating:</label>
+                                            <span class="detail-value">{{ booking.hotelRating || 'Not specified' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Meal Plan:</label>
+                                            <span class="detail-value">{{ booking.mealPlan || 'Not specified' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Flight Option:</label>
+                                            <span class="detail-value">{{ booking.flightOption || 'Not specified' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Created Date:</label>
+                                            <span class="detail-value">{{ formatDate(booking.createdDate) }} {{ formatTime(booking.createdDate) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Bookings Message -->
+        <ng-template #noBookings>
+            <div class="no-bookings">
+                <i class="fas fa-calendar-alt no-bookings-icon"></i>
+                <h3>No Bookings Found</h3>
+                <p *ngIf="searchTerm">No bookings match your search criteria.</p>
+                <p *ngIf="!searchTerm">No bookings have been received yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredBookings.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredBookings.length }} bookings
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the booking from:</p>
+            <strong>{{ bookingToDelete?.name }}</strong>
+            <p class="booking-details">{{ bookingToDelete?.email }} (Tour ID: {{ bookingToDelete?.tourId }})</p>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete Booking
+            </button>
+        </div>
+    </div>
+</div>

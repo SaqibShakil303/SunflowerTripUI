@@ -1,0 +1,221 @@
+// Import variables and mixins at the top
+@import 'variables';
+@import 'mixins';
+
+.services {
+  position: relative;
+  padding: 100px 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(77, 182, 172, 0.85), rgba(0, 150, 136, 0.9));
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0; // shorthand for top, right, bottom, left
+    background: url('https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center center/cover;
+    opacity: 0.15;
+    filter: blur(3px);
+    z-index: 0;
+  }
+}
+
+.section-title {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 60px;
+  
+  h2 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 3px;
+      background-color: var(--light-pink);
+      border-radius: 2px;
+    }
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+.services-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 20px 0;
+}
+
+.service-card {
+  @include responsive-card();
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s var(--bezier-smooth);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: auto; // Override the mixin height
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    @include glassmorphism(0.1, 10px);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .service-image {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      @include gradient-overlay(to top, rgba(0, 77, 64, 0.8), transparent);
+      z-index: 1;
+      transition: var(--transition-standard);
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--bezier-smooth);
+    }
+  }
+
+  &:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    
+    .service-image {
+      img { transform: scale(1.1); }
+      
+      &::after {
+        height: 70%;
+        @include gradient-overlay(to top, rgba(0, 77, 64, 0.9), rgba(0, 77, 64, 0.3), transparent);
+      }
+    }
+    
+    &::before { opacity: 0.2; }
+    
+    .service-content {
+      background: rgba(255, 255, 255, 0.1);
+      
+      .btn-service {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+.service-content {
+  position: relative;
+  padding: 25px;
+  transition: background 0.3s ease;
+  z-index: 2;
+  
+  h3 {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    
+    @media (max-width: 576px) {
+      font-size: 1.4rem;
+    }
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+  }
+}
+
+.btn-service {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  @include glassmorphism(0.15, 10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: var(--transition-standard);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  opacity: 0.9;
+  transform: translateY(0);
+  transition: all 0.5s var(--bezier-smooth);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+  }
+  
+  i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover {
+    background: rgba(178, 223, 219, 0.25);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    
+    i { transform: translateX(5px); }
+    &::before { left: 100%; }
+  }
+  
+  &:active { transform: translateY(-2px); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Animation for staggered appearance of service cards */
+@for $i from 1 through 6 {
+  .services-grid .service-card:nth-child(#{$i}) {
+    animation-delay: 0.1s * $i;
+  }
+}

@@ -1,0 +1,397 @@
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Forum:wght@400&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+// Color Palette Variables
+$saffron: #F4A460;
+$turmeric-yellow: #E9B44C;
+$peacock-blue: #005F73;
+$marigold-orange: #FF8500;
+$warm-white: #FDF6E3;
+$warm-gray: #8B7355;
+$dark-brown: #3E2723;
+
+// Font Variables
+$font-body: 'Forum', serif;
+$font-heading: 'Playfair Display', serif;
+
+// Layout Variables
+$sidebar-width: 22.5%;
+$sidebar-collapsed-width: 60px;
+$sidebar-padding: 1.5rem;
+$transition-speed: 0.3s;
+
+// Component Styles
+.admin-layout {
+    display: flex;
+    height: 100vh;
+    font-family: $font-body;
+    background-color: $warm-white;
+    transition: all $transition-speed ease;
+}
+
+.admin-sidebar {
+    width: $sidebar-width;
+    background: linear-gradient(135deg, $peacock-blue 0%, darken($peacock-blue, 10%) 100%);
+    color: $warm-white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow-x: hidden;
+    transition: width $transition-speed ease;
+}
+
+.sidebar-toggle {
+    position: fixed;
+    top: 1rem;
+    left: $sidebar-width;
+    z-index: 1100;
+    background: $peacock-blue;
+    color: $warm-white;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 0 8px 8px 0;
+    font-size: 1rem;
+    transition: left $transition-speed ease;
+
+    &:hover {
+        background: darken($peacock-blue, 10%);
+    }
+}
+
+.sidebar-header {
+    padding: $sidebar-padding;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+
+    .sidebar-title {
+        font-family: $font-heading;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+        color: $turmeric-yellow;
+        text-align: center;
+        letter-spacing: 1px;
+        transition: opacity $transition-speed ease;
+    }
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 100px - 80px);
+    scrollbar-width: thin;
+    scrollbar-color: $saffron $peacock-blue;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $peacock-blue;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $saffron;
+        border-radius: 3px;
+    }
+
+    .nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        .nav-item {
+            margin: 0.5rem 0;
+
+            .nav-link {
+                display: flex;
+                align-items: center;
+                padding: 1rem $sidebar-padding;
+                color: $warm-white;
+                text-decoration: none;
+                font-family: $font-body;
+                font-size: 1.1rem;
+                transition: all $transition-speed ease;
+                position: relative;
+                border-left: 4px solid transparent;
+                box-sizing: border-box;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                    border-left-color: $saffron;
+
+                    .nav-icon {
+                        transform: scale(1.1);
+                    }
+                }
+
+                &.active {
+                    background: linear-gradient(90deg, rgba(244, 164, 96, 0.2)  Snowden, 25, 0, 0); background: linear-gradient(90deg, rgba(233, 180, 76, 0.1) 100%);
+                    border-left-color: $saffron;
+                    color: $turmeric-yellow;
+                    font-weight: 500;
+
+                    .nav-icon {
+                        transform: scale(1.1);
+                        filter: brightness(1.2);
+                    }
+
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: linear-gradient(180deg, $saffron 0%, $turmeric-yellow 100%);
+                    }
+                }
+
+                .nav-icon {
+                    font-size: 1.2rem;
+                    margin-right: 1rem;
+                    transition: all $transition-speed ease;
+                    width: 20px;
+                    text-align: center;
+                    color: inherit;
+                }
+
+                .nav-text {
+                    flex: 1;
+                    font-weight: 400;
+                    letter-spacing: 0.5px;
+                    transition: opacity $transition-speed ease;
+                }
+            }
+        }
+    }
+}
+
+.sidebar-footer {
+    padding: $sidebar-padding;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+
+    .logout-link {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        color: $warm-white;
+        text-decoration: none;
+        font-family: $font-body;
+        font-size: 1.1rem;
+        transition: all $transition-speed ease;
+        border-radius: 8px;
+
+        &:hover {
+            background: rgba(255, 69, 0, 0.2);
+            color: $marigold-orange;
+
+            .nav-icon {
+                transform: scale(1.1);
+            }
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            transition: all $transition-speed ease;
+            width: 20px;
+            text-align: center;
+            color: inherit;
+        }
+
+        .nav-text {
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: opacity $transition-speed ease;
+        }
+    }
+}
+
+.main-content {
+    margin-left: $sidebar-width;
+    flex: 1;
+    background-color: $warm-white;
+    min-height: 100vh;
+    overflow-y: auto;
+    transition: margin-left $transition-speed ease;
+}
+
+// Collapsed Sidebar Styles
+.admin-layout.sidebar-collapsed {
+    .admin-sidebar {
+        width: $sidebar-collapsed-width;
+
+        .sidebar-header {
+            .sidebar-title {
+                opacity: 0;
+                height: 0;
+                overflow: hidden;
+            }
+        }
+
+        .sidebar-nav {
+            .nav-list {
+                .nav-item {
+                    .nav-link {
+                        padding: 1rem 0.8rem;
+                        justify-content: center;
+
+                        .nav-text {
+                            opacity: 0;
+                            width: 0;
+                            overflow: hidden;
+                        }
+
+                        .nav-icon {
+                            margin-right: 0;
+                            font-size: 1.3rem;
+                        }
+                    }
+                }
+            }
+        }
+
+        .sidebar-footer {
+            .logout-link {
+                padding: 1rem 0.8-norm;
+                justify-content: center;
+
+                .nav-text {
+                    opacity: 0;
+                    width: 0;
+                    overflow: hidden;
+                }
+
+                .nav-icon {
+                    margin-right: 0;
+                    font-size: 1.3rem;
+                }
+            }
+        }
+    }
+
+    .main-content {
+        margin-left: $sidebar-collapsed-width;
+    }
+
+    .sidebar-toggle {
+        left: $sidebar-collapsed-width;
+    }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+    $sidebar-width-tablet: 280px;
+    $sidebar-collapsed-width-tablet: 60px;
+
+    .admin-sidebar {
+        width: $sidebar-width-tablet;
+    }
+
+    .main-content {
+        margin-left: $sidebar-width-tablet;
+    }
+
+    .sidebar-toggle {
+        left: $sidebar-width-tablet;
+    }
+
+    .admin-layout.sidebar-collapsed {
+        .admin-sidebar {
+            width: $sidebar-collapsed-width-tablet;
+        }
+
+        .main-content {
+            margin-left: $sidebar-collapsed-width-tablet;
+        }
+
+        .sidebar-toggle {
+            left: $sidebar-collapsed-width-tablet;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    $sidebar-width-mobile: 250px;
+    $sidebar-collapsed-width-mobile: 60px;
+
+    .admin-sidebar {
+        width: $sidebar-width-mobile;
+        position: fixed;
+        height: 100vh;
+        z-index: 1000;
+    }
+
+    .main-content {
+        margin-left: $sidebar-width-mobile;
+    }
+
+    .sidebar-toggle {
+        left: $sidebar-width-mobile;
+        display: block;
+    }
+
+    .admin-layout.sidebar-collapsed {
+        .admin-sidebar {
+            width: $sidebar-collapsed-width-mobile;
+        }
+
+        .main-content {
+            margin-left: $sidebar-collapsed-width-mobile;
+        }
+
+        .sidebar-toggle {
+            left: $sidebar-collapsed-width-mobile;
+        }
+
+        .sidebar-nav {
+            .nav-list {
+                .nav-item {
+                    .nav-link {
+                        padding: 1rem 0.8rem;
+                        justify-content: center;
+
+                        .nav-text {
+                            opacity: 0;
+                            width: 0;
+                            overflow: hidden;
+                        }
+
+                        .nav-icon {
+                            margin-right: 0;
+                            font-size: 1.3rem;
+                        }
+                    }
+                }
+            }
+        }
+
+        .sidebar-footer {
+            .logout-link {
+                padding: 1rem 0.8rem;
+                justify-content: center;
+
+                .nav-text {
+                    opacity: 0;
+                    width: 0;
+                    overflow: hidden;
+                }
+
+                .nav-icon {
+                    margin-right: 0;
+                    font-size: 1.3rem;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,206 @@
+<div class="destinations-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Destinations Management</h1>
+        <p class="page-description">Manage travel destinations</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search destinations..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshDestinations()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="openAddDialog()">
+                <i class="fas fa-plus-circle"></i>
+                Add 
+            </button>
+        </div>
+    </div>
+
+    <!-- Destinations Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-globe-americas"></i>
+                All Destinations ({{ filteredDestinations.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="name">Sort by Name</option>
+                    <option value="continent">Sort by Continent</option>
+                    <option value="bestTime">Sort by Best Time</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredDestinations.length > 0; else noDestinations">
+            <table class="destinations-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-name">Destination</th>
+                        <th class="col-continent">Continent</th>
+                        <th class="col-best-time">Best Time</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container
+                        *ngFor="let destination of paginatedDestinations; let i = index; trackBy: trackByDestinationId">
+                        <tr class="destination-row" [class.deleting]="destination.isDeleting">
+                            <td class="col-serial">
+                                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                            </td>
+                            <td class="col-name">
+                                <div class="destination-cell">
+                                    <button class="btn btn-sm expand-icon" (click)="toggleDetails(destination)"
+                                        [title]="destination.showDetails ? 'Hide details for ' + destination.name : 'Show details for' + destination.name">
+                                        <i class="fas"
+                                            [ngClass]="{'fa-chevron-down': !destination.showDetails, 'fa-chevron-up': destination.showDetails}"></i>
+                                    </button>
+                                    <img [src]="destination.image" [alt]="destination.name" class="destination-image">
+                                    <div class="destination-info">
+                                        <span class="destination-name">{{ destination.name }}</span>
+                                        <!-- <span class="destination-type">{{ destination.type }}</span> -->
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-continent">
+                                <span class="continent-text">{{ destination.continent || 'N/A' }}</span>
+                            </td>
+                            <td class="col-best-time">
+                                <span class="best-time-text" title="{{ destination.bestTime }}">{{ destination.bestTime
+                                    }}</span>
+                            </td>
+                            <td class="col-actions">
+                                <div class="actions-wrapper">
+                                    <button class="btn btn-warning btn-sm edit-btn"
+                                        (click)="openEditDialog(destination)" [title]="'Edit ' + destination.name">
+                                        <i class="fas fa-edit"></i>
+                                        <span class="btn-text">Edit</span>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-btn"
+                                        (click)="deleteDestination(destination)" [disabled]="destination.isDeleting"
+                                        [title]="'Delete ' + destination.name">
+                                        <i class="fas fa-spinner fa-spin" *ngIf="destination.isDeleting"></i>
+                                        <i class="fas fa-trash" *ngIf="!destination.isDeleting"></i>
+                                        <span class="btn-text">{{ destination.isDeleting ? 'Deleting...' :
+                                            'Delete'}}</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Expandable Details Row -->
+                        <tr *ngIf="destination.showDetails" class="details-row">
+                            <td colspan="5">
+                                <div class="details-content">
+                                    <div class="details-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Weather:</span>
+                                            <span class="detail-value">{{ destination.weather }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Currency:</span>
+                                            <span class="detail-value">{{ destination.currency }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Languages:</span>
+                                            <span class="detail-value">{{ destination.languages.join(', ') }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Time Zone:</span>
+                                            <span class="detail-value">{{ destination.time_zone }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="description-section">
+                                        <span class="detail-label">Description:</span>
+                                        <p class="description-text">{{ destination.description }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Destinations Message -->
+        <ng-template #noDestinations>
+            <div class="no-destinations">
+                <i class="fas fa-globe-americas no-destinations-icon"></i>
+                <h3>No Destinations Found</h3>
+                <p *ngIf="searchTerm">No destinations match your search criteria.</p>
+                <p *ngIf="!searchTerm">No destinations have been added yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredDestinations.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredDestinations.length }}
+                destinations
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the destination:</p>
+            <strong>{{ destinationToDelete?.name }}</strong>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete Destination
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<section class="section destinations" id="destinations">
+  <div class="container">
+    <div class="section-title text-center">
+      <h2>Explore Top Destinations</h2>
+      <p>Discover our handpicked destinations for your next adventure</p>
+    </div>
+    <div class="swiper destination-slider" #swiperContainer>
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let destination of destinations; let i = index">
+          <div class="destination-card fade-in-up" [style.--delay]="i">
+            <div class="destination-image">
+              <img [src]="destination.image_url" [alt]="destination.title">
+            </div>
+            <div class="destination-content">
+              <h3>{{ destination.title }}</h3>
+              <p>{{ destination.description }}</p>
+              <a *ngIf="destination.id" [routerLink]="['/destination', destination.title]" class="btn-explore">
+                Explore {{ destination.title.split(',')[0] }}  
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section>

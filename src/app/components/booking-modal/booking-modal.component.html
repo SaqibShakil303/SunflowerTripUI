@@ -1,0 +1,236 @@
+<ng-container *ngIf="isOpen">
+  <div class="modal-overlay" (click)="closeModal()"></div>
+  <div class="modal-content" [ngClass]="{'enquiry-form': formType === 'enquiry', 'booking-form': formType === 'booking'}">
+    <!-- Enquiry Form (unchanged) -->
+    <div *ngIf="formType === 'enquiry'" class="form-container">
+      <h2 class="form-title">Enquiry Form</h2>
+      <form #enquiryForm="ngForm" (ngSubmit)="submitEnquiry(enquiryForm)">
+        <div class="form-group">
+          <label for="enquiry-name">Name</label>
+          <input
+            id="enquiry-name"
+            type="text"
+            class="form-control"
+            [(ngModel)]="enquiryData.name"
+            name="name"
+            required
+            placeholder="Enter your name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="enquiry-email">Email</label>
+          <input
+            id="enquiry-email"
+            type="email"
+            class="form-control"
+            [(ngModel)]="enquiryData.email"
+            name="email"
+            required
+            email
+            placeholder="Enter your email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="enquiry-phone">Phone Number</label>
+          <input
+            id="enquiry-phone"
+            type="tel"
+            class="form-control"
+            [(ngModel)]="enquiryData.phone"
+            name="phone"
+            required
+            pattern="[0-9]{10}"
+            placeholder="Enter your phone number"
+          />
+        </div>
+        <div class="form-group">
+          <label for="enquiry-description">Description</label>
+          <textarea
+            id="enquiry-description"
+            class="form-control"
+            [(ngModel)]="enquiryData.description"
+            name="description"
+            rows="4"
+            placeholder="Enter your enquiry details"
+          ></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!enquiryForm.valid">Submit Enquiry</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Booking Form -->
+    <div *ngIf="formType === 'booking'" class="form-container">
+      <h2 class="form-title">Booking Form</h2>
+      <form #bookingForm="ngForm" (ngSubmit)="submitBooking(bookingForm)">
+        <div class="form-group">
+          <label for="booking-name">Name</label>
+          <input
+            id="booking-name"
+            type="text"
+            class="form-control"
+            [(ngModel)]="bookingData.name"
+            name="name"
+            required
+            placeholder="Enter your name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="booking-email">Email</label>
+          <input
+            id="booking-email"
+            type="email"
+            class="form-control"
+            [(ngModel)]="bookingData.email"
+            name="email"
+            required
+            email
+            placeholder="Enter your email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="booking-phone">Phone Number</label>
+          <input
+            id="booking-phone"
+            type="tel"
+            class="form-control"
+            [(ngModel)]="bookingData.phone"
+            name="phone"
+            required
+            pattern="[0-9]{10}"
+            placeholder="Enter your phone number"
+          />
+        </div>
+        <div class="form-group" *ngIf="tour?.isCustomizable">
+          <label for="booking-days">Days (Customized)</label>
+          <input
+            id="booking-days"
+            type="number"
+            class="form-control"
+            [(ngModel)]="bookingData.days"
+            name="days"
+            min="1"
+            placeholder="Enter number of days"
+          />
+        </div>
+        <div class="form-group">
+          <label>Guests</label>
+          <div class="guest-selection">
+            <div class="guest-type">
+              <label for="booking-adults">Adults (age 12+)</label>
+              <input
+                id="booking-adults"
+                type="number"
+                class="form-control"
+                [(ngModel)]="bookingData.adults"
+                name="adults"
+                min="1"
+                required
+                (ngModelChange)="updateChildAges()"
+              />
+            </div>
+            <div class="guest-type">
+              <label for="booking-children">Children (below 12)</label>
+              <input
+                id="booking-children"
+                type="number"
+                class="form-control"
+                [(ngModel)]="bookingData.children"
+                name="children"
+                min="0"
+                (ngModelChange)="updateChildAges()"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group" *ngIf="bookingData.children > 0">
+          <label>Child Ages</label>
+          <div class="child-ages">
+            <select
+              *ngFor="let age of bookingData.childAges; let i = index"
+              class="form-control"
+              [(ngModel)]="bookingData.childAges[i]"
+              [name]="'childAge' + i"
+              required
+            >
+              <option value="" disabled selected>Select age</option>
+              <option *ngFor="let n of ageOptions" [value]="n">{{ n }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="booking-hotel-rating">Hotel Rating</label>
+          <select
+            id="booking-hotel-rating"
+            class="form-control"
+            [(ngModel)]="bookingData.hotelRating"
+            name="hotelRating"
+            required
+          >
+            <option value="" disabled selected>Select hotel rating</option>
+            <option value="3">3-Star</option>
+            <option value="4">4-Star</option>
+            <option value="5">5-Star</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="booking-meal-plan">Meal Plan</label>
+          <select
+            id="booking-meal-plan"
+            class="form-control"
+            [(ngModel)]="bookingData.mealPlan"
+            name="mealPlan"
+            required
+          >
+            <option value="" disabled selected>Select meal plan</option>
+            <option value="no-meal">No Meal</option>
+            <option value="breakfast">Only Breakfast</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="tour?.category">
+          <label for="booking-flight-option">Flight Option</label>
+          <select
+            id="booking-flight-option"
+            class="form-control"
+            [(ngModel)]="bookingData.flightOption"
+            name="flightOption"
+            required
+          >
+            <option value="" disabled selected>Select flight option</option>
+            <option value="with-flight" *ngIf="tour?.category === 'group'">With Flight</option>
+            <option value="without-flight" *ngIf="tour?.category === 'holiday'">Without Flight</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="bookingData.flightOption === 'without-flight' && tour?.category === 'holiday'">
+          <label for="booking-flight-number">Flight Number (Optional)</label>
+          <input
+            id="booking-flight-number"
+            type="text"
+            class="form-control"
+            [(ngModel)]="bookingData.flightNumber"
+            name="flightNumber"
+            placeholder="Enter flight number for pick up"
+          />
+        </div>
+        <div class="form-group">
+          <label for="booking-date">Travel Date</label>
+          <input
+            id="booking-date"
+            type="date"
+            class="form-control"
+            [(ngModel)]="bookingData.travelDate"
+            name="travelDate"
+            [min]="minDate"
+            required
+          />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" >Submit booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>

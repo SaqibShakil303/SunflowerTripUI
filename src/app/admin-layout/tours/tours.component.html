@@ -1,0 +1,429 @@
+<div class="tours-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Tours Management</h1>
+        <p class="page-description">Manage travel tours and packages</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search tours..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshTours()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="openAddDialog()">
+                <i class="fas fa-plus-circle"></i>
+                Add Tour
+            </button>
+        </div>
+    </div>
+
+    <!-- Tours Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-route"></i>
+                All Tours ({{ filteredTours.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="title">Sort by Title</option>
+                    <option value="destination">Sort by Destination</option>
+                    <option value="price">Sort by Price</option>
+                    <option value="duration">Sort by Duration</option>
+                    <option value="category">Sort by Category</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredTours.length > 0; else noTours">
+            <table class="tours-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-tour">Tour Details</th>
+                        <th class="col-destination">Destination</th>
+                        <th class="col-duration">Duration</th>
+                        <th class="col-price">Price</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let tour of paginatedTours; let i = index; trackBy: trackByTourId">
+                        <tr class="tour-row" [class.deleting]="tour.isDeleting">
+                            <td class="col-serial" data-label="Sl No.">
+                                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                            </td>
+                            <td class="col-tour" data-label="Tour Details">
+                                <div class="tour-cell">
+                                    <button class="btn btn-sm expand-icon" (click)="toggleDetails(tour)"
+                                        [title]="tour.showDetails ? 'Hide details for ' + tour.title : 'Show details for ' + tour.title">
+                                        <i class="fas"
+                                            [ngClass]="{'fa-chevron-down': !tour.showDetails, 'fa-chevron-up': tour.showDetails}"></i>
+                                    </button>
+                                    <img [src]="tour.image" [alt]="tour.title" class="tour-image">
+                                    <div class="tour-info">
+                                        <span class="tour-title">{{ tour.title }}</span>
+                                        <span class="tour-category">{{ tour.category }}</span>
+                                        <div class="tour-badges">
+                                            <span class="badge badge-featured" *ngIf="tour.isFeatured">Featured</span>
+                                            <span class="badge badge-instant" *ngIf="tour.instantBooking">Instant
+                                                Booking</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-destination" data-label="Destination">
+                                <span class="destination-text">{{ tour.destinationName }}</span>
+                            </td>
+                            <td class="col-duration" data-label="Duration">
+                                <span class="duration-text">{{ tour.duration }} days</span>
+                            </td>
+                            <td class="col-price" data-label="Price">
+                                <div class="price-info">
+                                    <span class="price-amount">{{ tour.currency }} {{ tour.pricePerPerson |
+                                        number:'1.0-0' }}</span>
+                                    <span class="price-label">per person</span>
+                                </div>
+                            </td>
+                            <td class="col-status" data-label="Status">
+                                <div class="status-badges">
+                                    <span class="badge" [class.badge-success]="tour.isActive"
+                                        [class.badge-inactive]="!tour.isActive">
+                                        {{ tour.isActive ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="col-actions" data-label="Actions">
+                                <div class="actions-wrapper">
+                                    <button class="btn btn-warning btn-sm edit-btn" (click)="openEditDialog(tour)"
+                                        [title]="'Edit ' + tour.title">
+                                        <i class="fas fa-edit"></i>
+                                        <span class="btn-text">Edit</span>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-btn" (click)="deleteTour(tour)"
+                                        [disabled]="tour.isDeleting" [title]="'Delete ' + tour.title">
+                                        <i class="fas fa-spinner fa-spin" *ngIf="tour.isDeleting"></i>
+                                        <i class="fas fa-trash" *ngIf="!tour.isDeleting"></i>
+                                        <span class="btn-text">{{ tour.isDeleting ? 'Deleting...' : 'Delete'}}</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Expandable Details Row -->
+                        <tr *ngIf="tour.showDetails" class="details-row">
+                            <td colspan="7">
+                                <div class="details-content">
+                                    <!-- Basic Information -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Basic Information</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Slug:</span>
+                                                <span class="detail-value">{{ tour.slug }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">From:</span>
+                                                <span class="detail-value">{{ tour.from }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">To:</span>
+                                                <span class="detail-value">{{ tour.to }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Difficulty:</span>
+                                                <span class="detail-value">{{ tour.difficultyLevel }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Description</h4>
+                                        <p class="description-text">{{ tour.description }}</p>
+                                    </div>
+
+                                    <!-- Airports & Transportation -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Transportation</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Departure Airport:</span>
+                                                <span class="detail-value">{{ tour.departureAirport }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Arrival Airport:</span>
+                                                <span class="detail-value">{{ tour.arrivalAirport }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Transportation Included:</span>
+                                                <span class="detail-value">{{ tour.transportationIncluded ? 'Yes' : 'No'
+                                                    }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Transportation Details:</span>
+                                                <span class="detail-value">{{ tour.transportationDetails }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Group & Booking -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Group & Booking Information</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Max Group Size:</span>
+                                                <span class="detail-value">{{ tour.maxGroupSize }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Min Group Size:</span>
+                                                <span class="detail-value">{{ tour.minGroupSize }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Advance Booking Days:</span>
+                                                <span class="detail-value">{{ tour.advanceBookingDays }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Requires Approval:</span>
+                                                <span class="detail-value">{{ tour.requiresApproval ? 'Yes' : 'No'
+                                                    }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Accommodation -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Accommodation</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Type:</span>
+                                                <span class="detail-value">{{ tour.accommodationType }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Rating:</span>
+                                                <span class="detail-value">{{ tour.accommodationRating }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Meals & Dietary -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Meals</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Meals Included:</span>
+                                                <span class="detail-value">{{ tour.mealsIncluded.join(', ') }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Dietary Restrictions:</span>
+                                                <span class="detail-value">{{ tour.dietaryRestrictionsSupported ?
+                                                    'Supported' : 'Not Supported' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pricing & Discounts -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Pricing</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Early Bird Discount:</span>
+                                                <span class="detail-value">{{ tour.earlyBirdDiscount }}%</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Group Discount:</span>
+                                                <span class="detail-value">{{ tour.groupDiscount }}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Services -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Services</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Guides Included:</span>
+                                                <span class="detail-value">{{ tour.guidesIncluded ? 'Yes' : 'No'
+                                                    }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Languages Supported:</span>
+                                                <span class="detail-value">{{ tour.languagesSupported.join(', ')
+                                                    }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Inclusions -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Inclusions</h4>
+                                        <div class="list-items">
+                                            <span *ngFor="let inclusion of tour.inclusions" class="list-item">{{
+                                                inclusion }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Exclusions -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Exclusions</h4>
+                                        <div class="list-items">
+                                            <span *ngFor="let exclusion of tour.exclusions" class="list-item">{{
+                                                exclusion }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Highlights -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Highlights</h4>
+                                        <div class="list-items">
+                                            <span *ngFor="let highlight of tour.highlights" class="list-item">{{
+                                                highlight }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Itinerary -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Itinerary</h4>
+                                        <p class="description-text">{{ tour.itinerary }}</p>
+                                    </div>
+
+                                    <!-- Best Time & Weather -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Travel Information</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Best Time to Visit:</span>
+                                                <span class="detail-value">{{ tour.bestTimeToVisit }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Weather Info:</span>
+                                                <span class="detail-value">{{ tour.weatherInfo }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Packing List -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Packing List</h4>
+                                        <div class="list-items">
+                                            <span *ngFor="let item of tour.packingList" class="list-item">{{ item
+                                                }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Terms & Policies -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">Terms & Policies</h4>
+                                        <div class="policy-text">
+                                            <div class="policy-item">
+                                                <strong>Booking Terms:</strong>
+                                                <p>{{ tour.bookingTerms }}</p>
+                                            </div>
+                                            <div class="policy-item">
+                                                <strong>Cancellation Policy:</strong>
+                                                <p>{{ tour.cancellationPolicy }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- SEO Information -->
+                                    <div class="details-section">
+                                        <h4 class="section-title">SEO Information</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Meta Title:</span>
+                                                <span class="detail-value">{{ tour.metaTitle }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Meta Description:</span>
+                                                <span class="detail-value">{{ tour.metaDescription }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Tours Message -->
+        <ng-template #noTours>
+            <div class="no-tours">
+                <i class="fas fa-route no-tours-icon"></i>
+                <h3>No Tours Found</h3>
+                <p *ngIf="searchTerm">No tours match your search criteria.</p>
+                <p *ngIf="!searchTerm">No tours have been added yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredTours.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredTours.length }} tours
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the tour:</p>
+            <strong>{{ tourToDelete?.title }}</strong>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete Tour
+            </button>
+        </div>
+    </div>
+</div>

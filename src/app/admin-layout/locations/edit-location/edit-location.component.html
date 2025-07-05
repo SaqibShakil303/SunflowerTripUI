@@ -1,0 +1,145 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="fas fa-edit"></i>
+        Edit Location
+      </h3>
+      <button class="btn btn-secondary modal-close" (click)="onCancel()" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <form [formGroup]="locationForm" (ngSubmit)="onSubmit()" class="location-form">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Basic Information
+          </h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name" class="form-label">Location Name *</label>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                class="form-control"
+                [class.error]="isFieldInvalid('name')"
+                placeholder="Enter location name"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('name')">
+                {{ getFieldError('name') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="destinationName" class="form-label">Destination *</label>
+              <input
+                type="text"
+                id="destinationName"
+                formControlName="destinationName"
+                class="form-control"
+                [class.error]="isFieldInvalid('destinationName')"
+                placeholder="Enter destination name"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid('destinationName')">
+                {{ getFieldError('destinationName') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description *</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-control form-textarea"
+              [class.error]="isFieldInvalid('description')"
+              placeholder="Describe the location..."
+              rows="4"
+            ></textarea>
+            <div class="form-help">
+              {{ locationForm.get('description')?.value?.length || 0 }}/500 characters
+            </div>
+            <div class="error-message" *ngIf="isFieldInvalid('description')">
+              {{ getFieldError('description') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-image"></i>
+            Image
+          </h4>
+
+          <div class="form-group">
+            <label for="image" class="form-label">Select Image (PNG, JPG, JPEG)</label>
+            <input
+              type="file"
+              id="image"
+              class="form-control"
+              accept="image/png,image/jpeg,image/jpg"
+              (change)="onImageChange($event)"
+              [class.error]="isFieldInvalid('image')"
+            />
+            <div class="form-help">Select a PNG, JPG, or JPEG image to replace the current image</div>
+            <div class="error-message" *ngIf="isFieldInvalid('image')">
+              {{ getFieldError('image') }}
+            </div>
+
+            <!-- Image Preview -->
+            <div class="image-preview" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Preview" class="preview-image" />
+            </div>
+            <div class="form-help" *ngIf="!imagePreview">
+              No image selected or available
+            </div>
+          </div>
+        </div>
+
+        <!-- 360 View Section -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-globe"></i>
+            360° View
+          </h4>
+
+          <div class="form-group">
+            <label for="iframe360" class="form-label">Google Maps Embed URL *</label>
+            <input
+              type="text"
+              id="iframe360"
+              formControlName="iframe360"
+              class="form-control"
+              [class.error]="isFieldInvalid('iframe360')"
+              placeholder="Enter Google Maps embed URL"
+            />
+            <div class="form-help">Enter a valid Google Maps embed URL for 360° view</div>
+            <div class="error-message" *ngIf="isFieldInvalid('iframe360')">
+              {{ getFieldError('iframe360') }}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isSubmitting">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="isSubmitting">
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+        {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>

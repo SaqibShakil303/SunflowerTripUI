@@ -1,0 +1,33 @@
+<header class="hero">
+    <div class="layer bg"></div>
+    <div class="layer mid"></div>
+    <img class="layer overlay"
+         src="assets/hero/overlay.png"
+         alt="Overlay"
+         loading="lazy">
+  
+    <div class="hero-content">
+      <h1 class="line line-1" [@flipY]>Nusa Lembongan</h1>
+      <h2 class="line line-2" [@slideUp]>Nusa Penida</h2>
+      <button class="discover">Discover</button>
+  
+      <!-- right-side cards -->
+      <div class="cards">
+        <div class="card" *ngFor="let c of cards; let i = index">
+          <img [src]="c.img" alt="{{c.title}}">
+          <div class="card-info">
+            <h4>{{c.title}}</h4>
+            <p>{{c.location}}</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- nav dots / slide count -->
+      <div class="slider-nav">
+        <button (click)="prev()">‹</button>
+        <span>{{current + 1}} / {{cards.length}}</span>
+        <button (click)="next()">›</button>
+      </div>
+    </div>
+  </header>
+  

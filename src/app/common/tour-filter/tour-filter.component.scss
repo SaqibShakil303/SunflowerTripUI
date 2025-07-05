@@ -1,0 +1,678 @@
+@import 'mixins';
+
+.full-tour-filter {
+  @include glass-card(0.15, 20px, 0.3);
+  border-radius: 24px;
+  padding: 2.5rem;
+  color: var(--black-color, #1a202c);
+  font-family: 'Forum', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  position: relative;
+  overflow: visible;
+  box-shadow: 
+    0 25px 45px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  animation: fadeIn 0.6s ease-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .filter-container {
+    position: relative;
+    overflow: visible;
+  }
+
+  .filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .filter-col {
+    position: relative;
+    @include glass-card(0.2, 15px, 0.25);
+    padding: 1.75rem;
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 10px 25px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    overflow: visible;
+    
+    // Ensure proper stacking context for dropdowns
+    &:has(.calendar-dropdown),
+    &:has(.filter-flyout) {
+      z-index: 1001;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      @include glass-card(0.25, 18px, 0.35);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0.3) 100%);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1; // Keep decorative elements behind
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+
+  .filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+    color: #2d3748;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    position: relative;
+    z-index: 1; // Lower than dropdowns
+
+    .icon-location::before { content: "📍"; }
+    .icon-destination::before { content: "🌍"; }
+    .icon-calendar::before { content: "📅"; }
+    .icon-filter::before { content: "⚙️"; }
+    .icon-search::before { content: "🔍"; }
+
+    .filter-count {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+    }
+  }
+
+  .filter-input, .filter-select {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    @include glass-card(0.25, 8px, 0.3);
+    border-radius: 16px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    color: #2d3748;
+    font-weight: 500;
+    position: relative;
+    z-index: 1; // Lower than dropdowns
+
+    &:focus {
+      outline: none;
+      @include glass-card(0.3, 12px, 0.4);
+      box-shadow: 
+        0 0 0 3px rgba(0, 188, 212, 0.2),
+        0 8px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+    }
+
+    &::placeholder {
+      color: #718096;
+      font-weight: 400;
+    }
+  }
+
+  .location-hint {
+    color: #718096;
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+    display: block;
+    font-weight: 500;
+    position: relative;
+    z-index: 1; // Lower than dropdowns
+  }
+
+  .location-select {
+    margin-top: 0.75rem;
+  }
+
+  .date-selector {
+    @include glass-card(0.25, 8px, 0.3);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2; // Higher than other elements but lower than dropdown
+
+    &:hover {
+      @include glass-card(0.3, 12px, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .date-display {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .date-value {
+      font-weight: 700;
+      color: #2d3748;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .placeholder-text {
+      color: #718096;
+      font-weight: 500;
+    }
+
+    .day-name {
+      font-size: 0.85rem;
+      color: #718096;
+      font-weight: 500;
+    }
+
+    .dropdown-arrow {
+      transition: transform 0.3s ease;
+      color: #718096;
+      font-weight: 700;
+
+      &.open {
+        transform: rotate(180deg);
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .calendar-dropdown {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 1;
+    right: 0;
+    z-index: 9999; // Highest z-index for dropdowns
+    @include glass-card(0.95, 25px, 0.4);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 
+      0 35px 60px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    min-width: 750px;
+    animation: dropdownFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @keyframes dropdownFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+
+      .nav-btn {
+        @include glass-card(0.2, 8px, 0.3);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: #2d3748;
+        transition: all 0.3s ease;
+
+        &:hover {
+          @include glass-card(0.3, 10px, 0.4);
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          color: white;
+          transform: translateY(-2px);
+        }
+      }
+    }
+
+    .calendar-container {
+      display: flex;
+      gap: 2.5rem;
+      justify-content: center;
+    }
+
+    .calendar {
+      .month-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #4a5568;
+        margin-bottom: 1.25rem;
+        text-align: center;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+
+      .weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.3rem;
+        margin-bottom: 0.75rem;
+
+        .weekday {
+          text-align: center;
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #718096;
+          padding: 0.6rem 0;
+          text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+      }
+
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.3rem;
+      }
+
+      .day-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        position: relative;
+
+        &:hover:not(.disabled):not(.empty) {
+          @include glass-card(0.3, 8px, 0.4);
+          color: var(--primary-color);
+          transform: scale(1.05);
+        }
+
+        &.disabled {
+          color: #cbd5e0;
+          cursor: not-allowed;
+        }
+
+        &.selected {
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          color: white;
+          font-weight: 700;
+          box-shadow: 0 6px 15px rgba(0, 188, 212, 0.4);
+        }
+
+        &.today {
+          @include glass-card(0.2, 6px, 0.3);
+          border: 2px solid var(--primary-color);
+          font-weight: 700;
+          color: var(--primary-color);
+        }
+
+        &.empty {
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  .filter-selector {
+    @include glass-card(0.25, 8px, 0.3);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 2; // Higher than other elements but lower than dropdown
+
+    &:hover {
+      @include glass-card(0.3, 12px, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .filter-summary {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .placeholder-text {
+      color: #718096;
+      font-weight: 500;
+    }
+
+    .dropdown-arrow {
+      transition: transform 0.3s ease;
+      color: #718096;
+      font-weight: 700;
+
+      &.open {
+        transform: rotate(180deg);
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .applied-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 1; // Lower than dropdowns
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      @include glass-card(0.25, 8px, 0.3);
+      background: linear-gradient(135deg, 
+        rgba(0, 188, 212, 0.15) 0%, 
+        rgba(254, 180, 123, 0.15) 100%);
+      color: var(--primary-color);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+
+      &:hover {
+        @include glass-card(0.3, 10px, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 188, 212, 0.2);
+      }
+
+      .close-btn {
+        margin-left: 0.6rem;
+        cursor: pointer;
+        font-weight: 700;
+        color: #718096;
+        transition: color 0.2s ease;
+        font-size: 1.1rem;
+
+        &:hover {
+          color: #e53e3e;
+        }
+      }
+    }
+  }
+
+  .filter-flyout {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 4;
+    right: 0;
+    z-index: 999; // Highest z-index for dropdowns
+    @include glass-card(0.95, 25px, 0.4);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 
+      0 35px 60px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    min-width: 450px;
+    animation: dropdownFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .filter-header {
+      margin-bottom: 2rem;
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .filter-group {
+      .range-label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #4a5568;
+        margin-bottom: 1rem;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+
+      .range-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .range-slider {
+          width: 100%;
+          height: 6px;
+          border-radius: 3px;
+          @include glass-card(0.2, 4px, 0.2);
+          outline: none;
+          -webkit-appearance: none;
+
+          &::-webkit-slider-thumb {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+            transition: all 0.2s ease;
+
+            &:hover {
+              transform: scale(1.1);
+              box-shadow: 0 6px 16px rgba(0, 188, 212, 0.5);
+            }
+          }
+
+          &::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+          }
+        }
+      }
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      @include glass-card(0.1, 8px, 0.2);
+      margin-left: -2rem;
+      margin-right: -2rem;
+      margin-bottom: -2rem;
+      padding: 2rem;
+      border-radius: 0 0 20px 20px;
+
+      .clear-btn {
+        @include glass-card(0.2, 8px, 0.3);
+        color: #718096;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          @include glass-card(0.25, 10px, 0.35);
+          color: #e53e3e;
+          transform: translateY(-1px);
+        }
+      }
+
+      .apply-btn.primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 15px rgba(0, 188, 212, 0.3);
+
+        &:hover {
+          background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 12px 25px rgba(0, 188, 212, 0.4);
+        }
+      }
+    }
+  }
+
+  .search-section {
+    text-align: center;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 1; // Lower than dropdowns
+
+    .search-btn {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 25px rgba(238, 90, 36, 0.3);
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(238, 90, 36, 0.4);
+        background: linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%);
+      }
+
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .filter-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+
+    .filter-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .filter-col {
+      padding: 1rem;
+      
+      // Ensure dropdowns have highest z-index in mobile
+      &:has(.calendar-dropdown),
+      &:has(.filter-flyout) {
+        z-index: 9999;
+        
+        // Create isolation for proper stacking
+        isolation: isolate;
+      }
+    }
+
+    .calendar-container {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .calendar-dropdown,
+    .filter-flyout {
+      position: fixed !important;
+      top: 60px !important;
+      left: 1rem !important;
+      right: 1rem !important;
+      width: calc(100% - 2rem) !important;
+      margin: 0 !important;
+      max-width: none !important;
+      z-index: 99999 !important; // Ultra high z-index for mobile
+      
+      // Ensure the dropdown content is also properly layered
+      & > * {
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    .search-btn {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+
+    .filter-col {
+      padding: 0.75rem;
+    }
+
+    .calendar-dropdown,
+    .filter-flyout {
+      left: 0.5rem !important;
+      right: 0.5rem !important;
+      width: calc(100% - 1rem) !important;
+      top: 50px !important;
+    }
+  }
+}

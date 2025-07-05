@@ -1,0 +1,743 @@
+// Variables
+$primary-color: #00bcd4;
+$secondary-color: #feb47b;
+$success-color: #6c63ff;
+$danger-color: #ef4444;
+$dark-bg: #1e293b;
+$card-bg: rgba(255, 255, 255, 0.95);
+$text-dark: #1f2937;
+$text-light: #6b7280;
+$border-color: #e5e7eb;
+$border-radius: 12px;
+$shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+// Icon font (using simple text alternatives)
+.icon-plane::before { content: "✈️ "; }
+.icon-close::before { content: ""; }
+.icon-user::before { content: "👤 "; }
+.icon-email::before { content: "📧 "; }
+.icon-phone::before { content: "📱 "; }
+.icon-globe::before { content: "🌍 "; }
+.icon-location::before { content: "📍 "; }
+.icon-calendar::before { content: "📅 "; }
+.icon-time::before { content: "⏱️ "; }
+.icon-adult::before { content: "👨 "; }
+.icon-child::before { content: "👶 "; }
+.icon-star::before { content: "⭐ "; }
+.icon-utensils::before { content: "🍽️ "; }
+.icon-bed::before { content: "🛏️ "; }
+.icon-heart::before { content: "❤️ "; }
+.icon-calculator::before { content: "🧮 "; }
+.icon-money::before { content: "💰 "; }
+.icon-send::before { content: "📤 "; }
+.icon-loading::before { content: "⏳ "; }
+.icon-arrow-left::before { content: "←"; }
+.icon-arrow-right::before { content: "→"; }
+
+// Main overlay
+.planner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 95vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+// Main container
+.planner-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  background: $card-bg;
+  border-radius: $border-radius * 2;
+  box-shadow: $shadow;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+// Header
+.planner-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  padding: 2rem 2rem 1rem;
+  background: linear-gradient(135deg, $primary-color 0%, #3b82f6 100%);
+  color: white;
+  position: relative;
+
+  .planner-title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .icon-plane {
+      font-size: 1.5rem;
+    }
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 5000;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .icon-close {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Progress bar
+.progress-bar {
+  padding: 1.5rem 2rem;
+  background: white;
+  border-bottom: 1px solid $border-color;
+
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    position: relative;
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+
+      .step-number {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .step-label {
+        font-size: 0.75rem;
+        color: $text-light;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      &.active .step-number {
+        background: $primary-color;
+        color: white;
+      }
+
+      &.completed .step-number {
+        background: $success-color;
+        color: white;
+      }
+
+      &.active .step-label,
+      &.completed .step-label {
+        color: $text-dark;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .progress-line {
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, $primary-color 0%, $success-color 100%);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+  }
+}
+
+// Scroll wrapper
+.scroll-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 2rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+// Form styling
+.trip-form {
+  padding: 1rem 0;
+}
+
+.form-step {
+  animation: slideIn 0.3s ease-out;
+
+  .step-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid $primary-color;
+  }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 1rem;
+    background: white;
+    color: $text-dark;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    &::placeholder {
+      color: $text-light;
+    }
+
+    &:disabled {
+      background: #f9fafb;
+      color: $text-light;
+      cursor: not-allowed;
+    }
+  }
+
+  .form-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+  }
+}
+
+// Special sections
+.travelers-section {
+  grid-column: 1 / -1;
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+
+  h4 {
+    margin: 0 0 1rem 0;
+    color: $text-dark;
+    font-weight: 600;
+  }
+
+  .travelers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .gender-section {
+    h5 {
+      margin: 0 0 1rem 0;
+      color: $text-light;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    .gender-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}
+
+// Checkbox styling
+.checkbox-group {
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: $border-radius;
+    border: 2px solid $border-color;
+    background: white;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $primary-color;
+      background: rgba(37, 99, 235, 0.02);
+    }
+
+    .checkbox-input {
+      position: absolute;
+      opacity: 0;
+
+      &:checked + .checkmark {
+        background: $primary-color;
+        border-color: $primary-color;
+
+        &::after {
+          display: block;
+        }
+      }
+    }
+
+    .checkmark {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 2px solid $border-color;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+
+      &::after {
+        content: "";
+        position: absolute;
+        display: none;
+        left: 6px;
+        top: 2px;
+        width: 6px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+  }
+}
+
+// Estimate section
+.estimate-section {
+  margin-bottom: 2rem;
+
+  .estimate-btn {
+    background: linear-gradient(135deg, $secondary-color 0%, #f59e0b 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: $border-radius;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+    }
+  }
+
+  .estimate-box {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+    border: 2px solid $success-color;
+    border-radius: $border-radius;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 1rem;
+
+    .estimate-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      h4 {
+        margin: 0;
+        color: $success-color;
+        font-weight: 600;
+      }
+    }
+
+    .estimate-amount {
+      font-size: 2rem;
+      font-weight: 800;
+      color: $success-color;
+      margin-bottom: 0.5rem;
+    }
+
+    .estimate-note {
+      font-size: 0.875rem;
+      color: $text-light;
+      margin: 0;
+      font-style: italic;
+    }
+  }
+}
+
+// Submit section
+.submit-section {
+  .submit-btn {
+    background: linear-gradient(135deg, $success-color 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: $border-radius;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    &:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .icon-loading {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Step controls
+.step-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-top: 1px solid $border-color;
+
+  .control-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: $border-radius;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+
+    &.primary {
+      background: $primary-color;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+      }
+    }
+
+    &.secondary {
+      background: white;
+      color: $text-dark;
+      border-color: $border-color;
+
+      &:hover:not(:disabled) {
+        border-color: $primary-color;
+        color: $primary-color;
+      }
+    }
+
+    &:disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  .step-indicator {
+    font-weight: 600;
+    color: $text-light;
+    font-size: 0.875rem;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .planner-overlay {
+    padding: 10px;
+  }
+
+  .planner-container {
+    max-height: 95vh;
+    border-radius: $border-radius;
+  }
+
+  .planner-header {
+    padding: 1.5rem 1rem 1rem;
+    
+    .planner-title {
+      font-size: 1.5rem;
+    }
+
+    .close-btn {
+      top: 0.75rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .progress-bar {
+    padding: 1rem;
+
+    .progress-steps .step {
+      .step-label {
+        font-size: 0.625rem;
+      }
+
+      .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .scroll-wrapper {
+    padding: 0 1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .travelers-section {
+    padding: 1rem;
+
+    .travelers-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
+
+  .step-controls {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+
+    .control-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .step-indicator {
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .planner-header .planner-title {
+    font-size: 1.25rem;
+  }
+
+  .form-step .step-title {
+    font-size: 1.25rem;
+  }
+
+  .estimate-box .estimate-amount {
+    font-size: 1.5rem;
+  }
+}
+
+// Animation for smooth transitions
+.form-step {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Focus states for better accessibility
+.form-input:focus,
+.form-select:focus,
+.control-btn:focus,
+.submit-btn:focus,
+.estimate-btn:focus {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+}
+
+// Loading state
+.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+// Success state (can be added via class)
+.form-group.success {
+  .form-input,
+  .form-select {
+    border-color: $success-color;
+    background-color: rgba(16, 185, 129, 0.05);
+  }
+}
+
+// Error state (can be added via class)
+.form-group.error {
+  .form-input,
+  .form-select {
+    border-color: $danger-color;
+    background-color: rgba(239, 68, 68, 0.05);
+  }
+
+  label {
+    color: $danger-color;
+  }
+}
+
+// Dark mode support (optional)
+@media (prefers-color-scheme: dark) {
+  .planner-container {
+    background: rgba(30, 41, 59, 0.95);
+    color: white;
+  }
+
+  .form-input,
+  .form-select {
+    background: rgba(51, 65, 85, 0.8);
+    border-color: #475569;
+    color: white;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+  }
+
+  .travelers-section {
+    background: rgba(51, 65, 85, 0.5);
+    border-color: #475569;
+  }
+
+  .step-controls {
+    background: rgba(51, 65, 85, 0.8);
+    border-color: #475569;
+  }
+
+  .progress-bar {
+    background: rgba(51, 65, 85, 0.8);
+    border-color: #475569;
+  }
+}

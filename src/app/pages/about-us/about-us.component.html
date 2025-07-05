@@ -1,0 +1,196 @@
+<app-navbar></app-navbar>
+
+<section class="about-us">
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="overlay"></div>
+    <div class="container">
+      <h1 data-aos="fade-up">Your Journey, Our Passion</h1>
+      <p class="tagline" data-aos="fade-up" data-aos-delay="200">Crafting unforgettable travel experiences from Kolkata to the world.</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Our Story -->
+    <div class="content-section our-story" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Our Journey</span>
+        <h2>Our Story</h2>
+      </div>
+      <div class="section-content">
+        <div class="story-image" data-aos="fade-right" data-aos-delay="200">
+          <div class="glass-card">
+            <img src="assets/images/sunflower-journey.webp" alt="Sunflower Trip Journey">
+          </div>
+        </div>
+        <div class="story-text" data-aos="fade-left" data-aos-delay="200">
+          <p>Sunflower Trip was born out of a love for discovering new cultures and sharing unique experiences. From humble beginnings in Kolkata, we have grown into a trusted name in travel, offering curated trips to breathtaking destinations across the globe.</p>
+          <p>What began as a passion project among travel enthusiasts has evolved into a full-service travel agency dedicated to creating memories that last a lifetime. Our journey through the years has been about building trust, understanding travelers' needs, and delivering experiences that go beyond expectations.</p>
+          <div class="stats-container">
+            <div class="stat-item">
+              <span class="stat-number">12+</span>
+              <span class="stat-label">Years Experience</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Happy Travelers</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">50+</span>
+              <span class="stat-label">Destinations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-section about-values" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Who We Are</span>
+        <h2>About Sunflower Trip</h2>
+      </div>
+      <div class="section-content">
+        <div class="glass-card about-card">
+          <p>Sunflower Trip Private Limited is one of India’s leading leisure and holiday travel companies. We offer thoughtfully crafted domestic and international travel experiences tailored to our clients’ dreams. Whether you seek soulful getaways, thrilling adventures, or luxurious escapes, our Kolkata-based team ensures every detail is personalized with care.</p>
+          <p>Our logo, inspired by the ever-optimistic sunflower, symbolizes our mission: to face the world with warmth and positivity. Like the sunflower, we guide you toward radiant and unforgettable journeys.</p>
+          <p>For the independent traveler, we offer flexible assistance—safety, suggestions, and backup services—while allowing you to travel freely and confidently.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Health and Safety Section -->
+    <div class="content-section safety-section" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Your Wellbeing</span>
+        <h2>Health & Safety</h2>
+      </div>
+      <div class="section-content">
+        <div class="glass-card">
+          <ul>
+            <li><strong>Face Masks:</strong> Required in public areas to ensure safe interactions.</li>
+            <li><strong>Certified Food:</strong> All meals are FSSAI-certified to meet hygiene standards.</li>
+            <li><strong>Sanitized Rooms:</strong> Every accommodation is cleaned thoroughly before your arrival.</li>
+            <li><strong>Optional Housekeeping:</strong> Housekeeping can be adjusted based on your comfort to reduce contact.</li>
+          </ul>
+          <p>Your safety is our top priority. We adhere to CDC and local authority guidelines to ensure your journey is both joyful and secure.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Mission and Vision -->
+    <div class="content-section mission-vision" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Our Philosophy</span>
+        <h2>Mission & Vision</h2>
+      </div>
+      <div class="section-content mission-vision-cards">
+        <div class="glass-card mission" data-aos="fade-up" data-aos-delay="100">
+          <div class="icon-container">
+            <i class="fas fa-compass"></i>
+          </div>
+          <h3>Our Mission</h3>
+          <p>To provide customized travel solutions that cater to the unique needs of every traveler, ensuring authentic and enriching experiences that foster cultural understanding and create lasting memories.</p>
+        </div>
+        <div class="glass-card vision" data-aos="fade-up" data-aos-delay="300">
+          <div class="icon-container">
+            <i class="fas fa-binoculars"></i>
+          </div>
+          <h3>Our Vision</h3>
+          <p>To be the most trusted travel partner, delivering exceptional journeys worldwide while promoting responsible tourism that respects local cultures and environments.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why Choose Us -->
+    <div class="content-section why-choose-us" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Our Advantages</span>
+        <h2>Why Choose Us</h2>
+      </div>
+      <div class="section-content">
+        <app-why-us></app-why-us>
+      </div>
+    </div>
+
+    <!-- Our Team -->
+    <!-- <div class="content-section our-team" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Meet The Experts</span>
+        <h2>Our Team</h2>
+      </div>
+      <div class="section-content">
+        <div class="swiper team-slider" #teamSwiperContainer>
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" *ngFor="let member of teamMembers">
+              <div class="team-card glass-card">
+                <div class="member-image">
+                  <img [src]="member.image" [alt]="member.name">
+                </div>
+                <div class="member-info">
+                  <h3>{{member.name}}</h3>
+                  <p class="position">{{member.position}}</p>
+                  <p class="bio">{{member.bio}}</p>
+                  <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Testimonials -->
+    <div class="content-section testimonials" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">What People Say</span>
+        <h2>Traveler Stories</h2>
+      </div>
+      <div class="section-content">
+        <app-testimonials></app-testimonials>
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="content-section contact-info" data-aos="fade-up">
+      <div class="section-header">
+        <span class="section-accent">Get In Touch</span>
+        <h2>Contact Us</h2>
+      </div>
+      <div class="section-content contact-cards">
+        <div class="glass-card contact-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="icon-container">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3>Address</h3>
+          <p>BD 230, Salt Lake, Kolkata 700 064</p>
+        </div>
+        <div class="glass-card contact-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="icon-container">
+            <i class="fas fa-phone-alt"></i>
+          </div>
+          <h3>Phone</h3>
+          <p>+91 7076421377</p>
+        </div>
+        <div class="glass-card contact-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="icon-container">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3>Email</h3>
+          <p>contact&#64;thesunflowertrip.com</p>
+        </div>
+      </div>
+      <div class="cta-container" data-aos="fade-up" data-aos-delay="400">
+        <a routerLink="/contact" class="btn-primary">Plan Your Trip</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+<app-chat-widget></app-chat-widget>
+<app-footer></app-footer>

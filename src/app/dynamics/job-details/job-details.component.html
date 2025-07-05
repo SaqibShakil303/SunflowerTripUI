@@ -1,0 +1,17 @@
+<section class="job-detail glass-section">
+  <div class="container">
+    <h2>{{ job.title }}</h2>
+    <p><strong>Location:</strong> {{ job.location }}</p>
+    <p><strong>Experience:</strong> {{ job.experience }}</p>
+
+    <h3>Responsibilities</h3>
+    <ul><li *ngFor="let r of job.responsibilities">{{ r }}</li></ul>
+
+    <h3>Skills Required</h3>
+    <ul><li *ngFor="let s of job.skills">{{ s }}</li></ul>
+
+    <button (click)="onApply()">Apply for this job</button>
+
+    <app-apply-form *ngIf="showForm" [jobId]="job.id"></app-apply-form>
+  </div>
+</section>

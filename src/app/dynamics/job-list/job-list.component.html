@@ -1,0 +1,11 @@
+<section class="job-listings glass-section">
+  <div class="container">
+    <h2>Current Openings</h2>
+    <ul>
+      <li *ngFor="let job of jobs" (click)="selectJob.emit(job)">
+        <h3>{{ job.title }}</h3>
+        <p>{{ job.location }} • {{ job.experience }}</p>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,153 @@
+<div class="users-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Users Management</h1>
+        <p class="page-description">Manage user accounts</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search users by email..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshUsers()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="exportUsers()">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-users"></i>
+                All Users ({{ filteredUsers.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="email">Sort by Email</option>
+                    <option value="createdDate">Sort by Date</option>
+                    <option value="serialNumber">Sort by ID</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredUsers.length > 0; else noUsers">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-date">Created Date</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of paginatedUsers; let i = index; trackBy: trackByUserId" class="user-row"
+                        [class.deleting]="user.isDeleting">
+                        <td class="col-serial">
+                            <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                        </td>
+                        <td class="col-email">
+                            <div class="email-cell">
+                                <i class="fas fa-user user-avatar"></i>
+                                <span class="email-text">{{ user.email }}</span>
+                            </div>
+                        </td>
+                        <td class="col-date">
+                            <span class="date-text">{{ formatDate(user.createdDate) }}</span>
+                            <span class="time-text">{{ formatTime(user.createdDate) }}</span>
+                        </td>
+                        <td class="col-actions">
+                            <button class="btn btn-danger btn-sm delete-btn" (click)="deleteUser(user)"
+                                [disabled]="user.isDeleting" [title]="'Delete ' + user.email">
+                                <i class="fas fa-spinner fa-spin" *ngIf="user.isDeleting"></i>
+                                <i class="fas fa-trash" *ngIf="!user.isDeleting"></i>
+                                <span class="btn-text">{{ user.isDeleting ? 'Deleting...' : 'Delete' }}</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Users Message -->
+        <ng-template #noUsers>
+            <div class="no-users">
+                <i class="fas fa-users-slash no-users-icon"></i>
+                <h3>No Users Found</h3>
+                <p *ngIf="searchTerm">No users match your search criteria.</p>
+                <p *ngIf="!searchTerm">No users have been created yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredUsers.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredUsers.length }} users
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the user:</p>
+            <strong>{{ userToDelete?.email }}</strong>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete User
+            </button>
+        </div>
+    </div>
+</div>

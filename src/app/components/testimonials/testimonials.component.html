@@ -1,0 +1,32 @@
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-title text-center">
+      <h2>Traveler Stories</h2>
+      <p>Hear from our happy clients who explored the world with Sunflower Trip</p>
+    </div>
+    <div class="swiper testimonial-slider" #swiperContainer>
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let testimonial of testimonials; let i = index" 
+             [attr.data-aos]="'fade-up'" [attr.data-aos-delay]="i * 100" [ngClass]="'fade-in-up'">
+          <div class="testimonial">
+            <div class="testimonial-content">
+              <p>{{ testimonial.quote }}</p>
+              <div class="client">
+                <div class="client-image">
+                  <img [src]="testimonial.image" [alt]="testimonial.name">
+                </div>
+                <div class="client-info">
+                  <h4>{{ testimonial.name }}</h4>
+                  <span>{{ testimonial.trip }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section>
