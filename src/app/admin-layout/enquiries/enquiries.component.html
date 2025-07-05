@@ -1,0 +1,186 @@
+<div class="enquiries-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Enquiries Management</h1>
+        <p class="page-description">Manage tour enquiries and customer requests</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search enquiries by name or email..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshEnquiries()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="exportEnquiries()">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Enquiries Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-question-circle"></i>
+                All Enquiries ({{ filteredEnquiries.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="name">Sort by Name</option>
+                    <option value="email">Sort by Email</option>
+                    <option value="createdDate">Sort by Date</option>
+                    <option value="tourId">Sort by Tour ID</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredEnquiries.length > 0; else noEnquiries">
+            <table class="enquiries-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-tour-id">Tour ID</th>
+                        <th class="col-name">Name</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-date">Created Date</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let enquiry of paginatedEnquiries; let i = index; trackBy: trackByEnquiryId">
+                        <tr 
+                            class="enquiry-row" [class.deleting]="enquiry.isDeleting">
+                            <td class="col-serial">
+                                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                            </td>
+                            <td class="col-tour-id">
+                                <span class="tour-id-text">{{ enquiry.tourId }}</span>
+                            </td>
+                            <td class="col-name">
+                                <div class="name-cell">
+                                    <i class="fas fa-user user-avatar"></i>
+                                    <span class="name-text">{{ enquiry.name }}</span>
+                                </div>
+                            </td>
+                            <td class="col-email">
+                                <span class="email-text">{{ enquiry.email }}</span>
+                            </td>
+                            <td class="col-date">
+                                <span class="date-text">{{ formatDate(enquiry.createdDate) }}</span>
+                                <span class="time-text">{{ formatTime(enquiry.createdDate) }}</span>
+                            </td>
+                            <td class="col-actions">
+                                <button class="btn btn-sm btn-info expand-btn" (click)="toggleExpanded(enquiry)"
+                                    [title]="enquiry.isExpanded ? 'Collapse details' : 'View details'">
+                                    <i class="fas" [class.fa-chevron-down]="!enquiry.isExpanded" 
+                                       [class.fa-chevron-up]="enquiry.isExpanded"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" (click)="deleteEnquiry(enquiry)"
+                                    [disabled]="enquiry.isDeleting" [title]="'Delete enquiry from ' + enquiry.name">
+                                    <i class="fas fa-spinner fa-spin" *ngIf="enquiry.isDeleting"></i>
+                                    <i class="fas fa-trash" *ngIf="!enquiry.isDeleting"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Expanded Details Row -->
+                        <tr *ngIf="enquiry.isExpanded" class="details-row">
+                            <td colspan="6">
+                                <div class="details-content">
+                                    <div class="details-grid">
+                                        <div class="detail-item">
+                                            <label class="detail-label">Phone:</label>
+                                            <span class="detail-value">{{ enquiry.phone || 'Not provided' }}</span>
+                                        </div>
+                                        <div class="detail-item full-width">
+                                            <label class="detail-label">Description:</label>
+                                            <p class="detail-description">{{ enquiry.description || 'No description provided' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Enquiries Message -->
+        <ng-template #noEnquiries>
+            <div class="no-enquiries">
+                <i class="fas fa-question-circle no-enquiries-icon"></i>
+                <h3>No Enquiries Found</h3>
+                <p *ngIf="searchTerm">No enquiries match your search criteria.</p>
+                <p *ngIf="!searchTerm">No enquiries have been received yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredEnquiries.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredEnquiries.length }} enquiries
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the enquiry from:</p>
+            <strong>{{ enquiryToDelete?.name }}</strong>
+            <p class="enquiry-details">{{ enquiryToDelete?.email }} (Tour ID: {{ enquiryToDelete?.tourId }})</p>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete Enquiry
+            </button>
+        </div>
+    </div>
+</div>

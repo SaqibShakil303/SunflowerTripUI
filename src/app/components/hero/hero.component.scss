@@ -1,0 +1,40 @@
+.hero {
+    position: relative; height: 100vh; overflow: hidden;
+    background: var(--dark-color);
+  
+    .layer {
+      position: absolute; inset:0; background-size:cover; background-position:center;
+      &.bg  { background-image: url('/assets/hero/background.png'); z-index:1; }
+      &.mid { background-image: url('/assets/hero/midground.png'); opacity:.8; z-index:2; }
+      &.overlay { z-index:3; pointer-events:none; }
+    }
+  
+    .hero-content {
+      position: relative; z-index:4; display:flex; align-items:center; justify-content:space-between;
+      padding: 0 5%;
+      height:100%;
+  
+      .line { color:#fff; margin:0; }
+      .line-1 { font-size:4rem; opacity:0; }
+      .line-2 { font-size:6rem; opacity:0; }
+      .discover { /* button styling */ }
+  
+      .cards {
+        display:flex; gap:1rem;
+        .card {
+          width:200px; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,.4);
+          img { width:100%; }
+          .card-info { background:rgba(0,0,0,.5); color:#fff; padding:.5rem; }
+        }
+      }
+  
+      .slider-nav {
+        position:absolute; bottom:2%; right:5%;
+        button { background:none; border:none; color:#fff; font-size:2rem; }
+        span  { color:#fff; margin:0 .5rem; }
+      }
+    }
+  }
+  
+  /* responsive tweaks… */
+  

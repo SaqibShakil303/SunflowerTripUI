@@ -1,0 +1,22 @@
+<div class="video-dialog">
+  <h2 mat-dialog-title>Video Player</h2>
+  <mat-dialog-content>
+    <div *ngIf="isYouTubeUrl(data.videoUrl); else directVideo">
+      <iframe
+        [src]="getYouTubeEmbedUrl(data.videoUrl) | safeUrl"
+        class="video-player"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <ng-template #directVideo>
+      <video controls autoplay class="video-player">
+        <source [src]="data.videoUrl" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </ng-template>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</div>

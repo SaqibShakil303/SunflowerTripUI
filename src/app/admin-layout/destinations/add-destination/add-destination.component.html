@@ -1,0 +1,378 @@
+<div class="modal-overlay">
+    <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <i class="fas fa-plus-circle"></i>
+                Add New Destination
+            </h3>
+            <button class="modal-close" (click)="onCancel()" type="button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <form [formGroup]="destinationForm" (ngSubmit)="onSubmit()" class="destination-form">
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Basic Information
+                    </h4>
+    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title" class="form-label">Destination Name *</label>
+                            <input type="text" id="title" formControlName="title" class="form-control"
+                                [class.error]="isFieldInvalid(destinationForm, 'title')" placeholder="Enter destination name">
+                            <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'title')">
+                                {{ getFieldError(destinationForm, 'title') }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="parent_id" class="form-label">Parent Destination</label>
+                            <select id="parent_id" formControlName="parent_id" class="form-control">
+                                <option [ngValue]="null">Choose Continent(Select this to make it a Contient)</option>
+                                <option *ngFor="let continent of continents" [ngValue]="continent.id">
+                                    {{ continent.title }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row single-column">
+                        <div class="form-group">
+                            <label for="best_time_to_visit" class="form-label">Best Time to Visit *</label>
+                            <input type="text" id="best_time_to_visit" formControlName="best_time_to_visit" class="form-control"
+                                [class.error]="isFieldInvalid(destinationForm, 'best_time_to_visit')" placeholder="e.g., April-October">
+                            <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'best_time_to_visit')">
+                                {{ getFieldError(destinationForm, 'best_time_to_visit') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-image"></i>
+                        Image
+                    </h4>
+
+                    <div class="form-group">
+                        <label for="image" class="form-label">Select Image (PNG, JPG, JPEG, WEBP) *</label>
+                        <input type="file" id="image" class="form-control"
+                            accept="image/png,image/jpeg,image/jpg,images/webp" (change)="onImageChange($event, destinationForm, 'destination')"
+                            [class.error]="isFieldInvalid(destinationForm, 'image_url')">
+                        <div class="form-help">Select a PNG, JPG, WEBP ot JPEG image from your device</div>
+                        <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'image_url')">
+                            {{ getFieldError(destinationForm, 'image_url') }}
+                        </div>
+                        <div class="image-preview" *ngIf="imagePreviews['destination']">
+                            <img [src]="imagePreviews['destination']" alt="Preview" class="preview-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-globe"></i>
+                        Destination Details
+                    </h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="weather" class="form-label">Weather/Climate *</label>
+                            <input type="text" id="weather" formControlName="weather" class="form-control"
+                                [class.error]="isFieldInvalid(destinationForm, 'weather')" placeholder="e.g., Tropical, Temperate">
+                            <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'weather')">
+                                {{ getFieldError(destinationForm, 'weather') }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currency" class="form-label">Currency *</label>
+                            <input type="text" id="currency" formControlName="currency" class="form-control"
+                                [class.error]="isFieldInvalid(destinationForm, 'currency')" placeholder="e.g., US Dollar (USD)">
+                            <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'currency')">
+                                {{ getFieldError(destinationForm, 'currency') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time_zone" class="form-label">Time Zone *</label>
+                        <input type="text" id="time_zone" formControlName="time_zone" class="form-control"
+                            [class.error]="isFieldInvalid(destinationForm, 'time_zone')" placeholder="e.g., GMT (UTC+0)">
+                        <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'time_zone')">
+                            {{ getFieldError(destinationForm, 'time_zone') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="language" class="form-label">Language *</label>
+                        <div class="language-input-group">
+                            <input type="text" id="language" [(ngModel)]="languageInput" [ngModelOptions]="{standalone: true}"
+                                class="form-control language-input" placeholder="Enter a language and press Enter"
+                                (keypress)="onLanguageKeyPress($event)">
+                            <button type="button" class="btn btn-sm btn-primary add-language-btn"
+                                (click)="addLanguage()" [disabled]="!languageInput.trim()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div class="languages-list" *ngIf="destinationForm.get('language')?.value">
+                            <span class="language-tag">{{ destinationForm.get('language')?.value }}</span>
+                        </div>
+                        <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'language')">
+                            {{ getFieldError(destinationForm, 'language') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea id="description" formControlName="description" class="form-control form-textarea"
+                            [class.error]="isFieldInvalid(destinationForm, 'description')" placeholder="Describe the destination..."
+                            rows="4"></textarea>
+                        <div class="form-help">
+                            {{ destinationForm.get('description')?.value?.length || 0 }}/500 characters
+                        </div>
+                        <div class="error-message" *ngIf="isFieldInvalid(destinationForm, 'description')">
+                            {{ getFieldError(destinationForm, 'description') }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Locations Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Locations
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addLocation()">
+                        <i class="fas fa-plus"></i> Add Location
+                    </button>
+                    <div *ngFor="let location of locations.controls; let i=index" class="form-subsection" [formGroup]="location">
+                        <h5>Location {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'location-name-' + i" class="form-label">Name *</label>
+                                <input type="text" [attr.id]="'location-name-' + i" formControlName="name" class="form-control"
+                                    [class.error]="isFieldInvalid(location, 'name')" placeholder="Enter location name">
+                                <div class="error-message" *ngIf="isFieldInvalid(location, 'name')">
+                                    {{ getFieldError(location, 'name') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'location-description-' + i" class="form-label">Description *</label>
+                            <textarea [attr.id]="'location-description-' + i" formControlName="description" class="form-control form-textarea"
+                                [class.error]="isFieldInvalid(location, 'description')" placeholder="Describe the location..." rows="3"></textarea>
+                            <div class="error-message" *ngIf="isFieldInvalid(location, 'description')">
+                                {{ getFieldError(location, 'description') }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'location-image-' + i" class="form-label">Image *</label>
+                            <input type="file" [attr.id]="'location-image-' + i" class="form-control"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageChange($event, location, 'locations-' + i)">
+                            <div class="error-message" *ngIf="isFieldInvalid(location, 'image_url')">
+                                {{ getFieldError(location, 'image_url') }}
+                            </div>
+                            <div class="image-preview" *ngIf="imagePreviews['locations-' + i]">
+                                <img [src]="imagePreviews['locations-' + i]" alt="Preview" class="preview-image">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'location-iframe-' + i" class="form-label">360 View URL</label>
+                            <input type="text" [attr.id]="'location-iframe-' + i" formControlName="iframe_360" class="form-control"
+                                placeholder="Enter 360 view URL (optional)">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(locations, i, 'locations')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Attractions Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-landmark"></i>
+                        Attractions
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addAttraction()">
+                        <i class="fas fa-plus"></i> Add Attraction
+                    </button>
+                    <div *ngFor="let attraction of attractions.controls; let i=index" class="form-subsection" [formGroup]="attraction">
+                        <h5>Attraction {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'attraction-title-' + i" class="form-label">Title *</label>
+                                <input type="text" [attr.id]="'attraction-title-' + i" formControlName="title" class="form-control"
+                                    [class.error]="isFieldInvalid(attraction, 'title')" placeholder="Enter attraction title">
+                                <div class="error-message" *ngIf="isFieldInvalid(attraction, 'title')">
+                                    {{ getFieldError(attraction, 'title') }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label [attr.for]="'attraction-rating-' + i" class="form-label">Rating *</label>
+                                <input type="number" [attr.id]="'attraction-rating-' + i" formControlName="rating" class="form-control"
+                                    [class.error]="isFieldInvalid(attraction, 'rating')" placeholder="0-5" min="0" max="5">
+                                <div class="error-message" *ngIf="isFieldInvalid(attraction, 'rating')">
+                                    {{ getFieldError(attraction, 'rating') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'attraction-image-' + i" class="form-label">Image *</label>
+                            <input type="file" [attr.id]="'attraction-image-' + i" class="form-control"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageChange($event, attraction, 'attractions-' + i)">
+                            <div class="error-message" *ngIf="isFieldInvalid(attraction, 'image_url')">
+                                {{ getFieldError(attraction, 'image_url') }}
+                            </div>
+                            <div class="image-preview" *ngIf="imagePreviews['attractions-' + i]">
+                                <img [src]="imagePreviews['attractions-' + i]" alt="Preview" class="preview-image">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'attraction-video-' + i" class="form-label">Video URL</label>
+                            <input type="text" [attr.id]="'attraction-video-' + i" formControlName="video_url" class="form-control"
+                                placeholder="Enter video URL (optional)">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(attractions, i, 'attractions')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ethnicities Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Ethnicities
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addEthnicity()">
+                        <i class="fas fa-plus"></i> Add Ethnicity
+                    </button>
+                    <div *ngFor="let ethnicity of ethnicities.controls; let i=index" class="form-subsection" [formGroup]="ethnicity">
+                        <h5>Ethnicity {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'ethnicity-title-' + i" class="form-label">Title *</label>
+                                <input type="text" [attr.id]="'ethnicity-title-' + i" formControlName="title" class="form-control"
+                                    [class.error]="isFieldInvalid(ethnicity, 'title')" placeholder="Enter ethnicity title">
+                                <div class="error-message" *ngIf="isFieldInvalid(ethnicity, 'title')">
+                                    {{ getFieldError(ethnicity, 'title') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'ethnicity-image-' + i" class="form-label">Image *</label>
+                            <input type="file" [attr.id]="'ethnicity-image-' + i" class="form-control"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageChange($event, ethnicity, 'ethnicities-' + i)">
+                            <div class="error-message" *ngIf="isFieldInvalid(ethnicity, 'image_url')">
+                                {{ getFieldError(ethnicity, 'image_url') }}
+                            </div>
+                            <div class="image-preview" *ngIf="imagePreviews['ethnicities-' + i]">
+                                <img [src]="imagePreviews['ethnicities-' + i]" alt="Preview" class="preview-image">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(ethnicities, i, 'ethnicities')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cuisines Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-utensils"></i>
+                        Cuisines
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addCuisine()">
+                        <i class="fas fa-plus"></i> Add Cuisine
+                    </button>
+                    <div *ngFor="let cuisine of cuisines.controls; let i=index" class="form-subsection" [formGroup]="cuisine">
+                        <h5>Cuisine {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'cuisine-title-' + i" class="form-label">Title *</label>
+                                <input type="text" [attr.id]="'cuisine-title-' + i" formControlName="title" class="form-control"
+                                    [class.error]="isFieldInvalid(cuisine, 'title')" placeholder="Enter cuisine title">
+                                <div class="error-message" *ngIf="isFieldInvalid(cuisine, 'title')">
+                                    {{ getFieldError(cuisine, 'title') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'cuisine-image-' + i" class="form-label">Image *</label>
+                            <input type="file" [attr.id]="'cuisine-image-' + i" class="form-control"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageChange($event, cuisine, 'cuisines-' + i)">
+                            <div class="error-message" *ngIf="isFieldInvalid(cuisine, 'image_url')">
+                                {{ getFieldError(cuisine, 'image_url') }}
+                            </div>
+                            <div class="image-preview" *ngIf="imagePreviews['cuisines-' + i]">
+                                <img [src]="imagePreviews['cuisines-' + i]" alt="Preview" class="preview-image">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(cuisines, i, 'cuisines')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Activities Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-hiking"></i>
+                        Activities
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addActivity()">
+                        <i class="fas fa-plus"></i> Add Activity
+                    </button>
+                    <div *ngFor="let activity of activities.controls; let i=index" class="form-subsection" [formGroup]="activity">
+                        <h5>Activity {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'activity-title-' + i" class="form-label">Title *</label>
+                                <input type="text" [attr.id]="'activity-title-' + i" formControlName="title" class="form-control"
+                                    [class.error]="isFieldInvalid(activity, 'title')" placeholder="Enter activity title">
+                                <div class="error-message" *ngIf="isFieldInvalid(activity, 'title')">
+                                    {{ getFieldError(activity, 'title') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'activity-image-' + i" class="form-label">Image *</label>
+                            <input type="file" [attr.id]="'activity-image-' + i" class="form-control"
+                                accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageChange($event, activity, 'activities-' + i)">
+                            <div class="error-message" *ngIf="isFieldInvalid(activity, 'image_url')">
+                                {{ getFieldError(activity, 'image_url') }}
+                            </div>
+                            <div class="image-preview" *ngIf="imagePreviews['activities-' + i]">
+                                <img [src]="imagePreviews['activities-' + i]" alt="Preview" class="preview-image">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(activities, i, 'activities')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isSubmitting">
+                Cancel
+            </button>
+            <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="isSubmitting">
+                <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+                <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
+                {{ isSubmitting ? 'Adding...' : 'Add Destination' }}
+            </button>
+        </div>
+    </div>
+</div>

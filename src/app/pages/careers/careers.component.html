@@ -1,0 +1,329 @@
+<!-- <div class="container">
+  <h1 class="page-title">Careers at Sunflower Trip</h1>
+  <p class="page-subtitle">Join our team and help us create unforgettable travel experiences.</p>
+</div> -->
+
+<app-navbar></app-navbar>
+<div class="careers-page">
+
+
+<!-- <section class="intro glass-section">
+  <div class="container">
+    <h1>Adventure begins at Sunflower Trip</h1>
+    <p>Be a part of a dynamic team redefining travel experiences.</p>
+  </div>
+</section>
+
+<section class="values glass-section">
+  <div class="container">
+    <h2>Our Values</h2>
+    <ul>
+      <li>Customer Obsession</li>
+      <li>Integrity & Transparency</li>
+      <li>Innovation & Creativity</li>
+    </ul>
+  </div>
+</section>
+
+<section class="deib glass-section">
+  <div class="container">
+    <h2>DEIB at Sunflower Trip</h2>
+    <p>We are committed to <strong>D</strong>iversity, <strong>E</strong>quity, <strong>I</strong>nclusion & <strong>B</strong>elonging across our global team.</p>
+  </div>
+</section>
+
+<section class="teams glass-section">
+  <div class="container">
+    <h2>Teams</h2>
+    <p>Collaborate across functions: Product, Marketing, Operations, Customer Experience, and more.</p>
+  </div>
+</section>
+
+<section class="perks glass-section">
+  <div class="container">
+    <h2>Global Perks</h2>
+    <ul>
+      <li>Flexible Work & Remote Options</li>
+      <li>Comprehensive Health Benefits</li>
+      <li>Learning & Development Stipends</li>
+      <li>Travel Discounts & Opportunities</li>
+    </ul>
+  </div>
+</section>
+
+<app-job-list
+  [jobs]="jobs"
+  (selectJob)="onSelect($event)">
+</app-job-list>
+
+<app-job-details
+  *ngIf="selectedJob"
+  [job]="selectedJob">
+</app-job-details> -->
+<section class="hero glass-section">
+  <div class="container text-center">
+    <h1>Your Journey With <span class="accent-text">Sunflower Trip</span> Begins Here</h1>
+    <p class="hero-subtitle">Join our passionate team of travel enthusiasts and help people create memories that last a lifetime</p>
+    <a href="#open-positions" class="btn pulse-animation">Explore Opportunities</a>
+    
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">30+</span>
+        <span class="stat-text">Countries</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">500K+</span>
+        <span class="stat-text">Happy Travelers</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">200+</span>
+        <span class="stat-text">Team Members</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Our Mission Section -->
+<section class="mission glass-section">
+  <div class="container">
+    <div class="two-columns">
+      <div class="mission-content">
+        <h2>Our <span class="accent-text">Mission</span></h2>
+        <p>At Sunflower Trip, we're on a mission to transform how the world experiences travel. We believe that meaningful journeys create deeper connections and understanding between people and cultures.</p>
+        <p>As a rapidly growing travel technology company, we're looking for passionate individuals who share our vision to make authentic travel experiences accessible to everyone.</p>
+        <div class="mission-values">
+          <div class="value-item">
+            <i class="value-icon">🌍</i>
+            <span>Cultural Connection</span>
+          </div>
+          <div class="value-item">
+            <i class="value-icon">🌱</i>
+            <span>Sustainable Tourism</span>
+          </div>
+          <div class="value-item">
+            <i class="value-icon">💡</i>
+            <span>Innovation</span>
+          </div>
+        </div>
+      </div>
+      <div class="mission-image">
+         <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80" alt="Team working together" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Join Us Section -->
+<section class="why-join glass-section">
+  <div class="container text-center mb-4">
+    <h2>Why Join <span class="accent-text">Sunflower Trip</span>?</h2>
+    <p>Become part of a global team that's passionate about travel and technology</p>
+  </div>
+  
+  <div class="benefits-grid container">
+    <div class="benefit-card">
+      <div class="benefit-icon">✈️</div>
+      <h3>Travel Perks</h3>
+      <p>Generous travel allowances and discounts on our packages to explore the world</p>
+    </div>
+    
+    <div class="benefit-card">
+      <div class="benefit-icon">🌐</div>
+      <h3>Remote-First Culture</h3>
+      <p>Work from anywhere with our flexible remote work policy</p>
+    </div>
+    
+    <div class="benefit-card">
+      <div class="benefit-icon">📈</div>
+      <h3>Growth Opportunities</h3>
+      <p>Clear career paths and professional development programs</p>
+    </div>
+    
+    <div class="benefit-card">
+      <div class="benefit-icon">🧠</div>
+      <h3>Learning Budget</h3>
+      <p>Annual learning stipend for courses, books, and conferences</p>
+    </div>
+    
+    <div class="benefit-card">
+      <div class="benefit-icon">🏝️</div>
+      <h3>Unlimited PTO</h3>
+      <p>Take the time you need to recharge and explore</p>
+    </div>
+    
+    <div class="benefit-card">
+      <div class="benefit-icon">🏥</div>
+      <h3>Comprehensive Benefits</h3>
+      <p>Health, dental, vision, and wellness programs</p>
+    </div>
+  </div>
+</section>
+
+<!-- Our Teams Section -->
+<section class="teams glass-section">
+  <div class="container">
+    <h2 class="text-center mb-4">Our <span class="accent-text">Teams</span></h2>
+    
+    <div class="teams-slider">
+      <div class="team-card">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Product Team" />
+        <h3>Product & Engineering</h3>
+        <p>Build the technology that powers memorable travel experiences for millions</p>
+      </div>
+      
+      <div class="team-card">
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Marketing Team" />
+        <h3>Marketing & Content</h3>
+        <p>Inspire travelers with compelling stories and creative campaigns</p>
+      </div>
+      
+      <div class="team-card">
+          <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1102&q=80" alt="Customer Experience Team" />
+        <h3>Customer Experience</h3>
+        <p>Create exceptional support journeys for travelers around the globe</p>
+      </div>
+      
+      <div class="team-card">
+ <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Local Operations Team" />
+        <h3>Local Operations</h3>
+        <p>Coordinate with partners to deliver seamless experiences on the ground</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Diversity & Inclusion Section -->
+<section class="diversity glass-section">
+  <div class="container">
+    <div class="two-columns">
+      <div class="diversity-image">
+ <img src="assets\images\gallerea\austria-2.jpg" alt="Diverse team members" />
+      </div>
+      <div class="diversity-content">
+        <h2><span class="accent-text">DEIB</span> at Sunflower Trip</h2>
+        <p>We believe that diversity of thought, background, and experience makes us stronger. Our commitment to Diversity, Equity, Inclusion & Belonging is embedded in everything we do.</p>
+        <p>As a global company connecting cultures, we strive to build a team that reflects the diversity of the world we serve.</p>
+        <div class="diversity-stats">
+          <div class="stat-item">
+            <span class="stat-percent">45%</span>
+            <span class="stat-label">Women in Leadership</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-percent">30+</span>
+            <span class="stat-label">Nationalities</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-percent">100%</span>
+            <span class="stat-label">Pay Equity</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Open Positions Section -->
+<section id="open-positions" class="positions glass-section">
+  <div class="container">
+    <h2 class="text-center mb-4">Open <span class="accent-text">Positions</span></h2>
+    
+    <div class="filter-controls">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="product">Product & Engineering</button>
+      <button class="filter-btn" data-filter="marketing">Marketing</button>
+      <button class="filter-btn" data-filter="operations">Operations</button>
+      <button class="filter-btn" data-filter="customer">Customer Experience</button>
+    </div>
+    
+    <app-job-list
+      [jobs]="jobs"
+      (selectJob)="onSelect($event)">
+    </app-job-list>
+    
+    <app-job-details
+      *ngIf="selectedJob"
+      [job]="selectedJob">
+    </app-job-details>
+  </div>
+</section>
+
+<!-- Employee Stories Section -->
+<!-- <section class="stories glass-section">
+  <div class="container">
+    <h2 class="text-center mb-4">Life at <span class="accent-text">Sunflower Trip</span></h2>
+    
+    <div class="stories-grid">
+      <div class="story-card">
+        <div class="story-image">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80" alt="Employee Sarah" />
+        </div>
+        <div class="story-content">
+          <h3>Sarah, Tour Experience Designer</h3>
+          <p>"Joining Sunflower Trip was the best career decision I've made. I've been able to combine my passion for cultural anthropology with creating authentic travel experiences."</p>
+        </div>
+      </div>
+      
+      <div class="story-card">
+        <div class="story-image">
+           <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80" alt="Employee Miguel" />
+        </div>
+        <div class="story-content">
+          <h3>Miguel, Full-Stack Developer</h3>
+          <p>"Working remotely while building technology that helps people explore the world is incredibly fulfilling. Our team is distributed but feels closer than any office I've worked in."</p>
+        </div>
+      </div>
+      
+      <div class="story-card">
+        <div class="story-image">
+         <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=388&q=80" alt="Employee Priya" />
+        </div>
+        <div class="story-content">
+          <h3>Priya, Regional Operations Manager</h3>
+          <p>"The growth opportunities at Sunflower Trip are unmatched. I started as a local guide coordinator and within three years moved into managing our APAC operations."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- Application Process Section -->
+<section class="process glass-section">
+  <div class="container">
+    <h2 class="text-center mb-4">Our <span class="accent-text">Application Process</span></h2>
+    
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-number">1</div>
+        <h3>Application Review</h3>
+        <p>Submit your application and our team will review your qualifications</p>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">2</div>
+        <h3>Initial Interview</h3>
+        <p>Get to know our team and tell us about your experience and passion</p>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">3</div>
+        <h3>Skills Assessment</h3>
+        <p>Show us your skills through practical, role-specific assessments</p>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">4</div>
+        <h3>Team Interview</h3>
+        <p>Meet potential teammates and learn more about your future role</p>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">5</div>
+        <h3>Offer & Welcome</h3>
+        <p>Receive your offer and join our global team of travel enthusiasts</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<app-chat-widget></app-chat-widget>
+<app-footer></app-footer>

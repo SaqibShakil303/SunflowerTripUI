@@ -1,0 +1,24 @@
+<section class="why-us-section">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="section-title text-center">
+      <h2>Why Choose Sunflower Trip?</h2>
+      <p>Discover what sets us apart as your Kolkata-based travel partner</p>
+    </div>
+
+    <div class="swiper whyus-slider" #swiperContainer>
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let item of whyUsItems; let i = index">
+          <div class="whyus-card fade-in-up" [style.--delay]="i">
+            <i [ngClass]="item.icon"></i>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section>

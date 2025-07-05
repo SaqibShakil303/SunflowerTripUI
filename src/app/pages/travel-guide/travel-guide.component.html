@@ -1,0 +1,107 @@
+<!-- travel-guide.component.html -->
+<section class="travel-guide">
+  <app-navbar></app-navbar>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Explore the World with Confidence</h1>
+      <p>Your comprehensive guide to unforgettable journeys with personalized experiences.</p>
+      <div class="search-bar">
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search destinations, activities, or guides...">
+        <button class="search-btn" (click)="searchDestinations()">Search</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- Featured Destinations -->
+    <section class="featured-destinations">
+      <div class="section-title">
+        <h2>Popular Destinations</h2>
+      </div>
+      <div class="destinations-grid">
+        <div class="destination-card" *ngFor="let destination of featuredDestinations">
+          <div class="destination-img">
+            <img [src]="destination.image" [alt]="destination.name">
+            <div class="destination-tag">{{ destination.tag }}</div>
+          </div>
+          <div class="destination-content">
+            <h3>{{ destination.name }}</h3>
+            <p>{{ destination.description }}</p>
+            <div class="destination-meta">
+              <div class="destination-rating">
+                <span>★★★★★</span> {{ destination.rating }}
+              </div>
+              <div>{{ destination.duration }}</div>
+            </div>
+            <a href="javascript:void(0)" class="view-btn" (click)="exploreDestination(destination)">Explore Destination</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Travel Tips and FAQs -->
+    <div class="travel-content">
+      <div class="travel-tips">
+        <h2>Travel Tips & Articles</h2>
+        
+        <div class="tip-card" *ngFor="let tip of travelTips">
+          <div class="tip-img">
+            <img [src]="tip.image" [alt]="tip.title">
+          </div>
+          <div class="tip-content">
+            <h3>{{ tip.title }}</h3>
+            <div class="tip-meta">
+              <span>{{ tip.date }}</span>
+              <span>{{ tip.readTime }}</span>
+            </div>
+            <p>{{ tip.summary }}</p>
+            <a href="javascript:void(0)" class="read-more" (click)="readArticle(tip)">Read More</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="faqs">
+        <h2>Frequently Asked Questions</h2>
+        
+        <div class="faq-item" *ngFor="let faq of faqs" [class.active]="faq.isOpen">
+          <div class="faq-question" (click)="toggleFaq(faq)">{{ faq.question }}</div>
+          <div class="faq-answer">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2>Ready for Your Next Adventure?</h2>
+        <p>Let our travel experts help you plan the perfect getaway tailored to your preferences and budget. Enjoy exclusive deals and personalized service.</p>
+        <a href="javascript:void(0)" class="cta-btn" (click)="planTrip()">Plan Your Trip Now</a>
+      </div>
+    </section>
+
+    <!-- Popular Search Tags -->
+    <div class="search-tags">
+      <h3>Popular Searches</h3>
+      <div class="tags">
+        <div class="tag" *ngFor="let tag of popularTags" (click)="searchByTag(tag)">{{ tag }}</div>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="newsletter">
+      <h3>Stay Updated</h3>
+      <p>Subscribe to our newsletter for exclusive travel deals, insider tips, and destination inspiration.</p>
+      <div class="newsletter-form">
+        <input type="email" [(ngModel)]="emailSubscribe" placeholder="Enter your email address">
+        <button class="newsletter-btn" (click)="subscribeNewsletter()">Subscribe</button>
+      </div>
+    </div>
+  </div>
+<app-chat-widget></app-chat-widget>
+  <app-footer></app-footer>
+</section>

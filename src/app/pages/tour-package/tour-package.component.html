@@ -1,0 +1,38 @@
+<app-navbar></app-navbar>
+<div class="tour-page">
+  <section class="tour-hero" [ngStyle]="{'background-image': 'url(/assets/hero/island.jpg)'}">
+    <div class="overlay"></div>
+    <div class="hero-content container">
+      <h1 class="title">Explore the Places<br>One Adventure at a Time</h1>
+      <p class="subtitle">Hand-picked tours across continents for every kind of traveler.</p>
+    </div>
+  </section>
+
+  <section class="tour-filter-section">
+    <app-tour-filter (searchTriggered)="handleSearch($event)"></app-tour-filter>
+  </section>
+
+  <div *ngIf="loading" class="loading">Loading tours...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading && !error && tours.length === 0" class="no-tours">No tours found matching your filters.</div>
+
+  <div *ngIf="!loading && !error && tours.length > 0" class="tours-grid">
+    <div *ngFor="let tour of tours" class="tour-card">
+      <img [src]="tour.image_url" alt="{{ tour.title }}" class="tour-image" />
+      <div class="tour-info">
+        <h3 class="tour-title">{{ tour.title }}</h3>
+        <p class="tour-description">{{ tour.description | slice:0:100 }}...</p>
+        <div class="tour-meta">
+          <span>{{ tour.duration_days }} Days</span>
+          <span>₹{{ tour.price }}</span>
+        </div>
+        <button class="btn-detail" (click)="goToTourDetail(tour.slug)">View Tour</button>
+      </div>
+    </div>
+  </div>
+
+  <app-testimonials></app-testimonials>
+  <app-faq></app-faq>
+  <app-chat-widget></app-chat-widget>
+  <app-footer></app-footer>
+</div>

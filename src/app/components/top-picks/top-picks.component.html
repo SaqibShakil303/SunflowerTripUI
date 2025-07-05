@@ -1,0 +1,18 @@
+<section class="section destinations" >
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>Top Picks from Kolkata</h2>
+        <p>Popular destinations easily accessible from Kolkata</p>
+      </div>
+      <div class="destinations-grid">
+        <div class="destination-card" *ngFor="let pick of topPicks; let i = index" [attr.data-aos]="i % 2 === 0 ? 'fade-up' : 'fade-up'" [attr.data-aos-delay]="100 + i * 100">
+          <img [src]="pick.image" [alt]="pick.title">
+          <div class="destination-content">
+            <h3>{{ pick.title }}</h3>
+            <p>{{ pick.description }}</p>
+            <a href="#" class="read-more">Explore {{ pick.title.split(',')[0] }} <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

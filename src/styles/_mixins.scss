@@ -1,0 +1,51 @@
+// Update the gradient-overlay mixin to accept 4 parameters
+@mixin gradient-overlay($direction: to top, $start-color: rgba(0, 77, 64, 0.9), $middle-color: null, $end-color: transparent) {
+    background: if($middle-color == null, 
+      linear-gradient($direction, $start-color, $end-color),
+      linear-gradient($direction, $start-color, $middle-color, $end-color)
+    );
+  }
+  
+  // Your other mixins
+  @mixin responsive-card() {
+    width: 100%;
+    height: 400px;
+    
+    @media (max-width: 992px) {
+      height: 350px;
+    }
+    
+    @media (max-width: 576px) {
+      height: 300px;
+    }
+  }
+  
+  @mixin glassmorphism($opacity: 0.1, $blur: 5px) {
+    background: rgba(255, 255, 255, $opacity);
+    backdrop-filter: blur($blur);
+  }
+
+
+  @mixin glass-card($bg-opacity: 0.1, $blur: 12px, $border-opacity: 0.2) {
+    background: rgba(255, 255, 255, $bg-opacity);
+    backdrop-filter: blur($blur);
+    border: 1px solid rgba(255, 255, 255, $border-opacity);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  @mixin responsive-padding {
+    padding: 60px 20px;
+  
+    @media (max-width: 768px) {
+      padding: 40px 15px;
+    }
+  }
+
+  // @mixin glassmorphism {
+  //   background: $glass-bg;
+  //   backdrop-filter: $glass-blur;
+  //   -webkit-backdrop-filter: $glass-blur;
+  //   border: 1px solid rgba(255, 255, 255, 0.2);
+  //   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  // }
+  

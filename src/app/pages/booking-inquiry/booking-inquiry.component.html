@@ -1,0 +1,12 @@
+<form (ngSubmit)="submitForm()" #bookingForm="">
+    <input type="text" name="fullName" ngModel required placeholder="Full Name" />
+    <input type="email" name="email" ngModel required placeholder="Email" />
+    <input type="date" name="startDate" ngModel required />
+    <select name="package" ngModel required>
+      <option *ngFor="let pkg of packages" [value]="pkg">{{ pkg }}</option>
+    </select>
+    <textarea name="message" ngModel placeholder="Any message or question?"></textarea>
+    <button type="submit" >Submit</button>
+    <!-- [disabled]="!bookingForm.valid" -->
+  </form>
+  

@@ -1,0 +1,22 @@
+<!-- custom-planner.component.html -->
+<div class="custom-planner">
+  <section class="hero">
+    <div class="overlay"></div>
+    <div class="content">
+      <div class="text-block">
+        <h1 class="headline">Your Adventure Awaits</h1>
+        <p class="subhead">
+          Scan the QR code or click below to build a tailor-made journey—  
+          from hidden gems to bucket-list experiences.
+        </p>
+        <button mat-raised-button color="accent" class="plan-btn" (click)="openTripPlanner()">
+          Plan My Trip
+        </button>
+      </div>
+      <div class="qr-block">
+        <img src="assets/images/qr-customize.jpg" alt="Scan to customize trip" class="qr-image" />
+        <p class="qr-text">Scan to Customize</p>
+      </div>
+    </div>
+  </section>
+</div>

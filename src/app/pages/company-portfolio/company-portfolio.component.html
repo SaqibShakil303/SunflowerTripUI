@@ -1,0 +1,178 @@
+<div class="company-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&h=800&fit=crop" 
+           alt="Beautiful travel destination" class="hero-image">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="sunflower-icon">🌻</span>
+          Sunflower Trip
+        </h1>
+        <h2 class="hero-subtitle">Your Gateway to Extraordinary Adventures</h2>
+        <p class="hero-description">
+          Transform your travel dreams into unforgettable memories with our expertly crafted journeys 
+          to the world's most breathtaking destinations
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary cta-button" (click)="viewPortfolio()">
+            <span class="btn-icon">📄</span>
+            View Our Portfolio
+          </button>
+          <a class="btn btn-secondary download-button" [href]="pdfSrc" download>
+            <span class="btn-icon">⬇️</span>
+            Download Portfolio
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item" *ngFor="let stat of stats">
+          <div class="stat-number">{{stat.number}}</div>
+          <div class="stat-label">{{stat.label}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Destinations -->
+  <section class="destinations-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Featured Destinations</h2>
+        <p>Discover the world's most captivating places with our curated travel experiences</p>
+      </div>
+      <div class="destinations-grid">
+        <div class="destination-card" *ngFor="let destination of featuredDestinations">
+          <div class="card-image-container">
+            <img [src]="destination.image" [alt]="destination.name" class="destination-image">
+            <!-- <div class="price-badge">{{destination.price}}</div> -->
+          </div>
+          <div class="card-content">
+            <h3>{{destination.name}}</h3>
+            <p>{{destination.description}}</p>
+            <button class="btn btn-outline learn-more-btn">
+              Learn More
+              <span class="btn-icon">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Premium Services</h2>
+        <p>Everything you need for the perfect journey, all in one place</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card" *ngFor="let service of services">
+          <div class="service-icon">
+            <span class="icon">{{getServiceIcon(service.icon)}}</span>
+          </div>
+          <h3>{{service.title}}</h3>
+          <p>{{service.description}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Company Info Section -->
+  <section class="company-info-section">
+    <div class="container">
+      <div class="info-content">
+        <div class="info-text">
+          <h2>About Sunflower Trip</h2>
+          <p class="lead">
+            For over a decade, Sunflower Trip has been turning travel dreams into reality. 
+            We believe that every journey should be as unique as the traveler embarking on it.
+          </p>
+          <div class="info-details">
+            <div class="detail-item">
+              <span class="detail-icon">✓</span>
+              <div>
+                <h4>Trusted Excellence</h4>
+                <p>Licensed and certified travel professionals with industry recognition</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🎧</span>
+              <div>
+                <h4>24/7 Support</h4>
+                <p>Round-the-clock assistance wherever your journey takes you</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">⭐</span>
+              <div>
+                <h4>Personalized Service</h4>
+                <p>Tailored itineraries crafted specifically for your preferences</p>
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-primary portfolio-btn" (click)="viewPortfolio()">
+              <span class="btn-icon">📁</span>
+              View Complete Portfolio
+            </button>
+            <a class="btn btn-outline download-btn" [href]="pdfSrc" download>
+              <span class="btn-icon">⬇️</span>
+              Download Portfolio PDF
+            </a>
+          </div>
+        </div>
+        <div class="info-image">
+          <img src="assets/hero/travel-planning.png" 
+               alt="Travel planning" class="about-image">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="cta-background">
+      <img src="assets/hero/adventure-awaits.png" 
+           alt="Adventure awaits" class="cta-image">
+      <div class="cta-overlay"></div>
+    </div>
+    <div class="cta-content">
+      <h2>Ready to Start Your Adventure?</h2>
+      <p>Let our travel experts create the perfect journey just for you</p>
+      <div class="cta-buttons">
+        <button class="btn btn-accent contact-btn">
+          <span class="btn-icon">📞</span>
+          Contact Us Today
+        </button>
+        <button class="btn btn-outline-light quote-btn">
+          <span class="btn-icon">💬</span>
+          Get Free Quote
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PDF Viewer Modal -->
+  <div class="pdf-viewer-overlay" *ngIf="isPdfVisible" (click)="closeViewer()">
+    <div class="pdf-viewer" (click)="$event.stopPropagation()">
+      <div class="viewer-header">
+        <h3>Sunflower Trip Portfolio</h3>
+        <button class="close-btn" (click)="closeViewer()">
+          <span class="close-icon">✕</span>
+        </button>
+      </div>
+      <iframe [src]="safePdfSrc" frameborder="0"></iframe>
+    </div>
+  </div>
+</div>

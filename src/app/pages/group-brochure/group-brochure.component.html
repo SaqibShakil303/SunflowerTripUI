@@ -1,0 +1,42 @@
+  <section class="hero-section">
+    <div class="hero-background">
+      <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&h=800&fit=crop" 
+           alt="Beautiful travel destination" class="hero-image">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="sunflower-icon">🌻</span>
+          Sunflower Trip
+        </h1>
+        <h2 class="hero-subtitle">Your Gateway to Extraordinary Adventures</h2>
+        <p class="hero-description">
+          Transform your travel dreams into unforgettable memories with our expertly crafted journeys 
+          to the world's most breathtaking destinations
+        </p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary cta-button" (click)="viewBrochure()">
+            <span class="btn-icon">📄</span>
+            View Our group Brochure
+          </button>
+          <a class="btn btn-secondary download-button" [href]="pdfSrc" download>
+            <span class="btn-icon">⬇️</span>
+            Download group brochure
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pdf-viewer-overlay" *ngIf="isPdfVisible" (click)="closeViewer()">
+    <div class="pdf-viewer" (click)="$event.stopPropagation()">
+      <div class="viewer-header">
+        <h3>Sunflower Trip Portfolio</h3>
+        <button class="close-btn" (click)="closeViewer()">
+          <span class="close-icon">✕</span>
+        </button>
+      </div>
+      <iframe [src]="safePdfSrc" frameborder="0"></iframe>
+    </div>
+  </div>

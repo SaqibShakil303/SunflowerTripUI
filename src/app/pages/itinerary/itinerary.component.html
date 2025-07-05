@@ -1,0 +1,121 @@
+<app-navbar></app-navbar>
+
+<section class="section itinerary" id="itinerary">
+  <div class="container">
+    <div class="section-title">
+      <h2>Design Your Dream Trip</h2>
+      <p>Share your vision, and we’ll craft a personalized itinerary just for you</p>
+    </div>
+    <div class="form-wrapper" [@fadeInUp]>
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+<div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+      <form [formGroup]="itineraryForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input id="name" type="text" formControlName="name" placeholder="enter your name" />
+            <span class="error" *ngIf="itineraryForm.get('name')?.invalid && (itineraryForm.get('name')?.touched || isSubmitted)">
+    {{ itineraryForm.get('name')?.hasError('required') ? 'Name is required' : '' }}
+  </span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" formControlName="email" placeholder="enter your name@example.com" />
+          <span class="error" *ngIf="itineraryForm.get('email')?.invalid && (itineraryForm.get('email')?.touched || isSubmitted)">
+    {{ itineraryForm.get('email')?.hasError('required') ? 'Email is required' : 'Invalid email' }}
+  </span>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="tel" formControlName="phone" placeholder="+91 your number" />
+             <span class="error" *ngIf="itineraryForm.get('phone')?.invalid && (itineraryForm.get('[phone]')?.touched || isSubmitted)">
+    {{ itineraryForm.get('phone')?.hasError('required') ? 'phone number is required' : 'Invalid phone' }}
+  </span>
+          </div>
+          <div class="form-group">
+            <label for="destination">Preferred Destination</label>
+            <input id="destination" type="text" formControlName="destination" placeholder="e.g., Paris, Europe" />
+          </div>
+          <div class="form-group">
+            <label for="travelers">Number of Travelers</label>
+            <input id="travelers" type="number" formControlName="travelers" min="1" />
+          </div>
+        <div class="form-group">
+  <label for="children">Number of Children</label>
+  <input id="children" type="number" formControlName="children" min="0" />
+</div>
+
+<div class="child-ages-wrapper" *ngIf="childAges.length > 0">
+  <label class="block-label">Enter Children's Ages</label>
+  <div class="child-ages" formArrayName="childAges">
+    <ng-container *ngFor="let ctrl of childAges.controls; let i = index">
+      <div class="form-group">
+        <label [for]="'childAge' + i">Child {{ i + 1 }} Age</label>
+        <input [id]="'childAge' + i" type="number" [formControlName]="i" placeholder="e.g., 5" />
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+          <div class="form-group">
+            <label for="duration">Trip Duration (Days)</label>
+            <input id="duration" type="number" formControlName="duration" min="1" />
+          </div>
+          <div class="form-group">
+            <label for="date">Tentative Travel Date</label>
+            <input id="date" type="date" formControlName="date" />
+          </div>
+          <div class="form-group">
+            <label for="budget">Budget Range (INR)</label>
+            <select id="budget" formControlName="budget">
+              <option value="" disabled>Select Budget</option>
+              <!-- <option value="25000-50000">₹25k–50k</option> -->
+              <option value="50000-100000">₹50k–1L</option>
+              <option value="100000-300000">₹1L–3L</option>
+              <option value="300000+">₹3L+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="hotelCategory">Hotel Category</label>
+            <select id="hotelCategory" formControlName="hotelCategory">
+              <option value="" disabled>Select Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="5">5 Stars</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="travelType">Travel Type</label>
+            <select id="travelType" formControlName="travelType">
+              <option value="" disabled>Select Type</option>
+              <!-- <option value="honeymoon">Honeymoon</option> -->
+              <option value="customized">Customized</option>
+              <option value="group">Group</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="occupation">Occupation</label>
+            <select id="occupation" formControlName="occupation">
+              <option value="" disabled>Select Occupation</option>
+              <option value="govt-service">Govt. Service</option>
+                <option value="private-service">Private Service</option>
+              <option value="business">Business</option>
+              <option value="others">Others</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group preferences">
+          <label for="preferences">Any special request</label>
+          <textarea id="preferences" formControlName="preferences" rows="4" placeholder="Interests, accommodation, dietary needs..."></textarea>
+        </div>
+
+        <div class="submit-btn">
+          <button type="submit" [disabled]="itineraryForm.invalid || isLoading">{{ isLoading ? 'Submitting...' : 'Submit Your Plan' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<app-chat-widget></app-chat-widget>
+<app-footer></app-footer>

@@ -1,0 +1,20 @@
+<section class="section services" id="services">
+  <div class="container">
+    <div class="section-title text-center">
+      <h2>Our Signature Services</h2>
+      <p>Tailored travel solutions for your dream vacation</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services; let i = index" [attr.data-aos]="i % 2 === 0 ? 'fade-up' : 'fade-up'" [attr.data-aos-delay]="100 + i * 100">
+        <div class="service-image">
+          <img [src]="service.image" [alt]="service.title">
+        </div>
+        <div class="service-content">
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.description }}</p>
+          <a [routerLink]="service.link" class="btn btn-service ">{{ service.title === 'Custom Itineraries' ? 'Plan Your Trip' : 'Explore Tours' }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

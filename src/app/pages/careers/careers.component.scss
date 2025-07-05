@@ -1,0 +1,578 @@
+// .intro {
+//   padding: 4rem 0;
+//   text-align: center;
+
+//   .container {
+//     max-width: 800px;
+//     margin: 0 auto;
+//     h1 {
+//       color: #00e6d0;
+//       font-size: 2.5rem;
+//       margin-bottom: 0.5rem;
+//     }
+//     p {
+//       color: #ddd;
+//       font-size: 1.2rem;
+//     }
+//   }
+// }
+
+// .values,
+// .deib,
+// .teams,
+// .perks {
+//   padding: 4rem 0;
+//   background: rgba(255, 255, 255, 0.05);
+
+//   .container {
+//     max-width: 800px;
+//     margin: 0 auto;
+//     h2 {
+//       color: #00e6d0;
+//       font-size: 2rem;
+//       margin-bottom: 1rem;
+//     }
+//     p,
+//     ul {
+//       color: #ccc;
+//       font-size: 1rem;
+//       line-height: 1.6;
+//     }
+//     ul {
+//       list-style: disc inside;
+//       padding-left: 1rem;
+//     }
+//   }
+// }
+
+// .intro,
+// .life-at {
+//   padding: 4rem 0;
+//   text-align: center;
+//   .container {
+//     max-width: 800px;
+//     margin: 0 auto;
+//     h1, h2 { color: #00e6d0; }
+//     p { color: #ddd; }
+//   }
+// }
+.careers-page {
+  min-height: 100vh;
+  background: 
+    // linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url('/assets/images/gallerea/jordan-4.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+  
+  .glass-section {
+    background: rgba(135, 148, 161, 0.65);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    padding: 3rem;
+    margin: 2rem auto;
+    box-shadow: 0 8px 32px rgba(0, 230, 208, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .glass-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(0, 230, 208, 0.2);
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #00e6d0, #00a19c);
+    color: #fff;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 230, 208, 0.3);
+  }
+  
+  .btn:hover {
+    background: linear-gradient(135deg, #00a19c, #00e6d0);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 230, 208, 0.4);
+  }
+  
+  h1, h2, h3 {
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  
+  .accent-text {
+    color: #00e6d0;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .mb-4 {
+    margin-bottom: 2.5rem;
+  }
+  
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+
+   .hero {
+    padding: 5rem 0;
+    text-align: center;
+  }
+  
+  .hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.3rem;
+    color: #ddd;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+  }
+  
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+  
+  .hero-stats .stat {
+    margin: 0 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #00e6d0;
+  }
+  
+  .stat-text {
+    font-size: 1rem;
+    color: #ddd;
+  }
+  
+  /* Two Columns Layout */
+  .two-columns {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+  
+  .two-columns > div {
+    flex: 1;
+  }
+  
+  /* Mission Section */
+  .mission-values {
+    display: flex;
+    margin-top: 2rem;
+  }
+  
+  .value-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 2rem;
+  }
+  
+  .value-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Benefits Grid */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .benefit-card {
+    background: rgba(0, 44, 81, 0.4);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .benefit-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .benefit-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Teams Slider */
+  .teams-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+  
+  .team-card {
+    min-width: 350px;
+    background: rgba(0, 44, 81, 0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  
+  .team-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .team-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .team-card h3 {
+    padding: 1rem 1.5rem 0.5rem;
+    color: #00e6d0;
+  }
+  
+  .team-card p {
+    padding: 0 1.5rem 1.5rem;
+    color: #ddd;
+  }
+  
+  /* Diversity Stats */
+  .diversity-stats {
+    display: flex;
+    margin-top: 2rem;
+  }
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+  }
+  
+  .stat-percent {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00e6d0;
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    color: #ddd;
+  }
+  
+  /* Filter Controls */
+  .filter-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .filter-btn {
+    background: rgba(0, 44, 81, 0.4);
+    border: 1px solid rgba(0, 230, 208, 0.3);
+    color: #ddd;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-btn.active, .filter-btn:hover {
+    background: rgba(0, 230, 208, 0.2);
+    color: #00e6d0;
+    border-color: #00e6d0;
+  }
+  
+  /* Stories Grid */
+  .stories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .story-card {
+    background: rgba(0, 44, 81, 0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  
+  .story-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .story-image img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+  }
+  
+  .story-content {
+    padding: 1.5rem;
+  }
+  
+  .story-content h3 {
+    color: #00e6d0;
+    margin-bottom: 1rem;
+  }
+  
+  /* Process Steps */
+  .process-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    right: 50px;
+    height: 2px;
+    background: rgba(0, 230, 208, 0.5);
+    z-index: 0;
+  }
+  
+  .process-step {
+    position: relative;
+    text-align: center;
+    z-index: 1;
+    flex: 1;
+    max-width: 200px;
+  }
+  
+  .step-number {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00e6d0, #00a19c);
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 20px rgba(0, 230, 208, 0.5);
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 1200px) {
+    .benefits-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stories-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .two-columns {
+      flex-direction: column;
+    }
+    
+    .process-steps {
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .process-steps::before {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .benefits-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .stories-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+    
+    .hero-stats {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  }
+
+  /* === Responsive Enhancements for Careers Page === */
+
+/* Base styles already included above. Here, we add media queries only. */
+
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: 2.8rem;
+  }
+  .two-columns {
+    flex-direction: column;
+    text-align: center;
+  }
+  .mission-values {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .value-item {
+    margin: 1rem;
+  }
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .teams-slider {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .diversity-stats {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  .process-steps {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  .process-steps::before {
+    display: none;
+  }
+  .mission-image img {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+  .hero-stats {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+  .story-image img,
+  .team-card img {
+    height: 180px;
+  }
+  .story-content h3 {
+    font-size: 1.2rem;
+  }
+  .story-content p {
+    font-size: 0.95rem;
+  }
+  .teams-slider {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .team-card {
+    min-width: 80%;
+  }
+  .mission-image img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-section {
+    padding: 2rem 1rem;
+  }
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+  .benefit-icon,
+  .value-icon {
+    font-size: 1.5rem;
+  }
+  .step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+  .story-image img {
+    height: 150px;
+  }
+  .filter-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .filter-btn {
+    width: 100%;
+    text-align: center;
+  }
+  .mission-image img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  .stat-number {
+    font-size: 1.8rem;
+  }
+  .stat-text {
+    font-size: 0.9rem;
+  }
+}

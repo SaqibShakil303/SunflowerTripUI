@@ -1,0 +1,12 @@
+<section class="newsletter">
+    <div class="container">
+      <div class="newsletter-content">
+        <h2>Join Our Travel Community</h2>
+        <p>Get exclusive travel deals, destination inspiration, and expert tips delivered to your inbox.</p>
+        <form class="newsletter-form" [formGroup]="newsletterForm" (ngSubmit)="onSubmit()">
+          <input type="email" formControlName="email" placeholder="Enter your email address" required>
+          <button type="submit" [disabled]="newsletterForm.invalid">Subscribe Now</button>
+        </form>
+      </div>
+    </div>
+  </section>

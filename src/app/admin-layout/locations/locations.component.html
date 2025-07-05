@@ -1,0 +1,196 @@
+<div class="locations-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Locations Management</h1>
+        <p class="page-description">Manage travel locations</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search locations..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshLocations()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="openAddDialog()">
+                <i class="fas fa-plus-circle"></i>
+                Add 
+            </button>
+        </div>
+    </div>
+
+    <!-- Locations Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-map-marker-alt"></i>
+                All Locations ({{ filteredLocations.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="name">Sort by Name</option>
+                    <option value="destinationName">Sort by Destination</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredLocations.length > 0; else noLocations">
+            <table class="locations-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-destination">Destination</th>
+                        <th class="col-name">Location</th>
+                        <th class="col-description">Description</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container
+                        *ngFor="let location of paginatedLocations; let i = index; trackBy: trackByLocationId">
+                        <tr class="location-row" [class.deleting]="location.isDeleting">
+                            <td class="col-serial">
+                                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                            </td>
+                            <td class="col-destination">
+                                <span class="destination-text">{{ location.destinationName }}</span>
+                            </td>
+                            <td class="col-name">
+                                <div class="location-cell">
+                                    <button class="btn btn-sm expand-icon" (click)="toggleDetails(location)"
+                                        [title]="location.showDetails ? 'Hide details for ' + location.name : 'Show details for' + location.name">
+                                        <i class="fas"
+                                            [ngClass]="{'fa-chevron-down': !location.showDetails, 'fa-chevron-up': location.showDetails}"></i>
+                                    </button>
+                                    <img [src]="location.image" [alt]="location.name" class="location-image">
+                                    <div class="location-info">
+                                        <span class="location-name">{{ location.name }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-description">
+                                <span class="description-text" [title]="location.description">{{ location.description }}</span>
+                            </td>
+                            <td class="col-actions">
+                                <div class="actions-wrapper">
+                                    <button class="btn btn-warning btn-sm edit-btn"
+                                        (click)="openEditDialog(location)" [title]="'Edit ' + location.name">
+                                        <i class="fas fa-edit"></i>
+                                        <span class="btn-text">Edit</span>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-btn"
+                                        (click)="deleteLocation(location)" [disabled]="location.isDeleting"
+                                        [title]="'Delete ' + location.name">
+                                        <i class="fas fa-spinner fa-spin" *ngIf="location.isDeleting"></i>
+                                        <i class="fas fa-trash" *ngIf="!location.isDeleting"></i>
+                                        <span class="btn-text">{{ location.isDeleting ? 'Deleting...' :
+                                            'Delete'}}</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Expandable Details Row -->
+                        <tr *ngIf="location.showDetails" class="details-row">
+                            <td colspan="5">
+                                <div class="details-content">
+                                    <div class="details-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Full Description:</span>
+                                            <span class="detail-value">{{ location.description }}</span>
+                                        </div>
+                                        <div class="detail-item iframe-container">
+                                            <span class="detail-label">360° View:</span>
+                                            <iframe 
+                                                [src]="location.iframe360" 
+                                                class="iframe-360" 
+                                                frameborder="0" 
+                                                allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Locations Message -->
+        <ng-template #noLocations>
+            <div class="no-locations">
+                <i class="fas fa-map-marker-alt no-locations-icon"></i>
+                <h3>No Locations Found</h3>
+                <p *ngIf="searchTerm">No locations match your search criteria.</p>
+                <p *ngIf="!searchTerm">No locations have been added yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredLocations.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredLocations.length }}
+                locations
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the location:</p>
+            <strong>{{ locationToDelete?.name }}</strong>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete Location
+            </button>
+        </div>
+    </div>
+</div>
