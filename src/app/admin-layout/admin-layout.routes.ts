@@ -7,6 +7,8 @@ import { EnquiriesComponent } from './enquiries/enquiries.component';
 import { DestinationsComponent } from './destinations/destinations.component';
 import { ItneraryAdminComponent } from './itnerary/itnerary-admin/itnerary-admin.component';
 import { BookingsComponent } from './bookings/bookings.component';
+import { TripLeadsComponent } from './trip-leads/trip-leads.component';
+
 // import { DestinationFormComponent } from './destination-management/destination-form/destination-form.component';
 
 const routes: Routes = [
@@ -29,6 +31,7 @@ const routes: Routes = [
       { path: 'locations', loadChildren: () => import('./locations/locations.module').then(m => m.LocationsModule) },
       { path: 'tours', loadChildren: () => import('./tours/tours.module').then(m => m.ToursModule) },
       { path: 'itinerary-admin', component: ItneraryAdminComponent },
+      {path: 'trip-leads',component: TripLeadsComponent},
     ]
   },
   //   {

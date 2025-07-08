@@ -1,0 +1,237 @@
+<div class="trip-leads-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2 class="page-title">Trip Leads Management</h2>
+    <p class="page-description">Manage trip lead details and customer preferences</p>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Controls Section -->
+  <div class="controls-section">
+    <div class="search-bar">
+      <i class="fas fa-search search-icon"></i>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search by name, email, or country"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()" />
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-refresh" (click)="refreshTripLeads()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+      <button class="btn btn-primary" (click)="exportTripLeads()">
+        <i class="fas fa-download"></i> Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Container -->
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">
+        <i class="fas fa-calendar-check"></i> Trip Leads List
+      </div>
+      <div class="table-actions">
+        <select class="sort-select" [(ngModel)]="sortBy" (change)="toggleSortOrder()">
+          <option value="full_name">Sort by Name</option>
+          <option value="email">Sort by Email</option>
+          <option value="preferred_country">Sort by Country</option>
+          <option value="departure_date">Sort by Departure Date</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="trip-leads-table">
+        <thead>
+          <tr>
+            <th class="col-serial">#</th>
+            <th class="col-name">Name</th>
+            <th class="col-email">Email</th>
+            <th class="col-country">Preferred Country</th>
+            <th class="col-departure-date">Departure Date</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let lead of paginatedTripLeads; let i = index; trackBy: trackByTripLeadId">
+            <tr class="lead-row" [class.deleting]="lead.isDeleting">
+              <td class="col-serial">
+                <div class="serial-number">{{ getSerialNumber(i) }}</div>
+              </td>
+              <td class="col-name">
+                <div class="name-cell">
+                  <div class="user-avatar">{{ lead.full_name.charAt(0).toUpperCase() }}</div>
+                  <div class="name-text">{{ lead.full_name }}</div>
+                </div>
+              </td>
+              <td class="col-email">
+                <span class="email-text">{{ lead.email }}</span>
+              </td>
+              <td class="col-country">
+                <span class="country-text">{{ lead.preferred_country || 'Not specified' }}</span>
+              </td>
+              <td class="col-departure-date">
+                <span class="date-text">{{ formatDate(lead.departure_date) }}</span>
+              </td>
+              <td class="col-actions">
+                <button class="btn btn-sm expand-btn" (click)="toggleExpanded(lead)">
+                  <i class="fas" [class.fa-chevron-down]="!lead.isExpanded" [class.fa-chevron-up]="lead.isExpanded"></i>
+                </button>
+                <button class="btn btn-sm btn-danger delete-btn" (click)="deleteTripLead(lead)" [disabled]="lead.isDeleting">
+                  <i class="fas fa-spinner fa-spin" *ngIf="lead.isDeleting"></i>
+                  <i class="fas fa-trash" *ngIf="!lead.isDeleting"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="lead.isExpanded" class="details-row">
+              <td colspan="6">
+                <div class="details-content">
+                  <div class="details-grid">
+                    <div class="detail-item">
+                      <span class="detail-label">ID:</span>
+                      <span class="detail-value">{{ lead.id }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Full Name:</span>
+                      <span class="detail-value">{{ lead.full_name }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Email:</span>
+                      <span class="detail-value">{{ lead.email }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Phone Number:</span>
+                      <span class="detail-value">{{ lead.phone_number || 'Not provided' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Preferred Country:</span>
+                      <span class="detail-value">{{ lead.preferred_country || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Preferred City:</span>
+                      <span class="detail-value">{{ lead.preferred_city || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Departure Date:</span>
+                      <span class="detail-value">{{ formatDate(lead.departure_date) }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Return Date:</span>
+                      <span class="detail-value">{{ formatDate(lead.return_date) }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Number of Days:</span>
+                      <span class="detail-value">{{ lead.number_of_days || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Adults:</span>
+                      <span class="detail-value">{{ lead.number_of_adults || 0 }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Children:</span>
+                      <span class="detail-value">{{ lead.number_of_children || 0 }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Males:</span>
+                      <span class="detail-value">{{ lead.number_of_male || 0 }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Females:</span>
+                      <span class="detail-value">{{ lead.number_of_female || 0 }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Others:</span>
+                      <span class="detail-value">{{ lead.number_of_other || 0 }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Aged Persons:</span>
+                      <span class="detail-value">{{ lead.aged_persons.length ? lead.aged_persons.join(', ') : 'None' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Hotel Rating:</span>
+                      <span class="detail-value">{{ lead.hotel_rating || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Meal Plan:</span>
+                      <span class="detail-value">{{ lead.meal_plan || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Room Type:</span>
+                      <span class="detail-value">{{ lead.room_type || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Need Flight:</span>
+                      <span class="detail-value">{{ lead.need_flight ? 'Yes' : 'No' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Departure Airport:</span>
+                      <span class="detail-value">{{ lead.departure_airport || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Trip Type:</span>
+                      <span class="detail-value">{{ lead.trip_type || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Estimate Range:</span>
+                      <span class="detail-value">{{ lead.estimate_range || 'Not specified' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="no-leads" *ngIf="filteredTripLeads.length === 0">
+      <div class="no-leads-icon"><i class="fas fa-info-circle"></i></div>
+      <h3>No trip leads found</h3>
+      <p>Try adjusting your search or filters.</p>
+      <button class="btn btn-secondary" *ngIf="searchTerm" (click)="clearSearch()">Clear Search</button>
+    </div>
+
+    <div class="pagination-container" *ngIf="filteredTripLeads.length > pageSize">
+      <div class="pagination-info">Page {{ currentPage }} of {{ getTotalPages() }}</div>
+      <div class="pagination-controls">
+        <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">Prev</button>
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="btn btn-sm page-btn"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)">{{ page }}</button>
+        </div>
+        <button class="btn btn-sm pagination-btn" (click)="nextPage()" [disabled]="currentPage === getTotalPages()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button class="modal-close" (click)="cancelDelete()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <p>Are you sure you want to delete trip lead for:</p>
+        <strong>{{ leadToDelete?.full_name }}</strong>
+        <p class="lead-details">{{ leadToDelete?.email }} (Country: {{ leadToDelete?.preferred_country || 'Not specified' }})</p>
+        <div class="warning-text">This action cannot be undone.</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="confirmDelete()">Yes, Delete</button>
+        <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

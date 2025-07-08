@@ -66,7 +66,7 @@
                                 <span class="serial-number">{{ getSerialNumber(i) }}</span>
                             </td>
                             <td class="col-tour-id">
-                                <span class="tour-id-text">{{ enquiry.tourId }}</span>
+                                <span class="tour-id-text">{{ enquiry.tour_id }}</span>
                             </td>
                             <td class="col-name">
                                 <div class="name-cell">
@@ -78,8 +78,8 @@
                                 <span class="email-text">{{ enquiry.email }}</span>
                             </td>
                             <td class="col-date">
-                                <span class="date-text">{{ formatDate(enquiry.createdDate) }}</span>
-                                <span class="time-text">{{ formatTime(enquiry.createdDate) }}</span>
+                                <span class="date-text">{{ formatDate(enquiry.created_at) }}</span>
+                                <span class="time-text">{{ formatTime(enquiry.created_at) }}</span>
                             </td>
                             <td class="col-actions">
                                 <button class="btn btn-sm btn-info expand-btn" (click)="toggleExpanded(enquiry)"
@@ -172,7 +172,7 @@
             </div>
             <p>Are you sure you want to delete the enquiry from:</p>
             <strong>{{ enquiryToDelete?.name }}</strong>
-            <p class="enquiry-details">{{ enquiryToDelete?.email }} (Tour ID: {{ enquiryToDelete?.tourId }})</p>
+            <p class="enquiry-details">{{ enquiryToDelete?.email }} (Tour ID: {{ enquiryToDelete?.tour_id }})</p>
             <p class="warning-text">This action cannot be undone.</p>
         </div>
         <div class="modal-footer">

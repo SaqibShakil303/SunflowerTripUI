@@ -1,5 +1,5 @@
 export interface Booking {
-  id?: number;
+  id: number;
   tour_id: number;
   name: string;
   email: string;
@@ -8,26 +8,19 @@ export interface Booking {
   adults: number;
   children: number;
   child_ages?: number[];
-  hotel_rating: '3' | '4' | '5';
-  meal_plan: 'no-meal' | 'breakfast';
-  flight_option?: 'with-flight' | 'without-flight';
+  hotel_rating: string;
+  meal_plan: string;
+  flight_option?: string;
   flight_number?: string;
   travel_date: string;
-  created_at?: string;
-
-  // frontend-only optional props
+  created_at?: Date;
   isExpanded?: boolean;
   isDeleting?: boolean;
 }
 
-// Optional helper for frontend display formatting
-// export type BookingDisplay = Booking & {
-//   isExpanded?: boolean;
-//   isDeleting?: boolean;
-// };
-
 export function createDefaultBooking(): Booking {
   return {
+    id: 0,
     tour_id: 0,
     name: '',
     email: '',

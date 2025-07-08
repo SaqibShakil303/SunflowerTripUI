@@ -16,16 +16,14 @@
         [(ngModel)]="searchTerm"
         (input)="onSearch()" />
     </div>
-     <div class="action-buttons">
-            <button class="btn btn-refresh" (click)="refreshBookings()">
-                <i class="fas fa-sync-alt"></i>
-                Refresh
-            </button>
-            <button class="btn btn-primary" (click)="exportBookings()">
-                <i class="fas fa-download"></i>
-                Export
-            </button>
-        </div>
+    <div class="action-buttons">
+      <button class="btn btn-refresh" (click)="refreshBookings()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+      <button class="btn btn-primary" (click)="exportBookings()">
+        <i class="fas fa-download"></i> Export
+      </button>
+    </div>
   </div>
 
   <!-- Table Container -->
@@ -38,6 +36,7 @@
         <select class="sort-select" [(ngModel)]="sortBy" (change)="toggleSortOrder()">
           <option value="name">Sort by Name</option>
           <option value="travel_date">Sort by Travel Date</option>
+          <option value="created_at">Sort by Created At</option>
         </select>
       </div>
     </div>
@@ -51,6 +50,9 @@
             <th class="col-email">Email</th>
             <th class="col-travel-date">Travel Date</th>
             <th class="col-tour-id">Tour ID</th>
+            <!-- <th class="col-hotel-rating">Hotel Rating</th>
+            <th class="col-meal-plan">Meal Plan</th>
+            <th class="col-flight-option">Flight Option</th> -->
             <th class="col-actions">Actions</th>
           </tr>
         </thead>
@@ -75,6 +77,15 @@
               <td class="col-tour-id">
                 <span class="tour-id-text">{{ booking.tour_id }}</span>
               </td>
+              <!-- <td class="col-hotel-rating">
+                <span class="hotel-rating-text">{{ booking.hotel_rating || 'Not specified' }}</span>
+              </td>
+              <td class="col-meal-plan">
+                <span class="meal-plan-text">{{ booking.meal_plan || 'Not specified' }}</span>
+              </td>
+              <td class="col-flight-option">
+                <span class="flight-option-text">{{ booking.flight_option || 'Not specified' }}</span>
+              </td> -->
               <td class="col-actions">
                 <button class="btn btn-sm expand-btn" (click)="toggleExpanded(booking)">
                   <i class="fas" [class.fa-chevron-down]="!booking.isExpanded" [class.fa-chevron-up]="booking.isExpanded"></i>
@@ -86,19 +97,49 @@
               </td>
             </tr>
             <tr *ngIf="booking.isExpanded" class="details-row">
-              <td colspan="6">
+              <td colspan="9">
                 <div class="details-content">
                   <div class="details-grid">
-                    <div class="detail-item"><span class="detail-label">Phone:</span> <span class="detail-value">{{ booking.phone || 'Not provided' }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Days:</span> <span class="detail-value">{{ booking.days || 'Not specified' }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Adults:</span> <span class="detail-value">{{ booking.adults }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Children:</span> <span class="detail-value">{{ booking.children }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Child Ages:</span> <span class="detail-value">{{ booking.child_ages?.join(', ') || 'None' }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Hotel Rating:</span> <span class="detail-value">{{ booking.hotel_rating || 'Not specified' }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Meal Plan:</span> <span class="detail-value">{{ booking.meal_plan || 'Not specified' }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Flight Option:</span> <span class="detail-value">{{ booking.flight_option || 'Not specified' }}</span></div>
-                    <div class="detail-item" *ngIf="booking.flight_option === 'with-flight'"><span class="detail-label">Flight Number:</span> <span class="detail-value">{{ booking.flight_number }}</span></div>
-                    <div class="detail-item"><span class="detail-label">Created At:</span> <span class="detail-value">{{ formatDate(booking.created_at) }} {{ formatTime(booking.created_at) }}</span></div>
+                    <div class="detail-item">
+                      <span class="detail-label">Phone:</span>
+                      <span class="detail-value">{{ booking.phone || 'Not provided' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Days:</span>
+                      <span class="detail-value">{{ booking.days || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Adults:</span>
+                      <span class="detail-value">{{ booking.adults }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Children:</span>
+                      <span class="detail-value">{{ booking.children }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Child Ages:</span>
+                      <span class="detail-value">{{ booking.child_ages && booking.child_ages.length ? booking.child_ages.join(', ') : 'None' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Hotel Rating:</span>
+                      <span class="detail-value">{{ booking.hotel_rating || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Meal Plan:</span>
+                      <span class="detail-value">{{ booking.meal_plan || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Flight Option:</span>
+                      <span class="detail-value">{{ booking.flight_option || 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item" *ngIf="booking.flight_option === 'with-flight'">
+                      <span class="detail-label">Flight Number:</span>
+                      <span class="detail-value">{{ booking.flight_number || 'Not provided' }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Created At:</span>
+                      <span class="detail-value">{{ formatDate(booking.created_at) }} {{ formatTime(booking.created_at) }}</span>
+                    </div>
                   </div>
                 </div>
               </td>

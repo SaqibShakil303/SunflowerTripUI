@@ -1,8 +1,26 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environments.dev';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { Booking } from '../../models/booking.model';
 
+interface RawBooking {
+  id?: number;
+  tour_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  days?: number;
+  adults: number;
+  children: number;
+  child_ages?: string; // JSON string from API
+  hotel_rating: string;
+  meal_plan: string;
+  flight_option?: string;
+  flight_number?: string;
+  travel_date: string;
+  created_at?: string; // API may return string
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -31,26 +49,28 @@ export class BookingsService {
   }
 
   // ✅ DELETE enquiry by ID
-  deleteEnquiry(id: string): Observable<void> {
+  deleteEnquiry(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/Contact/deleteEnquiry/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
   // ✅ GET all bookings
-  getAllBookings(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/Contact/GetAllBookings`).pipe(
-      catchError(this.handleError)
+ getAllBookings(): Observable<Booking[]> {
+    return this.http.get<RawBooking[]>(`${this.apiUrl}/Contact/GetAllBookings`).pipe(
+     map(bookings =>
+        bookings.map(booking => ({
+          ...booking,
+          child_ages: booking.child_ages ? JSON.parse(booking.child_ages).map((age: string) => Number(age)) : [],
+          created_at: booking.created_at ? new Date(booking.created_at) : undefined
+        } as Booking))
+      )
     );
   }
 
-  // ✅ DELETE booking by ID
-  deleteBooking(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteBooking/${id}`).pipe(
-      catchError(this.handleError)
-    );
+  deleteBooking(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteBooking/${id}`);
   }
-
   // ❗️Centralized error handler
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unknown error occurred!';

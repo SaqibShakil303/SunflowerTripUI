@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { Booking } from '../../models/booking.model';
 import { BookingsService } from '../../services/bookings/bookings.service';
 
@@ -10,7 +9,7 @@ import { BookingsService } from '../../services/bookings/bookings.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './bookings.component.html',
-  styleUrl: './bookings.component.scss'
+  styleUrls: ['./bookings.component.scss']
 })
 export class BookingsComponent implements OnInit {
   bookings: Booking[] = [];
@@ -21,7 +20,6 @@ export class BookingsComponent implements OnInit {
   sortOrder: 'asc' | 'desc' = 'desc';
   currentPage = 1;
   pageSize = 10;
-
   showDeleteModal = false;
   bookingToDelete: Booking | null = null;
 
@@ -34,8 +32,10 @@ export class BookingsComponent implements OnInit {
   loadBookings(): void {
     this.bookingService.getAllBookings().subscribe({
       next: (data) => {
+        console.log('Bookings fetched:', data);
         this.bookings = data.map((b: Booking) => ({
           ...b,
+          child_ages: b.child_ages ?? [], // Ensure child_ages is always an array
           isExpanded: false,
           isDeleting: false
         }));
@@ -54,7 +54,7 @@ export class BookingsComponent implements OnInit {
     if (!this.bookingToDelete) return;
 
     this.bookingToDelete.isDeleting = true;
-    this.bookingService.deleteBooking(this.bookingToDelete.email).subscribe({
+    this.bookingService.deleteBooking(this.bookingToDelete.id).subscribe({
       next: () => {
         this.bookings = this.bookings.filter(b => b !== this.bookingToDelete);
         this.applyFilters();
@@ -107,11 +107,9 @@ export class BookingsComponent implements OnInit {
       const valA = this.sortBy === 'travel_date' || this.sortBy === 'created_at'
         ? new Date(a[this.sortBy]!).getTime()
         : String(a[this.sortBy] ?? '').toLowerCase();
-
       const valB = this.sortBy === 'travel_date' || this.sortBy === 'created_at'
         ? new Date(b[this.sortBy]!).getTime()
         : String(b[this.sortBy] ?? '').toLowerCase();
-
       return this.sortOrder === 'asc'
         ? valA < valB ? -1 : valA > valB ? 1 : 0
         : valA > valB ? -1 : valA < valB ? 1 : 0;
@@ -193,41 +191,38 @@ export class BookingsComponent implements OnInit {
     }) : '';
   }
 
-  trackByEmail(index: number, booking: Booking): string {
-    return booking.email;
+  trackByBookingId(index: number, item: Booking): number {
+    return item.id || index;
   }
 
-  toggleDetails(booking: Booking): void {
+  toggleExpanded(booking: Booking): void {
     booking.isExpanded = !booking.isExpanded;
+    console.log('Toggled isExpanded for booking:', booking.id, booking.isExpanded);
   }
+
   refreshBookings(): void {
     this.loadBookings();
   }
 
-  // Add this method to export bookings as CSV
-exportBookings() {
-  const headers = Object.keys(this.filteredBookings[0] || {});
-const rows = this.filteredBookings.map(b => headers.map(h => JSON.stringify((b as any)[h] ?? '')).join(','));
+  exportBookings(): void {
+    const headers = [
+      'id', 'tour_id', 'name', 'email', 'phone', 'days', 'adults', 'children',
+      'child_ages', 'hotel_rating', 'meal_plan', 'flight_option', 'flight_number',
+      'travel_date', 'created_at'
+    ];
+    const rows = this.filteredBookings.map(b => headers.map(h => {
+      if (h === 'child_ages') return JSON.stringify(b[h] ?? []);
+      if (h === 'travel_date' || h === 'created_at') return this.formatDate(b[h]);
+      return JSON.stringify((b as any)[h] ?? '')
+    }).join(','));
 
-  const csvContent = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'bookings.csv';
-  a.click();
-  window.URL.revokeObjectURL(url);
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'bookings.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 }
-
-// Use in *ngFor trackBy
-trackByBookingId(index: number, item: any): number {
-  return item.id || index;
-}
-
-// Toggle expand/collapse
-toggleExpanded(booking: any) {
-  booking.isExpanded = !booking.isExpanded;
-}
-
-}
-
