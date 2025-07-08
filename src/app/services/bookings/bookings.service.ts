@@ -7,9 +7,11 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class BookingsService {
-apiUrl = environment.apiDomain;
-  constructor(private http: HttpClient) { }
-submitEnquiry(data: any): Observable<any> {
+  apiUrl = environment.apiDomain;
+
+  constructor(private http: HttpClient) {}
+
+  submitEnquiry(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/Contact/enquiries`, data).pipe(
       catchError(this.handleError)
     );
@@ -21,16 +23,43 @@ submitEnquiry(data: any): Observable<any> {
     );
   }
 
+  // ✅ GET all enquiries
+  getAllEnquiries(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/Contact/GetAllEnquiries`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ✅ DELETE enquiry by ID
+  deleteEnquiry(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteEnquiry/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ✅ GET all bookings
+  getAllBookings(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/Contact/GetAllBookings`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ✅ DELETE booking by ID
+  deleteBooking(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteBooking/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ❗️Centralized error handler
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = `Client-side Error: ${error.error.message}`;
     } else {
-      // Server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-      if (error.error && error.error.error) {
-        errorMessage = error.error.error; // Use backend error message if available
+      if (error.error?.error) {
+        errorMessage = error.error.error;
       }
     }
     return throwError(() => new Error(errorMessage));

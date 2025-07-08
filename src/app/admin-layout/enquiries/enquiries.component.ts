@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Enquiry } from '../../models/Enquiry.model';
 
-// Enquiry interface
-interface Enquiry {
-  id: number;
-  tourId: string;
-  name: string;
-  email: string;
-  phone?: string;
-  description?: string;
-  createdDate: Date;
-  isDeleting?: boolean;
-  isExpanded?: boolean;
-}
+// // Enquiry interface
+// interface Enquiry {
+//   id: number;
+//   tourId: string;
+//   name: string;
+//   email: string;
+//   phone?: string;
+//   description?: string;
+//   createdDate: Date;
+//   isDeleting?: boolean;
+//   isExpanded?: boolean;
+// }
+
 
 @Component({
   selector: 'app-enquiries',
