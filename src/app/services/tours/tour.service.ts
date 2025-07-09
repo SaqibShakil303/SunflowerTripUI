@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { ItineraryDay, RoomType, Tour, TourPhoto, TourReview } from '../../models/tour.model';
+import { DestinationPayload } from '../destination/destination.service';
 
 // export interface Tour {
 //   id: number;
@@ -14,18 +15,75 @@ import { ItineraryDay, RoomType, Tour, TourPhoto, TourReview } from '../../model
 //   image_url: string;
 // }
 
+export interface TourPayload {
+  tour: {
+    title: string;
+    destination_id: number;
+    location_ids: number[];
+    slug: string;
+    location: string;
+    description: string;
+    price_per_person: number;
+    price_currency: string;
+    duration_days: number;
+    available_from: string;
+    available_to: string;
+    category: string;
+    departure_airport?: string;
+    arrival_airport?: string;
+    max_group_size?: number;
+    min_group_size?: number;
+    inclusions?: string[];
+    exclusions?: string[];
+    complementaries?: string[];
+    highlights?: string[];
+    booking_terms?: string;
+    cancellation_policy?: string;
+    meta_title?: string;
+    meta_description?: string;
+    early_bird_discount?: number;
+    group_discount?: number;
+    difficulty_level?: 'Easy' | 'Moderate' | 'Challenging' | 'Extreme';
+    physical_requirements?: string;
+    best_time_to_visit?: string;
+    weather_info?: string;
+    packing_list?: string[];
+    languages_supported?: string[];
+    guide_included?: boolean;
+    guide_languages?: string[];
+    transportation_included?: boolean;
+    transportation_details?: string;
+    meals_included?: string[];
+    dietary_restrictions_supported?: string[];
+    accommodation_type?: string;
+    accommodation_rating?: number;
+    activity_types?: string[];
+    interests?: string[];
+    instant_booking?: boolean;
+    requires_approval?: boolean;
+    advance_booking_days?: number;
+    is_active?: boolean;
+    is_featured?: boolean;
+    is_customizable?: boolean;
+  };
+  photos?: TourPhoto[];
+  reviews?: TourReview[];
+  room_types?: RoomType[];
+  itinerary?: ItineraryDay[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class TourService {
 
-    constructor(private http: HttpClient,
-      @Inject(PLATFORM_ID) private platformId: Object
-    ) { }
- 
+  constructor(private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
+
   private apiUrl = environment.apiDomain;
 
- getTourBySlug(slug: string): Observable<Tour> {
+  getTourBySlug(slug: string): Observable<Tour> {
     return this.http
       .get<any>(`${this.apiUrl}/Tours/${slug}`)
       .pipe(
@@ -33,17 +91,17 @@ export class TourService {
       );
   }
 
-getFilteredTours(params: any): Observable<Tour[]> {
-  return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params });
-}
+  getFilteredTours(params: any): Observable<Tour[]> {
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params });
+  }
 
-getCategories(): Observable<string[]> {
-  return this.http.get<string[]>(`${this.apiUrl}/Tours/categories`);
-}
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/Tours/categories`);
+  }
   getAllTours(): Observable<Tour[]> {
     return this.http.get<Tour[]>(`${this.apiUrl}/Tours`);
   }
-   getByDestination(destId: number): Observable<Tour[]> {
+  getByDestination(destId: number): Observable<Tour[]> {
     return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${destId}/destination`);
   }
 
@@ -53,7 +111,7 @@ getCategories(): Observable<string[]> {
   getByCategory(category: string): Observable<Tour[]> {
     return this.http.get<Tour[]>(`${this.apiUrl}/Tours/category/${category}`);
   }
-    getTours(params?: {
+  getTours(params: {
     page?: number;
     limit?: number;
     category?: string;
@@ -64,12 +122,12 @@ getCategories(): Observable<string[]> {
     featured?: boolean;
   }): Observable<{ tours: Tour[], total: number, page: number, totalPages: number }> {
     let httpParams = new HttpParams();
-    
+
     if (params) {
       Object.keys(params).forEach(key => {
         const value = params[key as keyof typeof params];
-        if (value !== undefined && value !== null) {
-          httpParams = httpParams.set(key, value.toString());
+        if (value == undefined && value == null) {
+          httpParams = httpParams.set(key, value!.toString());
         }
       });
     }
@@ -82,7 +140,11 @@ getCategories(): Observable<string[]> {
     );
   }
 
-    // Get tour photos
+  addTour(tourPayload: TourPayload): Observable<any> {
+    return this.http.post(`${this.apiUrl}/Tours/AddTour`, tourPayload);
+  }
+
+  // Get tour photos
   // getTourPhotos(tourId: number): Observable<TourPhoto[]> {
   //   return this.http.get<TourPhoto[]>(`${this.apiUrl}/tours/${tourId}/photos`);
   // }
@@ -177,10 +239,10 @@ getCategories(): Observable<string[]> {
   // Private method to transform API response to Tour model
   // private transformTourData(data: any): Tour {
   //   const tour = new Tour();
-    
+
   //   // Map all fields from API response to Tour model
   //   Object.keys(data).forEach(key => {
-  //     if (data[key] !== undefined) {
+  //     if (data[key] == undefined) {
   //       (tour as any)[key] = data[key];
   //     }
   //   });
@@ -257,20 +319,20 @@ getCategories(): Observable<string[]> {
 
   //   return tour;
   // }
-   private transformTourData(raw: any): Tour {
+  private transformTourData(raw: any): Tour {
     // for each field that might be JSON-encoded:
-    raw.inclusions       = this.safeParse(raw.inclusions);
-    raw.exclusions       = this.safeParse(raw.exclusions);
-    raw.complementaries  = this.safeParse(raw.complementaries);
-    raw.highlights       = this.safeParse(raw.highlights);
+    raw.inclusions = this.safeParse(raw.inclusions);
+    raw.exclusions = this.safeParse(raw.exclusions);
+    raw.complementaries = this.safeParse(raw.complementaries);
+    raw.highlights = this.safeParse(raw.highlights);
     raw.languages_supported = this.safeParse(raw.languages_supported);
-    raw.meals_included   = this.safeParse(raw.meals_included);
-    raw.activity_types   = this.safeParse(raw.activity_types);
+    raw.meals_included = this.safeParse(raw.meals_included);
+    raw.activity_types = this.safeParse(raw.activity_types);
     // …and any others…
 
     return raw as Tour;
   }
- private safeParse(field: any): any[] {
+  private safeParse(field: any): any[] {
     if (typeof field === 'string') {
       try { return JSON.parse(field); }
       catch { return []; }
@@ -288,12 +350,12 @@ getCategories(): Observable<string[]> {
       maximumFractionDigits: 0
     }).format(numPrice);
   }
-  
-getFilters(): Observable<{ cities: string[]; categories: string[] }> {
-  return this.http.get<{ cities: string[]; categories: string[] }>(
-    `${this.apiUrl}/Tours/filters`
-  );
-}
+
+  getFilters(): Observable<{ cities: string[]; categories: string[] }> {
+    return this.http.get<{ cities: string[]; categories: string[] }>(
+      `${this.apiUrl}/Tours/filters`
+    );
+  }
 
   // Helper method to get availability status
   getAvailabilityStatus(availableFrom: string, availableTo: string): {
