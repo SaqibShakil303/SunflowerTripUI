@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ItneraryAdminComponent } from './itnerary-admin.component';
+import { ItneraryAdminComponent } from './enquiry-details.component';
 
 describe('ItneraryAdminComponent', () => {
   let component: ItneraryAdminComponent;
