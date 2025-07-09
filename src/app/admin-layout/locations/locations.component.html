@@ -20,7 +20,7 @@
             </button>
             <button class="btn btn-primary" (click)="openAddDialog()">
                 <i class="fas fa-plus-circle"></i>
-                Add 
+                Add
             </button>
         </div>
     </div>
@@ -63,7 +63,7 @@
                                 <span class="serial-number">{{ getSerialNumber(i) }}</span>
                             </td>
                             <td class="col-destination">
-                                <span class="destination-text">{{ location.destinationName }}</span>
+                                <span class="destination-text">{{ getDestinationName(location.destination_id) }}</span>
                             </td>
                             <td class="col-name">
                                 <div class="location-cell">
@@ -72,25 +72,27 @@
                                         <i class="fas"
                                             [ngClass]="{'fa-chevron-down': !location.showDetails, 'fa-chevron-up': location.showDetails}"></i>
                                     </button>
-                                    <img [src]="location.image" [alt]="location.name" class="location-image">
+                                    <img [src]="location.image_url || fallbackImage"
+                                        [alt]="location.name || 'Image not available'" class="location-image"
+                                        (error)="handleImageError(location)">
                                     <div class="location-info">
                                         <span class="location-name">{{ location.name }}</span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="col-description">
-                                <span class="description-text" [title]="location.description">{{ location.description }}</span>
+                            <td class="col-description Polyglot">
+                                <span class="description-text" [title]="location.description">{{ location.description
+                                    }}</span>
                             </td>
                             <td class="col-actions">
                                 <div class="actions-wrapper">
-                                    <button class="btn btn-warning btn-sm edit-btn"
-                                        (click)="openEditDialog(location)" [title]="'Edit ' + location.name">
+                                    <button class="btn btn-warning btn-sm edit-btn" (click)="openEditDialog(location)"
+                                        [title]="'Edit ' + location.name">
                                         <i class="fas fa-edit"></i>
                                         <span class="btn-text">Edit</span>
                                     </button>
-                                    <button class="btn btn-danger btn-sm delete-btn"
-                                        (click)="deleteLocation(location)" [disabled]="location.isDeleting"
-                                        [title]="'Delete ' + location.name">
+                                    <button class="btn btn-danger btn-sm delete-btn" (click)="deleteLocation(location)"
+                                        [disabled]="location.isDeleting" [title]="'Delete ' + location.name">
                                         <i class="fas fa-spinner fa-spin" *ngIf="location.isDeleting"></i>
                                         <i class="fas fa-trash" *ngIf="!location.isDeleting"></i>
                                         <span class="btn-text">{{ location.isDeleting ? 'Deleting...' :
@@ -110,11 +112,8 @@
                                         </div>
                                         <div class="detail-item iframe-container">
                                             <span class="detail-label">360° View:</span>
-                                            <iframe 
-                                                [src]="location.iframe360" 
-                                                class="iframe-360" 
-                                                frameborder="0" 
-                                                allowfullscreen>
+                                            <iframe [src]="(location.iframe_360 || '') | safeUrl" class="iframe-360"
+                                                frameborder="0" allowfullscreen>
                                             </iframe>
                                         </div>
                                     </div>
@@ -166,31 +165,31 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>Confirm Delete</h3>
-            <button class="modal-close" (click)="cancelDelete()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="warning-icon">
-                <i class="fas fa-exclamation-triangle"></i>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Confirm Delete</h3>
+                <button class="modal-close" (click)="cancelDelete()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <p>Are you sure you want to delete the location:</p>
-            <strong>{{ locationToDelete?.name }}</strong>
-            <p class="warning-text">This action cannot be undone.</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
-            <button class="btn btn-danger" (click)="confirmDelete()">
-                <i class="fas fa-trash"></i>
-                Delete Location
-            </button>
+            <div class="modal-body">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p>Are you sure you want to delete the location:</p>
+                <strong>{{ locationToDelete?.name }}</strong>
+                <p class="warning-text">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+                <button class="btn btn-danger" (click)="confirmDelete()">
+                    <i class="fas fa-trash"></i>
+                    Delete Location
+                </button>
+            </div>
         </div>
     </div>
 </div>

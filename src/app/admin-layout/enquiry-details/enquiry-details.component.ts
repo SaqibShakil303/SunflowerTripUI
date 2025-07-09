@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ItineraryService } from '../../../services/itinerary/itinerary.service';
-import { Itinerary } from '../../../models/itinerary.model';
+import { ItineraryService } from '../../services/itinerary/itinerary.service';
+import { Itinerary } from '../../models/itinerary.model';
 import { catchError, of, tap } from 'rxjs';
 
 // Extend interface to include isDeleting and showDetails
@@ -12,13 +12,13 @@ interface ExtendedItinerary extends Itinerary {
 }
 
 @Component({
-  selector: 'app-itnerary-admin',
+  selector: 'app-enquiry-details',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './itnerary-admin.component.html',
-  styleUrl: './itnerary-admin.component.scss'
+  templateUrl: './enquiry-details.component.html',
+  styleUrl: './enquiry-details.component.scss'
 })
-export class ItneraryAdminComponent implements OnInit {
+export class EnquiryDetailsComponent implements OnInit {
   // Data properties
   itineraries: ExtendedItinerary[] = [];
   filteredItineraries: ExtendedItinerary[] = [];

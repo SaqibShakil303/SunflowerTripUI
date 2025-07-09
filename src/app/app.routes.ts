@@ -24,7 +24,7 @@ import { AuthService } from './services/authService/auth.service';
 import { inject } from '@angular/core';
 import { AuthCallbackComponent } from './auth/auth-callback.component';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { ItneraryAdminComponent } from './admin-layout/itnerary/itnerary-admin/itnerary-admin.component';
+import { EnquiryDetailsComponent } from './admin-layout/enquiry-details/enquiry-details.component';
 import { DestinationMainComponent } from './pages/destination-main/destination-main.component';
 import { TourDetailComponent } from './pages/tour-detail/tour-detail.component';
 import { TripPlannerComponent } from './common/trip-planner/trip-planner.component';
