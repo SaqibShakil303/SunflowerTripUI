@@ -14,7 +14,6 @@
         <!-- Modal Body -->
         <div class="modal-body">
             <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="tour-form">
-
                 <!-- Basic Information Section -->
                 <div class="form-section">
                     <h4 class="section-title">
@@ -26,68 +25,64 @@
                         <div class="form-group">
                             <label for="title" class="form-label">Tour Title *</label>
                             <input type="text" id="title" formControlName="title" class="form-control"
-                                [class.error]="isFieldInvalid('title')" placeholder="Enter tour title">
-                            <div class="error-message" *ngIf="isFieldInvalid('title')">
-                                {{ getFieldError('title') }}
+                                [class.error]="isFieldInvalid(tourForm, 'title')" placeholder="Enter tour title">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'title')">
+                                {{ getFieldError(tourForm, 'title') }}
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="destinationName" class="form-label">Destination *</label>
-                            <select id="destinationName" formControlName="destinationName" class="form-control"
-                                [class.error]="isFieldInvalid('destinationName')">
-                                <option value="">Select destination</option>
-                                <option *ngFor="let destination of destinations" [value]="destination.name">
-                                    {{ destination.name }}
+                            <label for="destination_id" class="form-label">Destination *</label>
+                            <select id="destination_id" formControlName="destination_id" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'destination_id')">
+                                <option [ngValue]="null">Select Destination</option>
+                                <option *ngFor="let destination of destinations" [ngValue]="destination.id">
+                                    {{ destination.title }}
                                 </option>
                             </select>
-                            <div class="error-message" *ngIf="isFieldInvalid('destinationName')">
-                                {{ getFieldError('destinationName') }}
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'destination_id')">
+                                {{ getFieldError(tourForm, 'destination_id') }}
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="duration_days" class="form-label">Duration (days) *</label>
+                            <input type="number" id="duration_days" formControlName="duration_days" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'duration_days')" placeholder="Enter duration in days">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'duration_days')">
+                                {{ getFieldError(tourForm, 'duration_days') }}
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="category" class="form-label">Category *</label>
-                            <select id="category" formControlName="category" class="form-control"
-                                [class.error]="isFieldInvalid('category')">
-                                <option value="">Select category</option>
-                                <option *ngFor="let category of categories" [value]="category">
-                                    {{ category }}
-                                </option>
-                            </select>
-                            <div class="error-message" *ngIf="isFieldInvalid('category')">
-                                {{ getFieldError('category') }}
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="duration" class="form-label">Duration (days) *</label>
-                            <input type="number" id="duration" formControlName="duration" class="form-control"
-                                [class.error]="isFieldInvalid('duration')" placeholder="Enter duration in days">
-                            <div class="error-message" *ngIf="isFieldInvalid('duration')">
-                                {{ getFieldError('duration') }}
+                            <input type="text" id="category" formControlName="category" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'category')" placeholder="e.g., Adventure, Cultural">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'category')">
+                                {{ getFieldError(tourForm, 'category') }}
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="pricePerPerson" class="form-label">Price per Person (USD) *</label>
-                            <input type="number" id="pricePerPerson" formControlName="pricePerPerson" class="form-control"
-                                [class.error]="isFieldInvalid('pricePerPerson')" placeholder="Enter price">
-                            <div class="error-message" *ngIf="isFieldInvalid('pricePerPerson')">
-                                {{ getFieldError('pricePerPerson') }}
+                            <label for="price_per_person" class="form-label">Price per Person *</label>
+                            <input type="number" id="price_per_person" formControlName="price_per_person"
+                                class="form-control" [class.error]="isFieldInvalid(tourForm, 'price_per_person')"
+                                placeholder="Enter price">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'price_per_person')">
+                                {{ getFieldError(tourForm, 'price_per_person') }}
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="currency" class="form-label">Currency *</label>
-                            <input type="text" id="currency" formControlName="currency" class="form-control"
-                                [class.error]="isFieldInvalid('currency')" placeholder="e.g., USD">
-                            <div class="error-message" *ngIf="isFieldInvalid('currency')">
-                                {{ getFieldError('currency') }}
+                            <label for="price_currency" class="form-label">Currency *</label>
+                            <input type="text" id="price_currency" formControlName="price_currency" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'price_currency')" placeholder="e.g., USD">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'price_currency')">
+                                {{ getFieldError(tourForm, 'price_currency') }}
                             </div>
                         </div>
                     </div>
@@ -97,23 +92,35 @@
                 <div class="form-section">
                     <h4 class="section-title">
                         <i class="fas fa-image"></i>
-                        Image
+                        Images
                     </h4>
-
-                    <div class="form-group">
-                        <label for="image" class="form-label">Select Image (PNG, JPG, JPEG) *</label>
-                        <input type="file" id="image" class="form-control"
-                            accept="image/png,image/jpeg,image/jpg" (change)="onImageChange($event)"
-                            [class.error]="isFieldInvalid('image')">
-                        <div class="form-help">Select a PNG, JPG, or JPEG image from your device</div>
-                        <div class="error-message" *ngIf="isFieldInvalid('image')">
-                            {{ getFieldError('image') }}
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addPhoto()">
+                        <i class="fas fa-plus"></i> Add Image
+                    </button>
+                    <div *ngFor="let photo of photos.controls; let i=index" class="form-subsection" [formGroup]="photo">
+                        <h5>Image {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'photo-image-' + i" class="form-label">Image *</label>
+                                <input type="file" [attr.id]="'photo-image-' + i" class="form-control"
+                                    accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageChange($event, photo, 'photos-' + i)"
+                                    [class.error]="isFieldInvalid(photo, 'url')">
+                                <div class="error-message" *ngIf="isFieldInvalid(photo, 'url')">
+                                    {{ getFieldError(photo, 'url') }}
+                                </div>
+                                <div class="image-preview" *ngIf="imagePreviews['photos-' + i]">
+                                    <img [src]="imagePreviews['photos-' + i]" alt="Preview" class="preview-image">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label [attr.for]="'photo-caption-' + i" class="form-label">Caption</label>
+                                <input type="text" [attr.id]="'photo-caption-' + i" formControlName="caption"
+                                    class="form-control" placeholder="Enter photo caption">
+                            </div>
                         </div>
-
-                        <!-- Image Preview -->
-                        <div class="image-preview" *ngIf="imagePreview">
-                            <img [src]="imagePreview" alt="Preview" class="preview-image">
-                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(photos, i, 'photos')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
                     </div>
                 </div>
 
@@ -128,172 +135,197 @@
                         <div class="form-group">
                             <label for="from" class="form-label">From *</label>
                             <input type="text" id="from" formControlName="from" class="form-control"
-                                [class.error]="isFieldInvalid('from')" placeholder="e.g., New York">
-                            <div class="error-message" *ngIf="isFieldInvalid('from')">
-                                {{ getFieldError('from') }}
+                                [class.error]="isFieldInvalid(tourForm, 'from')" placeholder="e.g., New York">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'from')">
+                                {{ getFieldError(tourForm, 'from') }}
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="to" class="form-label">To *</label>
                             <input type="text" id="to" formControlName="to" class="form-control"
-                                [class.error]="isFieldInvalid('to')" placeholder="e.g., Paris">
-                            <div class="error-message" *ngIf="isFieldInvalid('to')">
-                                {{ getFieldError('to') }}
+                                [class.error]="isFieldInvalid(tourForm, 'to')" placeholder="e.g., Paris">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'to')">
+                                {{ getFieldError(tourForm, 'to') }}
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="departureAirport" class="form-label">Departure Airport *</label>
-                            <input type="text" id="departureAirport" formControlName="departureAirport" class="form-control"
-                                [class.error]="isFieldInvalid('departureAirport')" placeholder="e.g., JFK">
-                            <div class="error-message" *ngIf="isFieldInvalid('departureAirport')">
-                                {{ getFieldError('departureAirport') }}
+                            <label for="available_from" class="form-label">Available From *</label>
+                            <input type="date" id="available_from" formControlName="available_from" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'available_from')">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_from')">
+                                {{ getFieldError(tourForm, 'available_from') }}
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="arrivalAirport" class="form-label">Arrival Airport *</label>
-                            <input type="text" id="arrivalAirport" formControlName="arrivalAirport" class="form-control"
-                                [class.error]="isFieldInvalid('arrivalAirport')" placeholder="e.g., CDG">
-                            <div class="error-message" *ngIf="isFieldInvalid('arrivalAirport')">
-                                {{ getFieldError('arrivalAirport') }}
+                            <label for="available_to" class="form-label">Available To *</label>
+                            <input type="date" id="available_to" formControlName="available_to" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'available_to')">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_to')">
+                                {{ getFieldError(tourForm, 'available_to') }}
                             </div>
                         </div>
                     </div>
 
-                    <!-- Inclusions Section -->
-                    <div class="form-group">
-                        <label class="form-label">Inclusions *</label>
-                        <div class="input-group">
-                            <input type="text" [(ngModel)]="inclusionInput" [ngModelOptions]="{standalone: true}"
-                                class="form-control" placeholder="Enter an inclusion and press Enter"
-                                (keypress)="onInclusionKeyPress($event)">
-                            <button type="button" class="btn btn-sm btn-primary add-btn"
-                                (click)="addInclusion()" [disabled]="!inclusionInput.trim()">
-                                <i class="fas fa-plus"></i>
-                                Add
-                            </button>
-                        </div>
-
-                        <div class="list-tags" *ngIf="tourForm.get('inclusions')?.value?.length > 0">
-                            <span *ngFor="let inclusion of tourForm.get('inclusions')?.value" class="tag">
-                                {{ inclusion }}
-                                <button type="button" class="remove-tag" (click)="removeInclusion(inclusion)">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </span>
-                        </div>
-
-                        <div class="error-message" *ngIf="isFieldInvalid('inclusions')">
-                            {{ getFieldError('inclusions') }}
-                        </div>
-                    </div>
-
-                    <!-- Highlights Section -->
-                    <div class="form-group">
-                        <label class="form-label">Highlights *</label>
-                        <div class="input-group">
-                            <input type="text" [(ngModel)]="highlightInput" [ngModelOptions]="{standalone: true}"
-                                class="form-control" placeholder="Enter a highlight and press Enter"
-                                (keypress)="onHighlightKeyPress($event)">
-                            <button type="button" class="btn btn-sm btn-primary add-btn"
-                                (click)="addHighlight()" [disabled]="!highlightInput.trim()">
-                                <i class="fas fa-plus"></i>
-                                Add
-                            </button>
-                        </div>
-
-                        <div class="list-tags" *ngIf="tourForm.get('highlights')?.value?.length > 0">
-                            <span *ngFor="let highlight of tourForm.get('highlights')?.value" class="tag">
-                                {{ highlight }}
-                                <button type="button" class="remove-tag" (click)="removeHighlight(highlight)">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </span>
-                        </div>
-
-                        <div class="error-message" *ngIf="isFieldInvalid('highlights')">
-                            {{ getFieldError('highlights') }}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description" class="form-label">Description *</label>
-                        <textarea id="description" formControlName="description" class="form-control form-textarea"
-                            [class.error]="isFieldInvalid('description')" placeholder="Describe the tour..."
-                            rows="4"></textarea>
-                        <div class="form-help">
-                            {{ tourForm.get('description')?.value?.length || 0 }}/500 characters
-                        </div>
-                        <div class="error-message" *ngIf="isFieldInvalid('description')">
-                            {{ getFieldError('description') }}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="itinerary" class="form-label">Itinerary *</label>
-                        <textarea id="itinerary" formControlName="itinerary" class="form-control form-textarea"
-                            [class.error]="isFieldInvalid('itinerary')" placeholder="Describe the itinerary..."
-                            rows="4"></textarea>
-                        <div class="form-help">
-                            {{ tourForm.get('itinerary')?.value?.length || 0 }}/1000 characters
-                        </div>
-                        <div class="error-message" *ngIf="isFieldInvalid('itinerary')">
-                            {{ getFieldError('itinerary') }}
+                    <div class="form-row single-column">
+                        <div class="form-group">
+                            <label for="description" class="form-label">Description *</label>
+                            <textarea id="description" formControlName="description" class="form-control form-textarea"
+                                [class.error]="isFieldInvalid(tourForm, 'description')" placeholder="Describe the tour..."
+                                rows="4"></textarea>
+                            <div class="form-help">
+                                {{ tourForm.get('description')?.value?.length || 0 }}/500 characters
+                            </div>
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'description')">
+                                {{ getFieldError(tourForm, 'description') }}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Additional Settings -->
+                <!-- Itinerary Section -->
                 <div class="form-section">
                     <h4 class="section-title">
-                        <i class="fas fa-cog"></i>
-                        Additional Settings
+                        <i class="fas fa-list-ol"></i>
+                        Itinerary
                     </h4>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="maxGroupSize" class="form-label">Max Group Size *</label>
-                            <input type="number" id="maxGroupSize" formControlName="maxGroupSize" class="form-control"
-                                [class.error]="isFieldInvalid('maxGroupSize')" placeholder="Enter max group size">
-                            <div class="error-message" *ngIf="isFieldInvalid('maxGroupSize')">
-                                {{ getFieldError('maxGroupSize') }}
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addItineraryDay()">
+                        <i class="fas fa-plus"></i> Add Day
+                    </button>
+                    <div *ngFor="let day of itineraryDays.controls; let i=index" class="form-subsection" [formGroup]="day">
+                        <h5>Day {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'itinerary-title-' + i" class="form-label">Title *</label>
+                                <input type="text" [attr.id]="'itinerary-title-' + i" formControlName="title"
+                                    class="form-control" [class.error]="isFieldInvalid(day, 'title')"
+                                    placeholder="Enter day title">
+                                <div class="error-message" *ngIf="isFieldInvalid(day, 'title')">
+                                    {{ getFieldError(day, 'title') }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label [attr.for]="'itinerary-day-' + i" class="form-label">Day Number *</label>
+                                <input type="number" [attr.id]="'itinerary-day-' + i" formControlName="day"
+                                    class="form-control" [class.error]="isFieldInvalid(day, 'day')"
+                                    placeholder="e.g., 1">
+                                <div class="error-message" *ngIf="isFieldInvalid(day, 'day')">
+                                    {{ getFieldError(day, 'day') }}
+                                </div>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label for="minGroupSize" class="form-label">Min Group Size *</label>
-                            <input type="number" id="minGroupSize" formControlName="minGroupSize" class="form-control"
-                                [class.error]="isFieldInvalid('minGroupSize')" placeholder="Enter min group size">
-                            <div class="error-message" *ngIf="isFieldInvalid('minGroupSize')">
-                                {{ getFieldError('minGroupSize') }}
+                            <label [attr.for]="'itinerary-description-' + i" class="form-label">Description *</label>
+                            <textarea [attr.id]="'itinerary-description-' + i" formControlName="description"
+                                class="form-control form-textarea" [class.error]="isFieldInvalid(day, 'description')"
+                                placeholder="Describe the day's activities..." rows="3"></textarea>
+                            <div class="error-message" *ngIf="isFieldInvalid(day, 'description')">
+                                {{ getFieldError(day, 'description') }}
                             </div>
                         </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(itineraryDays, i, 'itineraryDays')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
                     </div>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group checkbox-group">
-                            <label class="form-label">Tour Options</label>
-                            <div class="checkbox">
-                                <input type="checkbox" id="instantBooking" formControlName="instantBooking">
-                                <label for="instantBooking">Instant Booking</label>
+                <!-- Room Types Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-bed"></i>
+                        Room Types
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addRoomType()">
+                        <i class="fas fa-plus"></i> Add Room Type
+                    </button>
+                    <div *ngFor="let room of roomTypes.controls; let i=index" class="form-subsection" [formGroup]="room">
+                        <h5>Room Type {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'room-name-' + i" class="form-label">Name *</label>
+                                <input type="text" [attr.id]="'room-name-' + i" formControlName="name"
+                                    class="form-control" [class.error]="isFieldInvalid(room, 'name')"
+                                    placeholder="Enter room type name">
+                                <div class="error-message" *ngIf="isFieldInvalid(room, 'name')">
+                                    {{ getFieldError(room, 'name') }}
+                                </div>
                             </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="requiresApproval" formControlName="requiresApproval">
-                                <label for="requiresApproval">Requires Approval</label>
-                            </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="isActive" formControlName="isActive">
-                                <label for="isActive">Active</label>
-                            </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="isFeatured" formControlName="isFeatured">
-                                <label for="isFeatured">Featured</label>
+                            <div class="form-group">
+                                <label [attr.for]="'room-max-occupancy-' + i" class="form-label">Max Occupancy *</label>
+                                <input type="number" [attr.id]="'room-max-occupancy-' + i" formControlName="max_occupancy"
+                                    class="form-control" [class.error]="isFieldInvalid(room, 'max_occupancy')"
+                                    placeholder="e.g., 2">
+                                <div class="error-message" *ngIf="isFieldInvalid(room, 'max_occupancy')">
+                                    {{ getFieldError(room, 'max_occupancy') }}
+                                </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label [attr.for]="'room-description-' + i" class="form-label">Description</label>
+                            <textarea [attr.id]="'room-description-' + i" formControlName="description"
+                                class="form-control form-textarea" placeholder="Describe the room type..." rows="3"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(roomTypes, i, 'roomTypes')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="form-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </h4>
+                    <button type="button" class="btn btn-sm btn-primary" (click)="addReview()">
+                        <i class="fas fa-plus"></i> Add Review
+                    </button>
+                    <div *ngFor="let review of reviews.controls; let i=index" class="form-subsection" [formGroup]="review">
+                        <h5>Review {{i + 1}}</h5>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label [attr.for]="'review-reviewer-name-' + i" class="form-label">Reviewer Name *</label>
+                                <input type="text" [attr.id]="'review-reviewer-name-' + i" formControlName="reviewer_name"
+                                    class="form-control" [class.error]="isFieldInvalid(review, 'reviewer_name')"
+                                    placeholder="Enter reviewer name">
+                                <div class="error-message" *ngIf="isFieldInvalid(review, 'reviewer_name')">
+                                    {{ getFieldError(review, 'reviewer_name') }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label [attr.for]="'review-rating-' + i" class="form-label">Rating *</label>
+                                <input type="number" [attr.id]="'review-rating-' + i" formControlName="rating"
+                                    class="form-control" [class.error]="isFieldInvalid(review, 'rating')"
+                                    placeholder="1-5" min="1" max="5">
+                                <div class="error-message" *ngIf="isFieldInvalid(review, 'rating')">
+                                    {{ getFieldError(review, 'rating') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'review-comment-' + i" class="form-label">Comment *</label>
+                            <textarea [attr.id]="'review-comment-' + i" formControlName="comment"
+                                class="form-control form-textarea" [class.error]="isFieldInvalid(review, 'comment')"
+                                placeholder="Enter review comment..." rows="3"></textarea>
+                            <div class="error-message" *ngIf="isFieldInvalid(review, 'comment')">
+                                {{ getFieldError(review, 'comment') }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label [attr.for]="'review-date-' + i" class="form-label">Date *</label>
+                            <input type="date" [attr.id]="'review-date-' + i" formControlName="date"
+                                class="form-control" [class.error]="isFieldInvalid(review, 'date')">
+                            <div class="error-message" *ngIf="isFieldInvalid(review, 'date')">
+                                {{ getFieldError(review, 'date') }}
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeItem(reviews, i, 'reviews')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
                     </div>
                 </div>
             </form>
@@ -304,7 +336,7 @@
             <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isSubmitting">
                 Cancel
             </button>
-            <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="isSubmitting">
+            <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="isSubmitting">
                 <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
                 <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
                 {{ isSubmitting ? 'Adding...' : 'Add Tour' }}

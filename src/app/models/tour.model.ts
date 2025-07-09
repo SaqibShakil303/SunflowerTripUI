@@ -1,4 +1,3 @@
-// tour.model.ts - Updated with all fields from the design
 
 export interface TourPhoto {
   id: number;
@@ -133,4 +132,7 @@ export class Tour {
   updated_at?: string;
   isCustomizable?: boolean; // New: for customizable days
 
+  // Additional fields for UI state management
+  showDetails?: boolean;
+  isDeleting?: boolean;
 }

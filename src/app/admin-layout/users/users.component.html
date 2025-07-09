@@ -68,8 +68,9 @@
                             </div>
                         </td>
                         <td class="col-date">
-                            <span class="date-text">{{ formatDate(user.createdDate) }}</span>
-                            <span class="time-text">{{ formatTime(user.createdDate) }}</span>
+                            <span class="date-text" *ngIf="user.createdAt">{{ formatDate(user.createdAt) }}</span>
+                            <span class="date-text" *ngIf="!user.createdAt">N/A</span>
+                            <span class="time-text" *ngIf="user.createdAt">{{ formatTime(user.createdAt) }}</span>
                         </td>
                         <td class="col-actions">
                             <button class="btn btn-danger btn-sm delete-btn" (click)="deleteUser(user)"
