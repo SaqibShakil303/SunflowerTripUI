@@ -96,8 +96,8 @@
                             <td class="col-price" data-label="Price">
                                 <div class="price-info">
                                     <span class="price-amount">
-                                        {{ tour.price_per_person != null && tour.price_per_person !== undefined
-                                        ? (tour.price_currency || '') + ' ' + (tour.price_per_person | number:'1.0-0')
+                                        {{ tour.price != null && tour.price !== undefined
+                                        ? (tour.price_currency || '') + ' ' + (tour.price | number:'1.0-0')
                                         : 'N/A' }}
                                     </span>
                                     <span class="price-label">per person</span>
@@ -153,8 +153,8 @@
                                             </div>
                                             <div class="detail-item">
                                                 <span class="detail-label">Locations:</span>
-                                                <span class="detail-value">{{ tour.location_ids?.length ?
-                                                    tour.location_ids.join(', ') : 'N/A' }}</span>
+                                                <!-- <span class="detail-value">{{ tour.location_ids?.length ?
+                                                    tour.location_ids.join(', ') : 'N/A' }}</span> -->
                                             </div>
                                         </div>
                                     </div>
@@ -346,7 +346,7 @@
                                             *ngIf="getItineraryArray(tour.itinerary).length; else noItinerary">
                                             <div *ngFor="let day of getItineraryArray(tour.itinerary)"
                                                 class="list-item">
-                                                <strong>Day {{ day.day || 'N/A' }}: {{ day.title || 'N/A' }}</strong>
+                                                <strong>{{ day.title || 'N/A' }}</strong>
                                                 <p>{{ day.description || 'No description' }}</p>
                                                 <div *ngIf="day.activities?.length">
                                                     <strong>Activities:</strong> {{ day.activities!.join(', ') }}

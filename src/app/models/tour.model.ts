@@ -40,8 +40,9 @@ export class Tour {
   location!: string;
   description!: string;
   itinerary!: string | ItineraryDay[]; // Can be string or structured data
-  price!: number | string;
+  price!: number;
   image_url!: string;
+  map_embed_url!: string; // New field for map embed URL
   duration_days!: number;
   available_from!: string;
   available_to!: string;
@@ -132,6 +133,9 @@ export class Tour {
   updated_at?: string;
   isCustomizable?: boolean; // New: for customizable days
 
+adults?: number;
+  children?: number;
+  rooms?: number;
   // Additional fields for UI state management
   showDetails?: boolean;
   isDeleting?: boolean;
