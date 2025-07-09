@@ -8,7 +8,7 @@ import { FooterComponent } from "../../common/footer/footer.component";
 import { NavbarComponent } from "../../common/navbar/navbar.component";
 import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.component";
 import { BookingModalComponent } from "../../components/booking-modal/booking-modal.component";
-import { Meta, Title } from '@angular/platform-browser';
+import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { BookingsService } from '../../services/bookings/bookings.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -40,6 +40,7 @@ export class TourDetailComponent implements OnInit {
   modalFormType: 'enquiry' | 'booking' = 'enquiry';
 
   constructor(
+    public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private tourService: TourService,
     @Inject(PLATFORM_ID) private platformId: Object,

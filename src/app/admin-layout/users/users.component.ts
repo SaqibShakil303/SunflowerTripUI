@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user/user.service';
@@ -32,7 +32,8 @@ export class UsersComponent implements OnInit {
   showDeleteModal: boolean = false;
   userToDelete: UserModel | null = null;
 
-  constructor(private userService: UserService) { }
+constructor(private userService: UserService, @Inject(PLATFORM_ID) private platformId: Object) {}
+
 
   ngOnInit(): void {
     this.loadUsers();
@@ -155,23 +156,26 @@ export class UsersComponent implements OnInit {
   /**
    * Export users data
    */
-  exportUsers(): void {
-    const csvContent = this.generateCSV();
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+exportUsers(): void {
+  if (!isPlatformBrowser(this.platformId)) return;
 
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `users_export_${new Date().getTime()}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+  const csvContent = this.generateCSV();
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
 
-    console.log('Users exported');
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `users_export_${new Date().getTime()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
+
+  console.log('Users exported');
+}
+
 
   /**
    * Generate CSV content

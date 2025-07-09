@@ -1,13 +1,13 @@
 import { Router, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
-import { AboutComponent } from './components/about/about.component';
-import { ServicesComponent } from './components/services/services.component';
-import { DestinationsComponent } from './components/destinations/destinations.component';
-import { WhyUsComponent } from './components/why-us/why-us.component';
-import { TopPicksComponent } from './components/top-picks/top-picks.component';
-import { TestimonialsComponent } from './components/testimonials/testimonials.component';
+// import { AboutComponent } from './components/about/about.component';
+// import { ServicesComponent } from './components/services/services.component';
+// import { DestinationsComponent } from './components/destinations/destinations.component';
+// import { WhyUsComponent } from './components/why-us/why-us.component';
+// import { TopPicksComponent } from './components/top-picks/top-picks.component';
+// import { TestimonialsComponent } from './components/testimonials/testimonials.component';
 import { ItineraryComponent } from './pages/itinerary/itinerary.component';
-import { NewsletterComponent } from './components/newsletter/newsletter.component';
+// import { NewsletterComponent } from './components/newsletter/newsletter.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { MapComponent } from './components/map/map.component';
 import { TravelGuideComponent } from './pages/travel-guide/travel-guide.component';
@@ -23,12 +23,12 @@ import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { AuthService } from './services/authService/auth.service';
 import { inject } from '@angular/core';
 import { AuthCallbackComponent } from './auth/auth-callback.component';
-import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { ItneraryAdminComponent } from './admin-layout/itnerary/itnerary-admin/itnerary-admin.component';
-import { DestinationMainComponent } from './pages/destination-main/destination-main.component';
+// import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
+// import { ItneraryAdminComponent } from './admin-layout/itnerary/itnerary-admin/itnerary-admin.component';
+// import { DestinationMainComponent } from './pages/destination-main/destination-main.component';
 import { TourDetailComponent } from './pages/tour-detail/tour-detail.component';
-import { TripPlannerComponent } from './common/trip-planner/trip-planner.component';
-import { CustomPlannerComponent } from './pages/custom-planner/custom-planner.component';
+// import { TripPlannerComponent } from './common/trip-planner/trip-planner.component';
+// import { CustomPlannerComponent } from './pages/custom-planner/custom-planner.component';
 import { CompanyPortfolioComponent } from './pages/company-portfolio/company-portfolio.component';
 import { GroupBrochureComponent } from './pages/group-brochure/group-brochure.component';
 
@@ -52,16 +52,16 @@ export const routes: Routes = [
     path: '',
     component: HomeComponent,
     children: [
-      { path: 'about', component: AboutComponent },
-      { path: 'services', component: ServicesComponent },
-      { path: 'destinations', component: DestinationsComponent },
-      { path: 'why-us', component: WhyUsComponent },
-      { path: 'top-picks', component: TopPicksComponent },
-      { path: 'testimonials', component: TestimonialsComponent },
-      { path: 'itinerary', component: ItineraryComponent },
-      { path: 'newsletter', component: NewsletterComponent },
-      { path: 'contact', component: ContactComponent },
-      { path: 'map', component: MapComponent },
+      // { path: 'about', component: AboutComponent },
+      // { path: 'services', component: ServicesComponent },
+      // { path: 'destinations', component: DestinationsComponent },
+      // { path: 'why-us', component: WhyUsComponent },
+      // { path: 'top-picks', component: TopPicksComponent },
+      // { path: 'testimonials', component: TestimonialsComponent },
+      // { path: 'itinerary', component: ItineraryComponent },
+      // { path: 'newsletter', component: NewsletterComponent },
+      // { path: 'contact', component: ContactComponent },
+      // { path: 'map', component: MapComponent },
       { path: '', redirectTo: '', pathMatch: 'full' }
     ]
   },
