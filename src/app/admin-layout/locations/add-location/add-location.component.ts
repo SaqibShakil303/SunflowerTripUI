@@ -50,7 +50,7 @@ export class AddLocationComponent implements OnInit {
       destinationId: ['', [Validators.required]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       imageFile: [null],
-      imageUrl: ['', [Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg))$/i)]],
+      imageUrl: ['', [Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]],
       iframe360: ['', [Validators.required, Validators.pattern(/^https?:\/\/.*/)]]
     });
   }
@@ -65,7 +65,7 @@ export class AddLocationComponent implements OnInit {
       this.locationForm.get('imageFile')?.setValidators([Validators.required]);
       this.locationForm.get('imageUrl')?.clearValidators();
     } else {
-      this.locationForm.get('imageUrl')?.setValidators([Validators.required, Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg))$/i)]);
+      this.locationForm.get('imageUrl')?.setValidators([Validators.required, Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]);
       this.locationForm.get('imageFile')?.clearValidators();
     }
     this.locationForm.get('imageFile')?.updateValueAndValidity();
@@ -80,7 +80,7 @@ export class AddLocationComponent implements OnInit {
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
       if (!validTypes.includes(file.type)) {
         imageFileControl?.setErrors({ invalidType: true });
@@ -149,13 +149,13 @@ export class AddLocationComponent implements OnInit {
         return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['maxlength'].requiredLength} characters`;
       }
       if (field.errors['invalidType']) {
-        return 'Please select a valid image (PNG, JPG, or JPEG)';
+        return 'Please select a valid image (PNG, JPG, WEBP or JPEG)';
       }
       if (field.errors['readError']) {
         return 'Error reading the image file';
       }
       if (field.errors['pattern'] && fieldName === 'imageUrl') {
-        return 'Please enter a valid image URL (PNG, JPG, or JPEG)';
+        return 'Please enter a valid image URL (PNG, JPG, WEBP or JPEG)';
       }
       if (field.errors['pattern'] && fieldName === 'iframe360') {
         return 'Please enter a valid URL starting with http:// or https://';

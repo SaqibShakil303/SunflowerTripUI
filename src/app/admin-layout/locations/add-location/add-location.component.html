@@ -83,11 +83,11 @@
                     </div>
 
                     <div class="form-group" *ngIf="imageInputType === 'file'">
-                        <label for="imageFile" class="form-label">Select Image (PNG, JPG, JPEG) *</label>
+                        <label for="imageFile" class="form-label">Select Image (PNG, JPG, JPEG, WEBP) *</label>
                         <input type="file" id="imageFile" class="form-control"
-                            accept="image/png,image/jpeg,image/jpg" (change)="onImageFileChange($event)"
+                            accept="image/png,image/jpeg,image/jpg,image/webp" (change)="onImageFileChange($event)"
                             [class.error]="isFieldInvalid('imageFile')">
-                        <div class="form-help">Select a PNG, JPG, or JPEG image from your device</div>
+                        <div class="form-help">Select a PNG, JPG, WEBP or JPEG image from your device</div>
                         <div class="error-message" *ngIf="isFieldInvalid('imageFile')">
                             {{ getFieldError('imageFile') }}
                         </div>
