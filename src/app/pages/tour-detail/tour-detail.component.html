@@ -4,11 +4,12 @@
     <img [src]="tour.image_url" alt="{{ tour.title }}" class="hero-image" />
     <div class="hero-overlay">
       <div class="container">
-        <div class="hero-content">
+           <div class="hero-content">
           <h1 class="tour-title">{{ tour.title }}</h1>
           <div class="tour-meta">
             <span class="duration">{{ tour.duration_days }} Days</span>
             <span class="availability">{{ getAvailabilityText() }}</span>
+            <span class="difficulty" *ngIf="tour.difficulty_level">{{ tour.difficulty_level }}</span>
           </div>
           <div class="airports" *ngIf="tour.departure_airport && tour.arrival_airport">
             <div class="airport-info">
@@ -20,15 +21,21 @@
               <span>{{ tour.arrival_airport }}</span>
             </div>
           </div>
-          <div class="group-size" *ngIf="tour.max_group_size">
+          <div class="group-size" *ngIf="tour.min_group_size || tour.max_group_size">
             <i class="icon-users"></i>
-            <span>{{ tour.max_group_size }}</span>
+            <span>{{ tour.min_group_size || 1 }} - {{ tour.max_group_size }} Guests</span>
+          </div>
+          <div class="customizable" *ngIf="tour.is_customizable">
+            <i class="icon-check"></i>
+            <span>Customizable Tour</span>
           </div>
         </div>
         <div class="booking-card">
           <div class="price-section">
             <span class="price-label">Price</span>
-            <span class="price">₹{{ formatPrice(tour.price) }}</span>
+           <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price) }}</span>
+           <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{ formatDiscount(tour.early_bird_discount) }} off</span>
+            <span class="discount" *ngIf="tour.group_discount">Group: {{ formatDiscount(tour.group_discount) }} off</span>
           </div>
           <div class="booking-forms">
             <button class="btn btn-outline" (click)="openEnquiryForm()">Enquiry Form</button>
@@ -82,6 +89,7 @@
       <button class="tab-btn" [class.active]="activeTab === 'map'" (click)="setActiveTab('map')">Map</button>
       <button class="tab-btn" [class.active]="activeTab === 'photos'" (click)="setActiveTab('photos')">Photos</button>
       <button class="tab-btn" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">Reviews</button>
+        <button class="tab-btn" [class.active]="activeTab === 'info'" (click)="setActiveTab('info')">Additional Info</button>
     </div>
 
     <!-- Overview Section -->
@@ -90,6 +98,29 @@
         <h2>OVERVIEWS</h2>
         <div class="description">
           <p>{{ tour.description }}</p>
+        </div>
+          <div class="details-grid">
+          <div class="detail-item" *ngIf="tour.accommodation_type">
+            <strong>Accommodation Type:</strong> {{ tour.accommodation_type }}
+            <span *ngIf="tour.accommodation_rating" class="rating">
+              <span *ngFor="let star of getAccommodationRatingStars()">★</span>
+            </span>
+          </div>
+          <div class="detail-item" *ngIf="tour.guide_included">
+            <strong>Guide:</strong> Included (Languages: {{ tour.guide_languages?.join(', ') || 'N/A' }})
+          </div>
+          <div class="detail-item" *ngIf="tour.transportation_included">
+            <strong>Transportation:</strong> {{ tour.transportation_details || 'Included' }}
+          </div>
+          <div class="detail-item" *ngIf="tour.activity_types?.length">
+            <strong>Activities:</strong> {{ tour.activity_types?.join(', ') }}
+          </div>
+          <div class="detail-item" *ngIf="tour.interests?.length">
+            <strong>Interests:</strong> {{ tour.interests?.join(', ') }}
+          </div>
+          <div class="detail-item" *ngIf="tour.physical_requirements">
+            <strong>Physical Requirements:</strong> {{ tour.physical_requirements }}
+          </div>
         </div>
       </div>
 
@@ -204,6 +235,27 @@
           </div>
           <p>{{ review.comment }}</p>
           <small>{{ review.date | date }}</small>
+        </div>
+      </div>
+    </div>
+
+       <!-- Additional Info Section -->
+    <div class="tab-content" *ngIf="activeTab === 'info'">
+      <div class="info-section">
+        <h2>ADDITIONAL INFORMATION</h2>
+        <div class="info-grid">
+          <div class="info-item" *ngIf="tour.best_time_to_visit">
+            <strong>Best Time to Visit:</strong> {{ tour.best_time_to_visit }}
+          </div>
+          <div class="info-item" *ngIf="tour.weather_info">
+            <strong>Weather Information:</strong> {{ tour.weather_info }}
+          </div>
+          <div class="info-item" *ngIf="tour.packing_list?.length">
+            <strong>Packing List:</strong>
+            <ul>
+              <li *ngFor="let item of tour.packing_list">{{ item }}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

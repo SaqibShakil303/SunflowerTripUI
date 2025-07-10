@@ -35,6 +35,9 @@ export class TourDetailComponent implements OnInit {
   inclusionTab = 'inclusions';
   selectedDate = '';
   selectedGuests = 1;
+  selectedAdults = 0;
+  selectedChildren = 0;
+  selectedRooms = 1;
   openDayIndex: number | null = null;
   isModalOpen = false;
   modalFormType: 'enquiry' | 'booking' = 'enquiry';
@@ -62,6 +65,9 @@ export class TourDetailComponent implements OnInit {
       next: (tour) => {
         this.tour = this.transformTourData(tour);
         this.selectedDate = this.formatDate(tour.available_from);
+        this.selectedAdults = tour.adults || 0;
+        this.selectedChildren = tour.children || 0;
+        this.selectedRooms = tour.rooms || 1;
         this.loading = false;
 
         this.title.setTitle(tour.meta_title || tour.title);
@@ -97,6 +103,17 @@ export class TourDetailComponent implements OnInit {
     data.languages_supported = this.safeParse(data.languages_supported);
     data.meals_included = this.safeParse(data.meals_included);
     data.activity_types = this.safeParse(data.activity_types);
+    data.interests = this.safeParse(data.interests);
+    data.packing_list = this.safeParse(data.packing_list);
+    data.guide_languages = this.safeParse(data.guide_languages); // Fixed: Ensure guide_languages is parsed
+    data.dietary_restrictions_supported = this.safeParse(data.dietary_restrictions_supported);
+    data.guide_included = data.guide_included === 1;
+    data.transportation_included = data.transportation_included === 1;
+    data.instant_booking = data.instant_booking === 1;
+    data.requires_approval = data.requires_approval === 1;
+    data.is_active = data.is_active === 1;
+    data.is_featured = data.is_featured === 1;
+    data.is_customizable = data.is_customizable === 1;
     return data as Tour;
   }
 
@@ -124,6 +141,11 @@ export class TourDetailComponent implements OnInit {
     return numPrice.toLocaleString('en-IN');
   }
 
+  formatDiscount(discount: string | number): string {
+    const numDiscount = typeof discount === 'string' ? parseFloat(discount) : discount;
+    return `${numDiscount}%`;
+  }
+
   getAvailabilityText(): string {
     if (!this.tour) return '';
     const fromDate = new Date(this.tour.available_from);
@@ -146,6 +168,7 @@ export class TourDetailComponent implements OnInit {
     
     if (typeof this.tour.itinerary === 'string') {
       return this.tour.itinerary.split('\n').map((day, index) => ({
+        day: index + 1,
         title: `Day ${index + 1}`,
         description: day.replace(/^Day \d+:\s*/, '')
       }));
@@ -155,6 +178,12 @@ export class TourDetailComponent implements OnInit {
   }
 
   getStarArray(rating: number): number[] {
+    return Array(5).fill(0).map((_, i) => i < rating ? 1 : 0);
+  }
+
+  getAccommodationRatingStars(): number[] {
+    if (!this.tour?.accommodation_rating) return [];
+    const rating = this.tour?.accommodation_rating ?? 0;
     return Array(5).fill(0).map((_, i) => i < rating ? 1 : 0);
   }
 
@@ -190,7 +219,12 @@ export class TourDetailComponent implements OnInit {
   }
 
   handleBookingSubmit(data: any): void {
-    this.bookingsService.submitBooking(data).subscribe({
+    this.bookingsService.submitBooking({
+      ...data,
+      adults: this.selectedAdults,
+      children: this.selectedChildren,
+      rooms: this.selectedRooms
+    }).subscribe({
       next: (response) => {
         console.log('Booking submitted successfully:', response);
         if (isPlatformBrowser(this.platformId)) {
@@ -209,7 +243,10 @@ export class TourDetailComponent implements OnInit {
   proceedBooking(): void {
     console.log('Proceeding with booking', {
       date: this.selectedDate,
-      guests: this.selectedGuests
+      guests: this.selectedGuests,
+      adults: this.selectedAdults,
+      children: this.selectedChildren,
+      rooms: this.selectedRooms
     });
   }
 
