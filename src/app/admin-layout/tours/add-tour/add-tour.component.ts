@@ -30,27 +30,65 @@ export class AddTourComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) { }
 
-  ngOnInit(): void {
-    this.tourForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      destination_id: [null, Validators.required],
-      duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
-      category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      price_per_person: [0, [Validators.required, Validators.min(0)]],
-      price_currency: ['USD', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
-      from: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      to: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      available_from: ['', Validators.required],
-      available_to: ['', Validators.required],
-      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-      photos: this.fb.array([], Validators.required),
-      itinerary: this.fb.array([], Validators.required),
-      room_types: this.fb.array([]),
-      reviews: this.fb.array([])
-    });
+ ngOnInit(): void {
+  this.tourForm = this.fb.group({
+    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+    slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
+    destination_id: [null, Validators.required],
+    location_ids: [''], // Store as comma-separated string
+    location: [''],
+    duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
+    category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+    price_per_person: [0, [Validators.required, Validators.min(0)]],
+    price_currency: ['INR', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+    image_url: [''],
+    description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+    departure_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    arrival_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    available_from: ['', Validators.required],
+    available_to: ['', Validators.required],
+    max_group_size: [null],
+    min_group_size: [null],
+    inclusions: [''],
+    exclusions: [''],
+    complementaries: [''],
+    highlights: [''],
+    booking_terms: [''],
+    cancellation_policy: [''],
+    meta_title: [''],
+    meta_description: [''],
+    early_bird_discount: [null],
+    group_discount: [null],
+    difficulty_level: ['Moderate'],
+    physical_requirements: [''],
+    best_time_to_visit: [''],
+    weather_info: [''],
+    packing_list: [''],
+    languages_supported: [''],
+    guide_included: [true],
+    guide_languages: [''],
+    transportation_included: [true],
+    transportation_details: [''],
+    meals_included: [''],
+    dietary_restrictions_supported: [''],
+    accommodation_type: [''],
+    accommodation_rating: [null],
+    activity_types: [''],
+    interests: [''],
+    instant_booking: [false],
+    requires_approval: [true],
+    advance_booking_days: [null],
+    is_active: [true],
+    is_featured: [true],
+    is_customizable: [true],
+    photos: this.fb.array([]),
+    itinerary: this.fb.array([], Validators.required),
+    room_types: this.fb.array([]),
+    reviews: this.fb.array([])
+  });
 
-    this.loadDestinations();
-  }
+  this.loadDestinations();
+}
 
   get photos() { return this.tourForm.get('photos') as FormArray<FormGroup>; }
   get itineraryDays() { return this.tourForm.get('itinerary') as FormArray<FormGroup>; }
@@ -73,40 +111,12 @@ export class AddTourComponent implements OnInit {
     });
   }
 
-  onImageChange(event: Event, control: FormGroup, previewKey: string): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      if (!['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.type)) {
-        control.get('url')?.setErrors({ invalidType: true });
-        this.imagePreviews[previewKey] = '';
-        this.cdr.detectChanges();
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        control.patchValue({ url: base64String });
-        this.imagePreviews[previewKey] = base64String;
-        this.cdr.detectChanges();
-      };
-      reader.onerror = () => {
-        control.get('url')?.setErrors({ readError: true });
-        this.imagePreviews[previewKey] = '';
-        this.cdr.detectChanges();
-      };
-      reader.readAsDataURL(file);
-    } else {
-      control.patchValue({ url: '' });
-      this.imagePreviews[previewKey] = '';
-      this.cdr.detectChanges();
-    }
-  }
-
   addPhoto(): void {
     this.photos.push(this.fb.group({
       url: ['', Validators.required],
-      caption: ['', Validators.maxLength(100)]
+      caption: ['', Validators.maxLength(100)],
+      is_primary: [false],
+      display_order: [null]
     }));
   }
 
@@ -114,7 +124,10 @@ export class AddTourComponent implements OnInit {
     this.itineraryDays.push(this.fb.group({
       day: [this.itineraryDays.length + 1, [Validators.required, Validators.min(1)]],
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]]
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+      activities: [''],
+      meals_included: [''],
+      accommodation: ['']
     }));
   }
 
@@ -131,7 +144,9 @@ export class AddTourComponent implements OnInit {
       reviewer_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       rating: [1, [Validators.required, Validators.min(1), Validators.max(5)]],
       comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-      date: ['', Validators.required]
+      date: ['', Validators.required],
+      is_verified: [true],
+      is_approved: [true]
     }));
   }
 
@@ -148,13 +163,15 @@ export class AddTourComponent implements OnInit {
       const payload = {
         tour: {
           title: formValue.title,
-          destination_id: formValue.destination_id,
-          location_ids: formValue.location_ids,
           slug: formValue.slug,
-          location: formValue.location,
+          destination_id: formValue.destination_id,
+          location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
+        location: formValue.location || undefined,
           description: formValue.description,
-          price_per_person: formValue.price_per_person,
+          price: formValue.price_per_person.toFixed(2),
+          price_per_person: formValue.price_per_person.toFixed(2),
           price_currency: formValue.price_currency,
+          image_url: formValue.image_url,
           duration_days: formValue.duration_days,
           available_from: formValue.available_from,
           available_to: formValue.available_to,
@@ -163,49 +180,55 @@ export class AddTourComponent implements OnInit {
           arrival_airport: formValue.arrival_airport,
           max_group_size: formValue.max_group_size,
           min_group_size: formValue.min_group_size,
-          inclusions: formValue.inclusions,
-          exclusions: formValue.exclusions,
-          complementaries: formValue.complementaries,
-          highlights: formValue.highlights,
+          inclusions: formValue.inclusions ? formValue.inclusions.split('\n').filter((item: string) => item.trim()) : [],
+          exclusions: formValue.exclusions ? formValue.exclusions.split('\n').filter((item: string) => item.trim()) : [],
+          complementaries: formValue.complementaries ? formValue.complementaries.split('\n').filter((item: string) => item.trim()) : [],
+          highlights: formValue.highlights ? formValue.highlights.split('\n').filter((item: string) => item.trim()) : [],
           booking_terms: formValue.booking_terms,
           cancellation_policy: formValue.cancellation_policy,
           meta_title: formValue.meta_title,
           meta_description: formValue.meta_description,
-          early_bird_discount: formValue.early_bird_discount,
-          group_discount: formValue.group_discount,
+          early_bird_discount: formValue.early_bird_discount ? formValue.early_bird_discount.toFixed(2) : null,
+          group_discount: formValue.group_discount ? formValue.group_discount.toFixed(2) : null,
           difficulty_level: formValue.difficulty_level,
           physical_requirements: formValue.physical_requirements,
           best_time_to_visit: formValue.best_time_to_visit,
           weather_info: formValue.weather_info,
-          packing_list: formValue.packing_list,
-          languages_supported: formValue.languages_supported,
+          packing_list: formValue.packing_list ? formValue.packing_list.split('\n').filter((item: string) => item.trim()) : [],
+          languages_supported: formValue.languages_supported ? formValue.languages_supported.split('\n').filter((item: string) => item.trim()) : [],
           guide_included: formValue.guide_included,
-          guide_languages: formValue.guide_languages,
+          guide_languages: formValue.guide_languages ? formValue.guide_languages.split('\n').filter((item: string) => item.trim()) : [],
           transportation_included: formValue.transportation_included,
           transportation_details: formValue.transportation_details,
-          meals_included: formValue.meals_included,
-          dietary_restrictions_supported: formValue.dietary_restrictions_supported,
+          meals_included: formValue.meals_included ? formValue.meals_included.split('\n').filter((item: string) => item.trim()) : [],
+          dietary_restrictions_supported: formValue.dietary_restrictions_supported ? formValue.dietary_restrictions_supported.split('\n').filter((item: string) => item.trim()) : [],
           accommodation_type: formValue.accommodation_type,
           accommodation_rating: formValue.accommodation_rating,
-          activity_types: formValue.activity_types,
-          interests: formValue.interests,
+          activity_types: formValue.activity_types ? formValue.activity_types.split('\n').filter((item: string) => item.trim()) : [],
+          interests: formValue.interests ? formValue.interests.split('\n').filter((item: string) => item.trim()) : [],
           instant_booking: formValue.instant_booking,
           requires_approval: formValue.requires_approval,
           advance_booking_days: formValue.advance_booking_days,
           is_active: formValue.is_active,
           is_featured: formValue.is_featured,
-          is_customizable: formValue.is_customizable
+          is_customizable: formValue.is_customizable,
+          adults: 0,
+          children: 0,
+          rooms: 1
         },
         photos: formValue.photos.map((photo: any) => ({
-          url: photo.url ? (photo.url as File).name : null,
+          url: photo.url,
           caption: photo.caption,
-          is_primary: photo.is_primary
+          is_primary: photo.is_primary,
+          display_order: photo.display_order
         })),
         reviews: formValue.reviews.map((review: any) => ({
           reviewer_name: review.reviewer_name,
           rating: review.rating,
           comment: review.comment,
-          date: review.date
+          date: review.date,
+          is_verified: review.is_verified,
+          is_approved: review.is_approved
         })),
         room_types: formValue.room_types.map((room: any) => ({
           name: room.name,
@@ -216,9 +239,9 @@ export class AddTourComponent implements OnInit {
           day: day.day,
           title: day.title,
           description: day.description,
-          activities: day.activities,
-          meals_included: day.meals_included,
-          accommodation: day.accommodation
+          activities: day.activities ? day.activities.split('\n').filter((item: string) => item.trim()) : [],
+          meals_included: day.meals_included ? day.meals_included.split('\n').filter((item: string) => item.trim()) : [],
+          accommodation: day.accommodation || null
         }))
       };
 
@@ -279,8 +302,7 @@ export class AddTourComponent implements OnInit {
       if (field.errors['maxlength']) return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['maxlength'].requiredLength} characters`;
       if (field.errors['min']) return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['min'].min}`;
       if (field.errors['max']) return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['max'].max}`;
-      if (field.errors['invalidType']) return 'Please select a valid image (PNG, JPG, JPEG, or WebP)';
-      if (field.errors['readError']) return 'Error reading the image file';
+      if (field.errors['pattern']) return `${this.getFieldLabel(fieldName)} must contain only lowercase letters, numbers, and hyphens`;
     }
     return '';
   }
@@ -288,17 +310,20 @@ export class AddTourComponent implements OnInit {
   private getFieldLabel(fieldName: string): string {
     const labels: { [key: string]: string } = {
       title: 'Tour title',
+      slug: 'Slug',
       destination_id: 'Destination',
+      location_ids: 'Location IDs',
+    location: 'Location',
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',
       price_currency: 'Currency',
-      from: 'From',
-      to: 'To',
+      departure_airport: 'Departure airport',
+      arrival_airport: 'Arrival airport',
       available_from: 'Available from',
       available_to: 'Available to',
       description: 'Description',
-      url: 'Image',
+      url: 'Image URL',
       caption: 'Caption',
       day: 'Day number',
       name: 'Room name',

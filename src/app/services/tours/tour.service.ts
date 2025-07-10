@@ -76,7 +76,7 @@ export interface TourPayload {
   providedIn: 'root'
 })
 export class TourService {
-
+ 
   constructor(private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
@@ -89,6 +89,9 @@ export class TourService {
       .pipe(
         map(raw => this.transformTourData(raw))
       );
+  }
+ updateTour(id: number, payload: any):Observable<any> {
+ return this.http.patch(`${this.apiUrl}/Tours/Update/${id}`, payload);
   }
 
   getFilteredTours(params: any): Observable<Tour[]> {
