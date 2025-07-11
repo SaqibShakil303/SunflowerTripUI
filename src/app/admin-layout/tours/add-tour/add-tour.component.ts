@@ -20,7 +20,7 @@ export class AddTourComponent implements OnInit {
   imagePreviews: { [key: string]: string } = {};
   isSubmitting = false;
   destinations: Destination[] = [];
-
+  categories: string[] = [];
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddTourComponent>,
@@ -88,12 +88,22 @@ export class AddTourComponent implements OnInit {
   });
 
   this.loadDestinations();
+  this.loadCategories();
 }
 
   get photos() { return this.tourForm.get('photos') as FormArray<FormGroup>; }
   get itineraryDays() { return this.tourForm.get('itinerary') as FormArray<FormGroup>; }
   get roomTypes() { return this.tourForm.get('room_types') as FormArray<FormGroup>; }
   get reviews() { return this.tourForm.get('reviews') as FormArray<FormGroup>; }
+
+ loadCategories(): void{
+      this.tourService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => console.error('Failed loading categories', err)
+    });
+ }
 
   loadDestinations(): void {
     this.destinationService.getDestinationNames().subscribe({

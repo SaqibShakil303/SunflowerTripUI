@@ -58,8 +58,15 @@
 
                         <div class="form-group">
                             <label for="category" class="form-label">Category *</label>
-                            <input type="text" id="category" formControlName="category" class="form-control"
-                                [class.error]="isFieldInvalid(tourForm, 'category')" placeholder="e.g., Adventure, Cultural">
+                              <select id="category" formControlName="category" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'category')">
+                                <option [ngValue]="null">Select Category</option>
+                                <option *ngFor="let cat of categories" [ngValue]="cat">
+                                    {{ cat}}
+                                </option>
+                            </select>
+                            <!-- <input type="text" id="category" formControlName="category" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'category')" placeholder="e.g., Group or Custom"> -->
                             <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'category')">
                                 {{ getFieldError(tourForm, 'category') }}
                             </div>

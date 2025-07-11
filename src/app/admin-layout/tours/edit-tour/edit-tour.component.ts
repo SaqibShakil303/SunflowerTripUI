@@ -104,7 +104,7 @@ export class EditTourComponent implements OnInit {
   tourForm: FormGroup;
   isSubmitting: boolean = false;
   destinations: Destination[] = [];
-  categories: string[] = ['holiday','group'];
+  categories: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -120,6 +120,7 @@ export class EditTourComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDestinations();
+      this.loadCategories();
     this.populateForm();
   }
 
@@ -133,7 +134,7 @@ export class EditTourComponent implements OnInit {
       duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
       category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       price_per_person: [0, [Validators.required, Validators.min(0)]],
-      price_currency: ['USD', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      price_currency: ['INR', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       image_url: [''],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       departure_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -152,7 +153,7 @@ export class EditTourComponent implements OnInit {
       meta_description: [''],
       early_bird_discount: [null],
       group_discount: [null],
-      difficulty_level: ['Moderate'],
+      difficulty_level: [''],
       physical_requirements: [''],
       best_time_to_visit: [''],
       weather_info: [''],
@@ -310,6 +311,14 @@ export class EditTourComponent implements OnInit {
     });
   }
 
+ loadCategories(): void{
+      this.tourService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => console.error('Failed loading categories', err)
+    });
+ }
   // FormArray getters
   get photos(): FormArray {
     return this.tourForm.get('photos') as FormArray;
