@@ -1,15 +1,16 @@
 import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClientModule } from '@angular/common/http';
 import { TourService } from '../../../services/tours/tour.service';
 import { DestinationService } from '../../../services/destination/destination.service';
 import { Destination } from '../../../models/destination.model';
 
-
 interface TourPayload {
   tour: {
+    id: number;
     title: string;
     destination_id: number;
     location_ids: number[];
@@ -96,23 +97,24 @@ interface TourPayload {
 @Component({
   selector: 'app-edit-tour',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule, HttpClientModule],
   templateUrl: './edit-tour.component.html',
   styleUrls: ['./edit-tour.component.scss']
 })
 export class EditTourComponent implements OnInit {
-  tourForm: FormGroup;
-  isSubmitting: boolean = false;
+  tourForm!: FormGroup;
+  imagePreviews: { [key: string]: string } = {};
+  isSubmitting = false;
   destinations: Destination[] = [];
   categories: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditTourComponent>,
-    private cdr: ChangeDetectorRef,
     private tourService: TourService,
     private destinationService: DestinationService,
     private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: TourPayload
   ) {
     this.tourForm = this.createForm();
@@ -120,7 +122,7 @@ export class EditTourComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDestinations();
-      this.loadCategories();
+    this.loadCategories();
     this.populateForm();
   }
 
@@ -153,7 +155,7 @@ export class EditTourComponent implements OnInit {
       meta_description: [''],
       early_bird_discount: [null],
       group_discount: [null],
-      difficulty_level: [''],
+      difficulty_level: ['Moderate'],
       physical_requirements: [''],
       best_time_to_visit: [''],
       weather_info: [''],
@@ -192,7 +194,7 @@ export class EditTourComponent implements OnInit {
       location: tour.location || '',
       duration_days: tour.duration_days,
       category: tour.category,
-      price_per_person: tour.price_per_person,
+      price_per_person: parseFloat(tour.price_per_person),
       price_currency: tour.price_currency,
       image_url: tour.image_url,
       description: tour.description,
@@ -210,8 +212,8 @@ export class EditTourComponent implements OnInit {
       cancellation_policy: tour.cancellation_policy,
       meta_title: tour.meta_title,
       meta_description: tour.meta_description,
-      early_bird_discount: tour.early_bird_discount,
-      group_discount: tour.group_discount,
+      early_bird_discount: tour.early_bird_discount ? parseFloat(tour.early_bird_discount) : null,
+      group_discount: tour.group_discount ? parseFloat(tour.group_discount) : null,
       difficulty_level: tour.difficulty_level,
       physical_requirements: tour.physical_requirements,
       best_time_to_visit: tour.best_time_to_visit,
@@ -236,7 +238,6 @@ export class EditTourComponent implements OnInit {
       is_customizable: tour.is_customizable
     });
 
-    // Populate FormArrays
     this.populatePhotos();
     this.populateItinerary();
     this.populateRoomTypes();
@@ -245,7 +246,7 @@ export class EditTourComponent implements OnInit {
   }
 
   private populatePhotos(): void {
-    const photosArray = this.tourForm.get('photos') as FormArray;
+    const photosArray = this.photos;
     photosArray.clear();
     this.data.photos.forEach(photo => {
       photosArray.push(this.fb.group({
@@ -258,13 +259,13 @@ export class EditTourComponent implements OnInit {
   }
 
   private populateItinerary(): void {
-    const itineraryArray = this.tourForm.get('itinerary') as FormArray;
+    const itineraryArray = this.itineraryDays;
     itineraryArray.clear();
     this.data.itinerary.forEach(item => {
       itineraryArray.push(this.fb.group({
         day: [item.day, [Validators.required, Validators.min(1)]],
-        title: [item.title, [Validators.required, Validators.maxLength(100)]],
-        description: [item.description, [Validators.required, Validators.maxLength(500)]],
+        title: [item.title, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+        description: [item.description, [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
         activities: [item.activities?.join('\n') || ''],
         meals_included: [item.meals_included?.join('\n') || ''],
         accommodation: [item.accommodation || '']
@@ -273,154 +274,262 @@ export class EditTourComponent implements OnInit {
   }
 
   private populateRoomTypes(): void {
-    const roomTypesArray = this.tourForm.get('room_types') as FormArray;
+    const roomTypesArray = this.roomTypes;
     roomTypesArray.clear();
     this.data.room_types.forEach(room => {
       roomTypesArray.push(this.fb.group({
-        name: [room.name, [Validators.required, Validators.maxLength(50)]],
-        description: [room.description || '', Validators.maxLength(200)],
+        name: [room.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+        description: [room.description || '', Validators.maxLength(500)],
         max_occupancy: [room.max_occupancy, [Validators.required, Validators.min(1)]]
       }));
     });
   }
 
   private populateReviews(): void {
-    const reviewsArray = this.tourForm.get('reviews') as FormArray;
+    const reviewsArray = this.reviews;
     reviewsArray.clear();
     this.data.reviews.forEach(review => {
       reviewsArray.push(this.fb.group({
-        reviewer_name: [review.reviewer_name, [Validators.required, Validators.maxLength(100)]],
+        reviewer_name: [review.reviewer_name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         rating: [review.rating, [Validators.required, Validators.min(1), Validators.max(5)]],
-        comment: [review.comment, [Validators.required, Validators.maxLength(500)]],
+        comment: [review.comment, [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
         date: [review.date, Validators.required],
-        is_verified: [review.is_verified || false],
-        is_approved: [review.is_approved || false]
+        is_verified: [review.is_verified || true],
+        is_approved: [review.is_approved || true]
       }));
+    });
+  }
+
+  get photos() { return this.tourForm.get('photos') as FormArray<FormGroup>; }
+  get itineraryDays() { return this.tourForm.get('itinerary') as FormArray<FormGroup>; }
+  get roomTypes() { return this.tourForm.get('room_types') as FormArray<FormGroup>; }
+  get reviews() { return this.tourForm.get('reviews') as FormArray<FormGroup>; }
+
+  loadCategories(): void {
+    this.tourService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed loading categories', err);
+        this.snackBar.open('Failed to load categories', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
     });
   }
 
   loadDestinations(): void {
     this.destinationService.getDestinationNames().subscribe({
       next: (destinations) => {
-        this.destinations = destinations;
+        this.destinations = destinations.filter(dest => dest.parent_id !== null);
         this.cdr.detectChanges();
       },
       error: () => {
-        this.snackBar.open('Failed to load destinations', 'Close', { duration: 3000 });
+        this.snackBar.open('Failed to load destinations', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+        this.cdr.detectChanges();
       }
     });
   }
 
- loadCategories(): void{
-      this.tourService.getCategories().subscribe({
-      next: (data) => {
-        this.categories = data;
-      },
-      error: (err) => console.error('Failed loading categories', err)
-    });
- }
-  // FormArray getters
-  get photos(): FormArray {
-    return this.tourForm.get('photos') as FormArray;
-  }
-
-  get itinerary(): FormArray {
-    return this.tourForm.get('itinerary') as FormArray;
-  }
-
-  get room_types(): FormArray {
-    return this.tourForm.get('room_types') as FormArray;
-  }
-
-  get reviews(): FormArray {
-    return this.tourForm.get('reviews') as FormArray;
-  }
-
-  // Add items to FormArrays
   addPhoto(): void {
     this.photos.push(this.fb.group({
       url: ['', Validators.required],
       caption: ['', Validators.maxLength(100)],
       is_primary: [false],
-      display_order: [this.photos.length + 1]
+      display_order: [null]
     }));
   }
 
-  removePhoto(index: number): void {
-    this.photos.removeAt(index);
-  }
-
   addItineraryDay(): void {
-    this.itinerary.push(this.fb.group({
-      day: [this.itinerary.length + 1, [Validators.required, Validators.min(1)]],
-      title: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', [Validators.required, Validators.maxLength(500)]],
+    this.itineraryDays.push(this.fb.group({
+      day: [this.itineraryDays.length + 1, [Validators.required, Validators.min(1)]],
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       activities: [''],
       meals_included: [''],
       accommodation: ['']
     }));
   }
 
-  removeItineraryDay(index: number): void {
-    this.itinerary.removeAt(index);
-  }
-
   addRoomType(): void {
-    this.room_types.push(this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]],
-      description: ['', Validators.maxLength(200)],
-      max_occupancy: [1, [Validators.required, Validators.min(1)]]
+    this.roomTypes.push(this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      max_occupancy: [1, [Validators.required, Validators.min(1)]],
+      description: ['', Validators.maxLength(500)]
     }));
-  }
-
-  removeRoomType(index: number): void {
-    this.room_types.removeAt(index);
   }
 
   addReview(): void {
     this.reviews.push(this.fb.group({
-      reviewer_name: ['', [Validators.required, Validators.maxLength(100)]],
+      reviewer_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       rating: [1, [Validators.required, Validators.min(1), Validators.max(5)]],
-      comment: ['', [Validators.required, Validators.maxLength(500)]],
+      comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       date: ['', Validators.required],
-      is_verified: [false],
-      is_approved: [false]
+      is_verified: [true],
+      is_approved: [true]
     }));
   }
 
-  removeReview(index: number): void {
-    this.reviews.removeAt(index);
+  removeItem(array: FormArray<FormGroup>, index: number, arrayName: string): void {
+    array.removeAt(index);
+    delete this.imagePreviews[`${arrayName}-${index}`];
+    this.cdr.detectChanges();
   }
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.tourForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
+  onSubmit(): void {
+    if (this.tourForm.valid) {
+      this.isSubmitting = true;
+      const formValue = this.tourForm.value;
+      const payload: TourPayload = {
+        tour: {
+          id: this.data.tour.id,
+          title: formValue.title,
+          slug: formValue.slug,
+          destination_id: formValue.destination_id,
+          location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
+          location: formValue.location || undefined,
+          description: formValue.description,
+          price: formValue.price_per_person.toFixed(2),
+          price_per_person: formValue.price_per_person.toFixed(2),
+          price_currency: formValue.price_currency,
+          image_url: formValue.image_url,
+          duration_days: formValue.duration_days,
+          available_from: formValue.available_from,
+          available_to: formValue.available_to,
+          category: formValue.category,
+          departure_airport: formValue.departure_airport,
+          arrival_airport: formValue.arrival_airport,
+          max_group_size: formValue.max_group_size,
+          min_group_size: formValue.min_group_size,
+          inclusions: formValue.inclusions ? formValue.inclusions.split('\n').filter((item: string) => item.trim()) : [],
+          exclusions: formValue.exclusions ? formValue.exclusions.split('\n').filter((item: string) => item.trim()) : [],
+          complementaries: formValue.complementaries ? formValue.complementaries.split('\n').filter((item: string) => item.trim()) : [],
+          highlights: formValue.highlights ? formValue.highlights.split('\n').filter((item: string) => item.trim()) : [],
+          booking_terms: formValue.booking_terms,
+          cancellation_policy: formValue.cancellation_policy,
+          meta_title: formValue.meta_title,
+          meta_description: formValue.meta_description,
+          early_bird_discount: formValue.early_bird_discount ? formValue.early_bird_discount.toFixed(2) : null,
+          group_discount: formValue.group_discount ? formValue.group_discount.toFixed(2) : null,
+          difficulty_level: formValue.difficulty_level,
+          physical_requirements: formValue.physical_requirements,
+          best_time_to_visit: formValue.best_time_to_visit,
+          weather_info: formValue.weather_info,
+          packing_list: formValue.packing_list ? formValue.packing_list.split('\n').filter((item: string) => item.trim()) : [],
+          languages_supported: formValue.languages_supported ? formValue.languages_supported.split('\n').filter((item: string) => item.trim()) : [],
+          guide_included: formValue.guide_included,
+          guide_languages: formValue.guide_languages ? formValue.guide_languages.split('\n').filter((item: string) => item.trim()) : [],
+          transportation_included: formValue.transportation_included,
+          transportation_details: formValue.transportation_details,
+          meals_included: formValue.meals_included ? formValue.meals_included.split('\n').filter((item: string) => item.trim()) : [],
+          dietary_restrictions_supported: formValue.dietary_restrictions_supported ? formValue.dietary_restrictions_supported.split('\n').filter((item: string) => item.trim()) : [],
+          accommodation_type: formValue.accommodation_type,
+          accommodation_rating: formValue.accommodation_rating,
+          activity_types: formValue.activity_types ? formValue.activity_types.split('\n').filter((item: string) => item.trim()) : [],
+          interests: formValue.interests ? formValue.interests.split('\n').filter((item: string) => item.trim()) : [],
+          instant_booking: formValue.instant_booking,
+          requires_approval: formValue.requires_approval,
+          advance_booking_days: formValue.advance_booking_days,
+          is_active: formValue.is_active,
+          is_featured: formValue.is_featured,
+          is_customizable: formValue.is_customizable,
+          adults: 0,
+          children: 0,
+          rooms: 1
+        },
+        photos: formValue.photos.map((photo: any) => ({
+          url: photo.url,
+          caption: photo.caption,
+          is_primary: photo.is_primary,
+          display_order: photo.display_order
+        })),
+        reviews: formValue.reviews.map((review: any) => ({
+          reviewer_name: review.reviewer_name,
+          rating: review.rating,
+          comment: review.comment,
+          date: review.date,
+          is_verified: review.is_verified,
+          is_approved: review.is_approved
+        })),
+        room_types: formValue.room_types.map((room: any) => ({
+          name: room.name,
+          description: room.description,
+          max_occupancy: room.max_occupancy
+        })),
+        itinerary: formValue.itinerary.map((day: any) => ({
+          day: day.day,
+          title: day.title,
+          description: day.description,
+          activities: day.activities ? day.activities.split('\n').filter((item: string) => item.trim()) : [],
+          meals_included: day.meals_included ? day.meals_included.split('\n').filter((item: string) => item.trim()) : [],
+          accommodation: day.accommodation || null
+        }))
+      };
 
-  isArrayFieldInvalid(arrayName: string, index: number, fieldName: string): boolean {
-    const field = (this.tourForm.get(arrayName) as FormArray).at(index).get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
-
-  getFieldError(fieldName: string): string {
-    const field = this.tourForm.get(fieldName);
-    if (field?.errors) {
-      if (field.errors['required']) return `${this.getFieldLabel(fieldName)} is required`;
-      if (field.errors['minlength']) return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['minlength'].requiredLength} characters`;
-      if (field.errors['maxlength']) return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['maxlength'].requiredLength} characters`;
-      if (field.errors['min']) return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['min'].min}`;
-      if (field.errors['pattern']) return `${this.getFieldLabel(fieldName)} must contain only lowercase letters, numbers, and hyphens`;
+      this.tourService.updateTour( this.data.tour.id,payload).subscribe({
+        next: (result) => {
+          this.snackBar.open('Tour updated successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
+          this.dialogRef.close(result);
+          this.isSubmitting = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          this.snackBar.open('Failed to update tour: ' + (err.error?.message || 'Unknown error'), 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      Object.keys(this.tourForm.controls).forEach(key => {
+        const control = this.tourForm.get(key);
+        if (control instanceof FormArray) {
+          control.controls.forEach((c: any) => {
+            Object.keys(c.controls).forEach(subKey => {
+              c.get(subKey)?.markAsTouched();
+            });
+          });
+        } else {
+          control?.markAsTouched();
+        }
+      });
+      this.snackBar.open('Please fill all required fields correctly', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      this.cdr.detectChanges();
     }
-    return '';
   }
 
-  getArrayFieldError(arrayName: string, index: number, fieldName: string): string {
-    const field = (this.tourForm.get(arrayName) as FormArray).at(index).get(fieldName);
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+
+  isFieldInvalid(control: FormGroup | FormArray, fieldName: string): boolean {
+    const field = control.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
+  }
+
+  getFieldError(control: FormGroup | FormArray, fieldName: string): string {
+    const field = control.get(fieldName);
     if (field?.errors) {
       if (field.errors['required']) return `${this.getFieldLabel(fieldName)} is required`;
       if (field.errors['minlength']) return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['minlength'].requiredLength} characters`;
       if (field.errors['maxlength']) return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['maxlength'].requiredLength} characters`;
       if (field.errors['min']) return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['min'].min}`;
+      if (field.errors['max']) return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['max'].max}`;
+      if (field.errors['pattern']) return `${this.getFieldLabel(fieldName)} must contain only lowercase letters, numbers, and hyphens`;
     }
     return '';
   }
@@ -480,138 +589,5 @@ export class EditTourComponent implements OnInit {
       date: 'Date'
     };
     return labels[fieldName] || fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
-  }
-
-  onSubmit(): void {
-    if (this.tourForm.valid) {
-      this.isSubmitting = true;
-      const formValue = this.tourForm.value;
-      const payload: TourPayload = {
-        tour: {
-          title: formValue.title,
-          slug: formValue.slug,
-          destination_id: formValue.destination_id,
-          location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
-          location: formValue.location || undefined,
-          description: formValue.description,
-          price: formValue.price_per_person.toFixed(2),
-          price_per_person: formValue.price_per_person.toFixed(2),
-          price_currency: formValue.price_currency,
-          image_url: formValue.image_url,
-          duration_days: formValue.duration_days,
-          available_from: formValue.available_from,
-          available_to: formValue.available_to,
-          category: formValue.category,
-          departure_airport: formValue.departure_airport,
-          arrival_airport: formValue.arrival_airport,
-          max_group_size: formValue.max_group_size,
-          min_group_size: formValue.min_group_size,
-          inclusions: formValue.inclusions ? formValue.inclusions.split('\n').filter((item: string) => item.trim()) : [],
-          exclusions: formValue.exclusions ? formValue.exclusions.split('\n').filter((item: string) => item.trim()) : [],
-          complementaries: formValue.complementaries ? formValue.complementaries.split('\n').filter((item: string) => item.trim()) : [],
-          highlights: formValue.highlights ? formValue.highlights.split('\n').filter((item: string) => item.trim()) : [],
-          booking_terms: formValue.booking_terms,
-          cancellation_policy: formValue.cancellation_policy,
-          meta_title: formValue.meta_title,
-          meta_description: formValue.meta_description,
-          early_bird_discount: formValue.early_bird_discount ? formValue.early_bird_discount.toFixed(2) : undefined,
-          group_discount: formValue.group_discount ? formValue.group_discount.toFixed(2) : undefined,
-          difficulty_level: formValue.difficulty_level,
-          physical_requirements: formValue.physical_requirements,
-          best_time_to_visit: formValue.best_time_to_visit,
-          weather_info: formValue.weather_info,
-          packing_list: formValue.packing_list ? formValue.packing_list.split('\n').filter((item: string) => item.trim()) : [],
-          languages_supported: formValue.languages_supported ? formValue.languages_supported.split('\n').filter((item: string) => item.trim()) : [],
-          guide_included: formValue.guide_included,
-          guide_languages: formValue.guide_languages ? formValue.guide_languages.split('\n').filter((item: string) => item.trim()) : [],
-          transportation_included: formValue.transportation_included,
-          transportation_details: formValue.transportation_details,
-          meals_included: formValue.meals_included ? formValue.meals_included.split('\n').filter((item: string) => item.trim()) : [],
-          dietary_restrictions_supported: formValue.dietary_restrictions_supported ? formValue.dietary_restrictions_supported.split('\n').filter((item: string) => item.trim()) : [],
-          accommodation_type: formValue.accommodation_type,
-          accommodation_rating: formValue.accommodation_rating,
-          activity_types: formValue.activity_types ? formValue.activity_types.split('\n').filter((item: string) => item.trim()) : [],
-          interests: formValue.interests ? formValue.interests.split('\n').filter((item: string) => item.trim()) : [],
-          instant_booking: formValue.instant_booking,
-          requires_approval: formValue.requires_approval,
-          advance_booking_days: formValue.advance_booking_days,
-          is_active: formValue.is_active,
-          is_featured: formValue.is_featured,
-          is_customizable: formValue.is_customizable,
-          adults: 0,
-          children: 0,
-          rooms: 1
-        },
-        photos: formValue.photos.map((photo: any) => ({
-          url: photo.url,
-          caption: photo.caption,
-          is_primary: photo.is_primary,
-          display_order: photo.display_order
-        })),
-        reviews: formValue.reviews.map((review: any) => ({
-          reviewer_name: review.reviewer_name,
-          rating: review.rating,
-          comment: review.comment,
-          date: review.date,
-          is_verified: review.is_verified,
-          is_approved: review.is_approved
-        })),
-        room_types: formValue.room_types.map((room: any) => ({
-          name: room.name,
-          description: room.description,
-          max_occupancy: room.max_occupancy
-        })),
-        itinerary: formValue.itinerary.map((day: any) => ({
-          day: day.day,
-          title: day.title,
-          description: day.description,
-          activities: day.activities ? day.activities.split('\n').filter((item: string) => item.trim()) : [],
-          meals_included: day.meals_included ? day.meals_included.split('\n').filter((item: string) => item.trim()) : [],
-          accommodation: day.accommodation || null
-        }))
-      };
-
-      // this.tourService.updateTour(payload).subscribe({
-      //   next: (result) => {
-      //     this.snackBar.open('Tour updated successfully', 'Close', {
-      //       duration: 3000,
-      //       panelClass: ['success-snackbar']
-      //     });
-      //     this.dialogRef.close(result);
-      //     this.isSubmitting = false;
-      //     this.cdr.detectChanges();
-      //   },
-      //   error: (err) => {
-      //     this.isSubmitting = false;
-      //     this.snackBar.open('Failed to update tour: ' + (err.error?.message || 'Unknown error'), 'Close', {
-      //       duration: 5000,
-      //       panelClass: ['error-snackbar']
-      //     });
-      //     this.cdr.detectChanges();
-      //   }
-      // });
-    } else {
-      Object.keys(this.tourForm.controls).forEach(key => {
-        const control = this.tourForm.get(key);
-        if (control instanceof FormArray) {
-          control.controls.forEach((c: any) => {
-            Object.keys(c.controls).forEach(subKey => {
-              c.get(subKey)?.markAsTouched();
-            });
-          });
-        } else {
-          control?.markAsTouched();
-        }
-      });
-      this.snackBar.open('Please fill all required fields correctly', 'Close', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
-      this.cdr.detectChanges();
-    }
-  }
-
-  onCancel(): void {
-    this.dialogRef.close();
   }
 }

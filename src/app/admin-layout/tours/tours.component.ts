@@ -4,8 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddTourComponent } from './add-tour/add-tour.component';
 import { EditTourComponent } from './edit-tour/edit-tour.component';
-import { ItineraryDay, Tour } from '../../models/tour.model';
+import { ItineraryDay, RoomType, Tour, TourPhoto, TourReview } from '../../models/tour.model';
 import { TourService } from '../../services/tours/tour.service';
+interface TourPayload {
+  tour: Tour;
+  photos: TourPhoto[];
+  reviews: TourReview[];
+  room_types: RoomType[];
+  itinerary: ItineraryDay[];
+}
 
 @Component({
   selector: 'app-tours',
@@ -268,18 +275,91 @@ private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
 
   // Edit functionality
   openEditDialog(tour: Tour): void {
+    const payload: TourPayload = {
+      tour: {
+        id: tour.id || 0,
+        destination_id: tour.destination_id || 0,
+        destination_title: tour.destination_title || '',
+        location_ids: tour.location_ids || [],
+        title: tour.title || 'Untitled Tour',
+        slug: tour.slug || '',
+        location: tour.location || '',
+        description: tour.description || '',
+        price: tour.price || '0.00',
+        price_per_person: tour.price_per_person || '0.00',
+        price_currency: tour.price_currency || 'INR',
+        image_url: tour.image_url || '',
+        map_embed_url: tour.map_embed_url || '',
+        duration_days: tour.duration_days || 1,
+        available_from: tour.available_from || '',
+        available_to: tour.available_to || '',
+        category: tour.category || '',
+        departure_airport: tour.departure_airport || '',
+        arrival_airport: tour.arrival_airport || '',
+        max_group_size: tour.max_group_size,
+        min_group_size: tour.min_group_size,
+        inclusions: tour.inclusions || [],
+        exclusions: tour.exclusions || [],
+        complementaries: tour.complementaries || [],
+        highlights: tour.highlights || [],
+        booking_terms: tour.booking_terms || '',
+        cancellation_policy: tour.cancellation_policy || '',
+        meta_title: tour.meta_title || '',
+        meta_description: tour.meta_description || '',
+        early_bird_discount: tour.early_bird_discount,
+        group_discount: tour.group_discount,
+        difficulty_level: tour.difficulty_level || 'Moderate',
+        physical_requirements: tour.physical_requirements || '',
+        best_time_to_visit: tour.best_time_to_visit || '',
+        weather_info: tour.weather_info || '',
+        packing_list: tour.packing_list || [],
+        languages_supported: tour.languages_supported || [],
+        guide_included: tour.guide_included ?? true,
+        guide_languages: tour.guide_languages || [],
+        transportation_included: tour.transportation_included ?? true,
+        transportation_details: tour.transportation_details || '',
+        meals_included: tour.meals_included || [],
+        dietary_restrictions_supported: tour.dietary_restrictions_supported || [],
+        accommodation_type: tour.accommodation_type || '',
+        accommodation_rating: tour.accommodation_rating,
+        activity_types: tour.activity_types || [],
+        interests: tour.interests || [],
+        instant_booking: tour.instant_booking ?? false,
+        requires_approval: tour.requires_approval ?? true,
+        advance_booking_days: tour.advance_booking_days,
+        is_active: tour.is_active ?? true,
+        is_featured: tour.is_featured ?? true,
+        is_customizable: tour.is_customizable ?? true,
+        adults: tour.adults || 0,
+        children: tour.children || 0,
+        rooms: tour.rooms || 1,
+        itinerary: ''
+      },
+      photos: tour.photos || [],
+      reviews: tour.reviews || [],
+      room_types: tour.room_types || [],
+      itinerary: Array.isArray(tour.itinerary) ? tour.itinerary : []
+    };
+
     const dialogRef = this.dialog.open(EditTourComponent, {
       width: '800px',
       maxHeight: '90vh',
-      data: { ...tour } // Pass a copy of the tour data
+      data: payload
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Update the tour in the tours array
-        const index = this.tours.findIndex(t => t.id === result.id);
+        const index = this.tours.findIndex(t => t.id === result.tour.id);
         if (index !== -1) {
-          this.tours[index] = result;
+          this.tours[index] = {
+            ...result.tour,
+            photos: result.photos || [],
+            reviews: result.reviews || [],
+            room_types: result.room_types || [],
+            itinerary: result.itinerary || [],
+            showDetails: this.tours[index].showDetails ?? false,
+            isDeleting: this.tours[index].isDeleting ?? false
+          };
           this.applyFiltersAndSort();
         }
       }

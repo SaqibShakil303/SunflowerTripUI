@@ -37,6 +37,7 @@ export class Tour {
   // Existing fields
   id!: number;
   destination_id!: number;
+  destination_title?:string;
   location_ids!: number[];
   title!: string;
   slug!: string;

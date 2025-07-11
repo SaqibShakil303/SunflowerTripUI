@@ -68,8 +68,8 @@ export class TourFilterComponent implements OnInit {
   }
    this.destSvc.getDestinationNames().subscribe({
       next: (data) => {
-        this.destinations = data.filter(d => d.parent_id !== null);
-
+        // this.destinations = data.filter(d => d.parent_id !== null);
+  this.destinations = data;
         // console.log('DEBUG - Loaded destinations:', data);
         this.initializeFiltersFromQueryParams();
       },

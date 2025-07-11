@@ -78,7 +78,7 @@ export class TourPackageComponent implements OnInit {
   handleSearch(filters: any) {
     this.loading = true;
     this.error = null;
-console.log('Applying filters:', filters);
+// console.log('Applying filters:', filters);
     // Update URL query parameters to reflect current filters
     const queryParams = {
       destination: filters.destination_id || null,
