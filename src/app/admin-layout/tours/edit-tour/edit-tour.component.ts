@@ -13,9 +13,9 @@ interface TourPayload {
     id: number;
     title: string;
     destination_id: number;
-    location_ids: number[];
+    // location_ids: number[];
     slug: string;
-    location?: string;
+    // location?: string;
     description: string;
     price: string;
     price_per_person: string;
@@ -131,8 +131,8 @@ export class EditTourComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
       destination_id: [null, Validators.required],
-      location_ids: [''],
-      location: [''],
+      // location_ids: [''],
+      // location: [''],
       duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
       category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       price_per_person: [0, [Validators.required, Validators.min(0)]],
@@ -190,8 +190,8 @@ export class EditTourComponent implements OnInit {
       title: tour.title,
       slug: tour.slug,
       destination_id: tour.destination_id,
-      location_ids: tour.location_ids?.join(',') || '',
-      location: tour.location || '',
+      // location_ids: tour.location_ids?.join(',') || '',
+      // location: tour.location || '',
       duration_days: tour.duration_days,
       category: tour.category,
       price_per_person: parseFloat(tour.price_per_person),
@@ -324,7 +324,8 @@ export class EditTourComponent implements OnInit {
   loadDestinations(): void {
     this.destinationService.getDestinationNames().subscribe({
       next: (destinations) => {
-        this.destinations = destinations.filter(dest => dest.parent_id !== null);
+        this.destinations = destinations;
+           // this.destinations = destinations.filter(dest => dest.parent_id !== null);
         this.cdr.detectChanges();
       },
       error: () => {
@@ -392,8 +393,8 @@ export class EditTourComponent implements OnInit {
           title: formValue.title,
           slug: formValue.slug,
           destination_id: formValue.destination_id,
-          location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
-          location: formValue.location || undefined,
+          // location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
+          // location: formValue.location || undefined,
           description: formValue.description,
           price: formValue.price_per_person.toFixed(2),
           price_per_person: formValue.price_per_person.toFixed(2),
@@ -539,8 +540,8 @@ export class EditTourComponent implements OnInit {
       title: 'Tour title',
       slug: 'Slug',
       destination_id: 'Destination',
-      location_ids: 'Location IDs',
-      location: 'Location',
+      // location_ids: 'Location IDs',
+      // location: 'Location',
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',

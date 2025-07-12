@@ -38,10 +38,10 @@ export class Tour {
   id!: number;
   destination_id!: number;
   destination_title?:string;
-  location_ids!: number[];
+  // location_ids!: number[];
   title!: string;
   slug!: string;
-  location?: string; // Optional as not present in JSON
+  // location?: string; // Optional as not present in JSON
   description!: string;
   itinerary!: string | ItineraryDay[]; // Can be string or structured data
   price!: string; // Changed to string to match JSON's "52999.00"

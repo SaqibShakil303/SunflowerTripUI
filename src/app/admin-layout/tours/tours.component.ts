@@ -114,6 +114,20 @@ export class ToursComponent implements OnInit {
       accommodation: ''
     }));
   }
+
+  return itinerary.split(' · ').map((day, index) => ({
+    day: index + 1,
+    title: day.split(': ')[0] || `Day ${index + 1}`,
+    description: day.split(': ')[1] || 'No description',
+    activities: [],
+    meals_included: [],
+    accommodation: ''
+  }));
+}
+
+  private formatDate(dateStr: string): string {
+    return new Date(dateStr).toISOString().split('T')[0];
+  }
   getItineraryArray(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     return Array.isArray(itinerary) ? itinerary : [];
   }
@@ -145,7 +159,7 @@ export class ToursComponent implements OnInit {
     // Filter tours based on search term
     this.filteredTours = this.tours.filter(tour =>
       (tour.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-      (tour.location?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
+      // (tour.location?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
       (tour.category?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
       (tour.description?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false)
     );
@@ -157,8 +171,8 @@ export class ToursComponent implements OnInit {
 
       switch (this.sortBy) {
         case 'destination':
-          aValue = a.location || '';
-          bValue = b.location || '';
+          // aValue = a.location || '';
+          // bValue = b.location || '';
           break;
         case 'price':
           aValue = typeof a.price === 'string' ? parseFloat(a.price) : a.price || 0;
@@ -281,10 +295,10 @@ export class ToursComponent implements OnInit {
         id: tour.id || 0,
         destination_id: tour.destination_id || 0,
         destination_title: tour.destination_title || '',
-        location_ids: tour.location_ids || [],
+        // location_ids: tour.location_ids || [],
         title: tour.title || 'Untitled Tour',
         slug: tour.slug || '',
-        location: tour.location || '',
+        // location: tour.location || '',
         description: tour.description || '',
         price: tour.price || '0.00',
         price_per_person: tour.price_per_person || '0.00',

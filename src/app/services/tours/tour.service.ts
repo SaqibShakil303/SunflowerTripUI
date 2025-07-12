@@ -19,10 +19,10 @@ export interface TourPayload {
   tour: {
     title: string;
     destination_id: number;
-    location_ids: number[];
+    // location_ids: number[];
     slug: string;
-    location: string;
-    description: string;
+    // location: string;
+    // description: string;
     price_per_person: number;
     price_currency: string;
     duration_days: number;
