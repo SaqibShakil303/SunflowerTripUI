@@ -12,10 +12,10 @@ export class ContactService {
   private api: AxiosInstance;
 
   constructor() {
- this.api = axios.create({
-  baseURL: environment.apiDomain,
-  headers: { 'Content-Type': 'application/json' }
-});
+    this.api = axios.create({
+      baseURL: environment.apiDomain,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
   // submitItineraryDetail(f: Itinerary): Observable<any> {
 
@@ -35,7 +35,7 @@ export class ContactService {
   //   occupation: f.occupation,
   //   preferences: f.preferences
 
-  
+
   // };
   //     console.log('🪂 Sending payload to API:', payload);
   // return this.http.post(`${environment.apiDomain}/Itinerary/AddItinerary`, f);
@@ -47,21 +47,21 @@ export class ContactService {
   // }
   submitContactDetail(f: ContactModel): Observable<any> {
 
-     const payload = {
-    contact_id:   f.id,
-    first_name:   f.firstName,
-    email:        f.email,
-    phone_number: f.phoneNumber,
-    subject:      f.description,
-    message:      f.message
-  };
-      console.log('🪂 Sending payload to API:', payload);
+    const payload = {
+      contact_id: f.id,
+      first_name: f.first_name,
+      email: f.email,
+      phone_number: f.phone_number,
+      subject: f.subject,
+      message: f.message
+    };
+    console.log('🪂 Sending payload to API:', payload);
 
-   return from(
-    this.api
-      .post('/Contact/AddContact', payload)
-      .then(r => r.data)
-  );
+    return from(
+      this.api
+        .post('/Contact/AddContact', payload)
+        .then(r => r.data)
+    );
   }
 
   getAllContactDetails(): Observable<any[]> {
@@ -71,7 +71,7 @@ export class ContactService {
 
   deleteContact(contactId: string): Observable<void> {
     return from(this.api.delete(`/Contact/deleteContact/${contactId}`)
-      .then(() => {}));
+      .then(() => { }));
   }
 
   generateRandomContactID(): string {

@@ -132,10 +132,10 @@ export class ContactComponent implements OnInit {
       // Create contact model
       const formData = new ContactModel();
       formData.id = contact_ID;
-      formData.firstName = this.contactForm.value.name.trim();
-      formData.phoneNumber = this.contactForm.value.phone?.trim();
+      formData.first_name = this.contactForm.value.name.trim();
+      formData.phone_number = this.contactForm.value.phone?.trim();
       formData.email = this.contactForm.value.email.trim().toLowerCase();
-      formData.description = this.contactForm.value.subject.trim();
+      formData.subject = this.contactForm.value.subject.trim();
       formData.message = this.contactForm.value.message.trim();
 
       // Submit only if required fields are present after trimming
@@ -153,11 +153,11 @@ export class ContactComponent implements OnInit {
 
   private validateFormData(formData: ContactModel): boolean {
     return !!(
-      formData.firstName &&
+      formData.first_name &&
       formData.email &&
-      formData.description &&
+      formData.subject &&
       formData.message &&
-      formData.firstName.length >= 2 &&
+      formData.first_name.length >= 2 &&
       formData.message.length >= 10
     );
   }

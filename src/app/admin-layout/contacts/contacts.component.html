@@ -1,0 +1,197 @@
+<div class="contacts-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Contacts Management</h1>
+        <p class="page-description">Manage customer contact submissions</p>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search contacts by name or email..." class="search-input" [(ngModel)]="searchTerm"
+                (input)="onSearch()">
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-refresh" (click)="refreshContacts()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+            <button class="btn btn-primary" (click)="exportContacts()">
+                <i class="fas fa-download"></i>
+                Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Contacts Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-address-book"></i>
+                All Contacts ({{ filteredContacts.length }})
+            </h3>
+            <div class="table-actions">
+                <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
+                    <option value="first_name">Sort by Name</option>
+                    <option value="email">Sort by Email</option>
+                    <option value="created_at">Sort by Date</option>
+                    <option value="contact_id">Sort by Contact ID</option>
+                    <option value="status">Sort by Status</option>
+                </select>
+                <button class="btn btn-sm" (click)="toggleSortOrder()">
+                    <i class="fas" [class.fa-sort-up]="sortOrder === 'asc'"
+                        [class.fa-sort-down]="sortOrder === 'desc'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper" *ngIf="filteredContacts.length > 0; else noContacts">
+            <table class="contacts-table">
+                <thead>
+                    <tr>
+                        <th class="col-serial">Sl No.</th>
+                        <th class="col-contact-id">Contact ID</th>
+                        <th class="col-name">Name</th>
+                        <th class="col-email">Email</th>
+                        <th class="col-date">Created Date</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let contact of paginatedContacts; let i = index; trackBy: trackByContactId">
+                        <tr 
+                            class="contact-row" [class.deleting]="contact.isDeleting">
+                            <td class="col-serial">
+                                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+                            </td>
+                            <td class="col-contact-id">
+                                <span class="contact-id-text">{{ contact.contact_id }}</span>
+                            </td>
+                            <td class="col-name">
+                                <div class="name-cell">
+                                    <i class="fas fa-user user-avatar"></i>
+                                    <span class="name-text">{{ contact.first_name }}</span>
+                                </div>
+                            </td>
+                            <td class="col-email">
+                                <span class="email-text">{{ contact.email }}</span>
+                            </td>
+                            <td class="col-date">
+                                <span class="date-text">{{ formatDate(contact.created_at) }}</span>
+                                <span class="time-text">{{ formatTime(contact.created_at) }}</span>
+                            </td>
+                            <td class="col-status">
+                                <span class="status-text" [ngClass]="getStatusClass(contact.status)">
+                                    {{ contact.status || 'Pending' }}
+                                </span>
+                            </td>
+                            <td class="col-actions">
+                                <button class="btn btn-sm btn-info expand-btn" (click)="toggleExpanded(contact)"
+                                    [title]="contact.isExpanded ? 'Collapse details' : 'View details'">
+                                    <i class="fas" [class.fa-chevron-down]="!contact.isExpanded" 
+                                       [class.fa-chevron-up]="contact.isExpanded"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" (click)="deleteContact(contact)"
+                                    [disabled]="contact.isDeleting" [title]="'Delete contact from ' + contact.first_name">
+                                    <i class="fas fa-spinner fa-spin" *ngIf="contact.isDeleting"></i>
+                                    <i class="fas fa-trash" *ngIf="!contact.isDeleting"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Expanded Details Row -->
+                        <tr *ngIf="contact.isExpanded" class="details-row">
+                            <td colspan="7">
+                                <div class="details-content">
+                                    <div class="details-grid">
+                                        <div class="detail-item">
+                                            <label class="detail-label">Phone:</label>
+                                            <span class="detail-value">{{ contact.phone_number || 'Not provided' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <label class="detail-label">Subject:</label>
+                                            <span class="detail-value">{{ contact.subject || 'Not provided' }}</span>
+                                        </div>
+                                        <div class="detail-item full-width">
+                                            <label class="detail-label">Message:</label>
+                                            <p class="detail-description">{{ contact.message || 'No message provided' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Contacts Message -->
+        <ng-template #noContacts>
+            <div class="no-contacts">
+                <i class="fas fa-address-book no-contacts-icon"></i>
+                <h3>No Contacts Found</h3>
+                <p *ngIf="searchTerm">No contacts match your search criteria.</p>
+                <p *ngIf="!searchTerm">No contacts have been received yet.</p>
+                <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
+                    Clear Search
+                </button>
+            </div>
+        </ng-template>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="filteredContacts.length > pageSize">
+            <div class="pagination-info">
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredContacts.length }} contacts
+            </div>
+            <div class="pagination-controls">
+                <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPageNumbers()" class="btn btn-sm page-btn"
+                        [class.active]="page === currentPage" (click)="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </div>
+
+                <button class="btn btn-sm pagination-btn" (click)="nextPage()"
+                    [disabled]="currentPage === getTotalPages()">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Confirm Delete</h3>
+            <button class="modal-close" (click)="cancelDelete()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <p>Are you sure you want to delete the contact from:</p>
+            <strong>{{ contactToDelete?.first_name }}</strong>
+            <p class="contact-details">{{ contactToDelete?.email }} (Contact ID: {{ contactToDelete?.contact_id }})</p>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">
+                <i class="fas fa-trash"></i>
+                Delete Contact
+            </button>
+        </div>
+    </div>
+</div>
