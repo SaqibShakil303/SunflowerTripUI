@@ -125,9 +125,14 @@
             </table>
         </div>
 
-        <!-- No Locations Message -->
+        <!-- Loading or No Locations Message -->
         <ng-template #noLocations>
-            <div class="no-locations">
+            <div *ngIf="isLoading" class="loading-container">
+                <i class="fas fa-spinner fa-spin loading-icon"></i>
+                <h3>Loading Locations...</h3>
+                <p>Please wait while we fetch the locations.</p>
+            </div>
+            <div *ngIf="!isLoading && filteredLocations.length === 0" class="no-locations">
                 <i class="fas fa-map-marker-alt no-locations-icon"></i>
                 <h3>No Locations Found</h3>
                 <p *ngIf="searchTerm">No locations match your search criteria.</p>

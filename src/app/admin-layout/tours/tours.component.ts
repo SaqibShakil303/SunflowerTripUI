@@ -41,6 +41,7 @@ export class ToursComponent implements OnInit {
   // Modal state
   showDeleteModal: boolean = false;
   tourToDelete: Tour | null = null;
+  isLoading: boolean = true;
 
   constructor(
     private dialog: MatDialog,
@@ -49,70 +50,70 @@ export class ToursComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTours();
-    this.applyFiltersAndSort();
   }
 
- private parseStringArray(value: any): string[] {
-  try {
-    return Array.isArray(value) ? value : JSON.parse(value || '[]');
-  } catch {
-    return [];
+  private parseStringArray(value: any): string[] {
+    try {
+      return Array.isArray(value) ? value : JSON.parse(value || '[]');
+    } catch {
+      return [];
+    }
   }
-}
   // Load tours data from API
   private loadTours(): void {
+    this.isLoading = true;
     this.tourService.getAllTours().subscribe({
-     next: (tours: Tour[]) => {
-  this.tours = tours
-    .filter(t => t.title && t.slug) // remove invalid entries like id:14
-    .map(tour => ({
-      ...tour,
-      itinerary: this.parseItinerary(tour.itinerary),
-      // Convert stringified JSON arrays to actual arrays
-      inclusions: this.parseStringArray(tour.inclusions),
-      exclusions: this.parseStringArray(tour.exclusions),
-      complementaries: this.parseStringArray(tour.complementaries),
-      highlights: this.parseStringArray(tour.highlights),
-      meals_included: this.parseStringArray(tour.meals_included),
-      dietary_restrictions_supported: this.parseStringArray(tour.dietary_restrictions_supported),
-      languages_supported: this.parseStringArray(tour.languages_supported),
-      guide_languages: this.parseStringArray(tour.guide_languages),
-      activity_types: this.parseStringArray(tour.activity_types),
-      interests: this.parseStringArray(tour.interests),
-      packing_list: this.parseStringArray(tour.packing_list),
-      photos: tour.photos || [],
+      next: (tours: Tour[]) => {
+        this.tours = tours
+          .filter(t => t.title && t.slug)
+          .map(tour => ({
+            ...tour,
+            itinerary: this.parseItinerary(tour.itinerary),
+            inclusions: this.parseStringArray(tour.inclusions),
+            exclusions: this.parseStringArray(tour.exclusions),
+            complementaries: this.parseStringArray(tour.complementaries),
+            highlights: this.parseStringArray(tour.highlights),
+            meals_included: this.parseStringArray(tour.meals_included),
+            dietary_restrictions_supported: this.parseStringArray(tour.dietary_restrictions_supported),
+            languages_supported: this.parseStringArray(tour.languages_supported),
+            guide_languages: this.parseStringArray(tour.guide_languages),
+            activity_types: this.parseStringArray(tour.activity_types),
+            interests: this.parseStringArray(tour.interests),
+            packing_list: this.parseStringArray(tour.packing_list),
+            photos: tour.photos || [],
             reviews: tour.reviews || [],
-      showDetails: false,
-      isDeleting: false
-    }));
-  this.applyFiltersAndSort();
-},
+            showDetails: false,
+            isDeleting: false
+          }));
+        this.isLoading = false;
+        this.applyFiltersAndSort();
+      },
       error: (error) => {
         console.error('Error fetching tours:', error);
-        // Optionally handle error (e.g., show error message to user)
         this.tours = [];
+        this.isLoading = false;
         this.applyFiltersAndSort();
       }
     });
   }
 
-  
-private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
-  if (Array.isArray(itinerary)) {
-    return itinerary;
+
+  private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
+    if (Array.isArray(itinerary)) {
+      return itinerary;
+    }
+    if (!itinerary) {
+      return [];
+    }
+    return itinerary.split(' · ').map((day, index) => ({
+      day: index + 1,
+      title: day.split(': ')[0] || `Day ${index + 1}`,
+      description: day.split(': ')[1] || 'No description',
+      activities: [],
+      meals_included: [],
+      accommodation: ''
+    }));
   }
-  if (!itinerary) {
-    return [];
-  }
-  return itinerary.split(' · ').map((day, index) => ({
-    day: index + 1,
-    title: day.split(': ')[0] || `Day ${index + 1}`,
-    description: day.split(': ')[1] || 'No description',
-    activities: [],
-    meals_included: [],
-    accommodation: ''
-  }));
-}
   getItineraryArray(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     return Array.isArray(itinerary) ? itinerary : [];
   }
@@ -409,10 +410,10 @@ private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
 
   // Refresh functionality
   refreshTours(): void {
-    // Refresh data from API
-    this.loadTours();
+    this.isLoading = true;
     this.searchTerm = '';
     this.currentPage = 1;
+    this.loadTours();
   }
 
   // TrackBy function for ngFor performance

@@ -406,6 +406,32 @@ $font-heading: 'Playfair Display', serif;
             }
         }
 
+        .loading-container {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: $warm-gray;
+
+            .loading-icon {
+                font-size: 4rem;
+                color: $saffron;
+                margin-bottom: 1rem;
+                animation: spin 1s linear infinite;
+            }
+
+            h3 {
+                font-family: $font-heading;
+                font-size: 1.8rem;
+                color: $peacock-blue;
+                margin: 0 0 1rem 0;
+            }
+
+            p {
+                font-size: 1.1rem;
+                margin: 0.5rem 0;
+                line-height: 1.6;
+            }
+        }
+
         .pagination-container {
             display: flex;
             justify-content: space-between;
@@ -756,6 +782,24 @@ $font-heading: 'Playfair Display', serif;
                     }
                 }
             }
+
+            .no-locations,
+            .loading-container {
+                padding: 2rem 1rem;
+
+                .no-locations-icon,
+                .loading-icon {
+                    font-size: 3rem;
+                }
+
+                h3 {
+                    font-size: 1.5rem;
+                }
+
+                p {
+                    font-size: 1rem;
+                }
+            }
         }
     }
 
@@ -817,6 +861,24 @@ $font-heading: 'Playfair Display', serif;
                             }
                         }
                     }
+                }
+            }
+
+            .no-locations,
+            .loading-container {
+                padding: 1.5rem 0.5rem;
+
+                .no-locations-icon,
+                .loading-icon {
+                    font-size: 2.5rem;
+                }
+
+                h3 {
+                    font-size: 1.3rem;
+                }
+
+                p {
+                    font-size: 0.9rem;
                 }
             }
         }
