@@ -129,7 +129,7 @@
               [class.error]="isFieldInvalid('imageFile')"
               aria-describedby="imageFile-error imageFile-help"
             />
-            <div class="form-help" id="imageFile-help">Select a PNG, JPG, WEBP or JPEG image to replace the current image (max 5MB)</div>
+            <div class="form-help" id="imageFile-help">Select a PNG, JPG, JPEG or WEBP image to replace the current image (max 5MB)</div>
             <div class="error-message" id="imageFile-error" *ngIf="isFieldInvalid('imageFile')">
               {{ getFieldError('imageFile') }}
             </div>

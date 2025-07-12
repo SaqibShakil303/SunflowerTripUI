@@ -20,7 +20,7 @@
             </button>
             <button class="btn btn-primary" (click)="openAddDialog()">
                 <i class="fas fa-plus-circle"></i>
-                Add 
+                Add
             </button>
         </div>
     </div>
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div class="table-wrapper" *ngIf="filteredDestinations.length > 0; else noDestinations">
+        <div class="table-wrapper" *ngIf="!isLoading && filteredDestinations.length > 0; else noDestinations">
             <table class="destinations-table">
                 <thead>
                     <tr>
@@ -138,7 +138,12 @@
 
         <!-- No Destinations Message -->
         <ng-template #noDestinations>
-            <div class="no-destinations">
+            <div *ngIf="isLoading" class="loading-container">
+                <i class="fas fa-spinner fa-spin loading-icon"></i>
+                <h3>Loading Destinations...</h3>
+                <p>Please wait while we fetch the destinations.</p>
+            </div>
+            <div *ngIf="!isLoading && filteredDestinations.length === 0" class="no-destinations">
                 <i class="fas fa-globe-americas no-destinations-icon"></i>
                 <h3>No Destinations Found</h3>
                 <p *ngIf="searchTerm">No destinations match your search criteria.</p>

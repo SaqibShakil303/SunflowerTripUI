@@ -37,14 +37,16 @@ export class DestinationsComponent implements OnInit {
 
   showDeleteModal: boolean = false;
   destinationToDelete: UIDestination | null = null;
+  isLoading: boolean = true;
 
-  constructor(private dialog: MatDialog, private destinationService: DestinationService) {}
+  constructor(private dialog: MatDialog, private destinationService: DestinationService) { }
 
   ngOnInit(): void {
     this.loadDestinations();
   }
 
   private loadDestinations(): void {
+    this.isLoading = true;
     this.destinationService.getDestinations().subscribe({
       next: (data) => {
         const idToTitleMap = new Map<number, string>();
@@ -57,18 +59,20 @@ export class DestinationsComponent implements OnInit {
           bestTime: dest.best_time_to_visit,
           weather: dest.weather,
           currency: dest.currency,
-     languages: dest.language ? dest.language.split(',').map(l => l.trim()) : [],
-
+          languages: dest.language ? dest.language.split(',').map(l => l.trim()) : [],
           timeZone: dest.time_zone,
           description: dest.description,
           continent: dest.parent_id ? idToTitleMap.get(dest.parent_id) || 'Unknown' : 'Root',
           showDetails: false,
           isDeleting: false
         }));
+        this.isLoading = false;
         this.applyFiltersAndSort();
       },
       error: (err) => {
         console.error('Failed to load destinations:', err);
+        this.isLoading = false;
+        this.applyFiltersAndSort();
       }
     });
   }
@@ -249,10 +253,10 @@ export class DestinationsComponent implements OnInit {
   }
 
   refreshDestinations(): void {
-    this.loadDestinations();
+    this.isLoading = true;
     this.searchTerm = '';
     this.currentPage = 1;
-    this.applyFiltersAndSort();
+    this.loadDestinations();
   }
 
   trackByDestinationId(index: number, destination: UIDestination): number {

@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="table-wrapper" *ngIf="filteredTours.length > 0; else noTours">
+        <div class="table-wrapper" *ngIf="!isLoading && filteredTours.length > 0; else noTours">
             <table class="tours-table">
                 <thead>
                     <tr>
@@ -486,7 +486,12 @@
 
         <!-- No Tours Message -->
         <ng-template #noTours>
-            <div class="no-tours">
+            <div *ngIf="isLoading" class="loading-container">
+                <i class="fas fa-spinner fa-spin loading-icon"></i>
+                <h3>Loading Tours...</h3>
+                <p>Please wait while we fetch the tours.</p>
+            </div>
+            <div *ngIf="!isLoading && filteredTours.length === 0" class="no-tours">
                 <i class="fas fa-route no-tours-icon"></i>
                 <h3>No Tours Found</h3>
                 <p *ngIf="searchTerm">No tours match your search criteria.</p>

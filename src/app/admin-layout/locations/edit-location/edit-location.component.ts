@@ -6,7 +6,6 @@ import { Destination } from '../../../models/destination.model';
 import { LocationModel } from '../../../models/location.model';
 import { DestinationService } from '../../../services/destination/destination.service';
 import { LocationService } from '../../../services/location/location.service';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-location',
@@ -18,11 +17,10 @@ import { debounceTime } from 'rxjs/operators';
 export class EditLocationComponent implements OnInit {
   locationForm: FormGroup;
   isSubmitting: boolean = false;
-  isLoadingDestinations: boolean = false;
   imagePreview: string | null = null;
   imageInputType: 'file' | 'url' = 'url'; // Default to URL since existing image is likely a URL
   destinations: Destination[] = [];
-  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+  isLoadingDestinations: boolean = true; // Loading state for destinations
 
   constructor(
     private fb: FormBuilder,
@@ -46,23 +44,12 @@ export class EditLocationComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        this.isLoadingDestinations = false;
         console.error('Error fetching destinations:', error);
-        alert('Failed to load destinations. Please try again.');
+        this.isLoadingDestinations = false;
+        this.destinations = [];
+        this.populateForm();
         this.cdr.detectChanges();
       }
-    });
-
-    // Debounce image URL input
-    this.locationForm.get('imageUrl')?.valueChanges.pipe(
-      debounceTime(300)
-    ).subscribe(value => {
-      if (this.imageInputType === 'url' && value && this.locationForm.get('imageUrl')?.valid) {
-        this.imagePreview = value;
-      } else {
-        this.imagePreview = this.data.image_url || null;
-      }
-      this.cdr.detectChanges();
     });
   }
 
@@ -85,8 +72,7 @@ export class EditLocationComponent implements OnInit {
       name,
       destinationId: destination_id,
       description,
-      iframe360: iframe_360,
-      imageUrl: image_url // Explicitly set imageUrl
+      iframe360: iframe_360
     });
 
     // Set image preview and input type
@@ -95,13 +81,16 @@ export class EditLocationComponent implements OnInit {
       this.imageInputType = image_url.startsWith('data:image/') ? 'file' : 'url';
       if (this.imageInputType === 'file') {
         this.locationForm.get('imageFile')?.setValue(image_url);
-        this.locationForm.get('imageUrl')?.setValue(''); // Clear URL field for base64
+        this.locationForm.get('imageUrl')?.setValue('');
       } else {
-        this.locationForm.get('imageUrl')?.setValue(image_url); // Ensure URL field is populated
+        this.locationForm.get('imageUrl')?.setValue(image_url);
+        this.locationForm.get('imageFile')?.setValue(null);
       }
     } else {
       this.imagePreview = null;
       this.imageInputType = 'url';
+      this.locationForm.get('imageUrl')?.setValue('');
+      this.locationForm.get('imageFile')?.setValue(null);
     }
     this.setImageInputType(this.imageInputType);
     this.cdr.detectChanges();
@@ -113,14 +102,22 @@ export class EditLocationComponent implements OnInit {
     if (type === 'file') {
       this.locationForm.get('imageFile')?.setValidators([]);
       this.locationForm.get('imageUrl')?.clearValidators();
-      this.locationForm.get('imageUrl')?.setValue(''); // Clear URL when switching to file
+      this.locationForm.get('imageUrl')?.setValue(''); // Clear URL field
+      // Only update imagePreview if no file is selected
+      if (!this.locationForm.get('imageFile')?.value && this.data.image_url && this.data.image_url.startsWith('data:image/')) {
+        this.imagePreview = this.data.image_url;
+        this.locationForm.get('imageFile')?.setValue(this.data.image_url);
+      } else if (!this.locationForm.get('imageFile')?.value) {
+        this.imagePreview = null;
+      }
     } else {
       this.locationForm.get('imageUrl')?.setValidators([Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]);
       this.locationForm.get('imageFile')?.clearValidators();
-      this.locationForm.get('imageFile')?.setValue(null); // Clear file when switching to URL
-      if (this.data.image_url && !this.data.image_url.startsWith('data:image/')) {
-        this.locationForm.get('imageUrl')?.setValue(this.data.image_url); // Preserve existing URL
+      this.locationForm.get('imageFile')?.setValue(null); // Clear file field
+      // Only update imagePreview if no URL is provided
+      if (!this.locationForm.get('imageUrl')?.value && this.data.image_url && !this.data.image_url.startsWith('data:image/')) {
         this.imagePreview = this.data.image_url;
+        this.locationForm.get('imageUrl')?.setValue(this.data.image_url);
       }
     }
     this.locationForm.get('imageFile')?.updateValueAndValidity();
@@ -132,6 +129,7 @@ export class EditLocationComponent implements OnInit {
   onImageFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const imageFileControl = this.locationForm.get('imageFile');
+    const imageUrlControl = this.locationForm.get('imageUrl');
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -140,7 +138,7 @@ export class EditLocationComponent implements OnInit {
       if (!validTypes.includes(file.type)) {
         imageFileControl?.setErrors({ invalidType: true });
         this.imagePreview = null;
-        this.locationForm.get('imageUrl')?.setValue('');
+        imageUrlControl?.setValue('');
         this.cdr.detectChanges();
         return;
       }
@@ -148,33 +146,48 @@ export class EditLocationComponent implements OnInit {
       imageFileControl?.setErrors(null);
       imageFileControl?.markAsDirty();
       imageFileControl?.markAsTouched();
+      imageUrlControl?.setValue(''); // Clear URL field when file is selected
 
       // Generate preview and save as base64
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
         imageFileControl?.setValue(reader.result); // Save base64 string
-        this.locationForm.get('imageUrl')?.setValue(''); // Clear URL field
         this.cdr.detectChanges();
       };
       reader.onerror = () => {
         imageFileControl?.setErrors({ readError: true });
         this.imagePreview = null;
-        this.locationForm.get('imageUrl')?.setValue('');
+        imageUrlControl?.setValue('');
         this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
     } else {
       imageFileControl?.setValue(null);
-      this.imagePreview = this.data.image_url || null;
-      this.locationForm.get('imageUrl')?.setValue(this.data.image_url || '');
+      imageUrlControl?.setValue('');
+      this.imagePreview = null; // Clear preview if no file is selected
       this.cdr.detectChanges();
     }
   }
 
-  // Handle URL input
+  // Handle URL input changes
   onImageUrlChange(event: Event): void {
-    // Handled by valueChanges subscription with debounce
+    const input = event.target as HTMLInputElement;
+    const imageUrlControl = this.locationForm.get('imageUrl');
+    const value = input.value;
+
+    if (value) {
+      imageUrlControl?.setValue(value);
+      imageUrlControl?.markAsDirty();
+      imageUrlControl?.markAsTouched();
+      this.imagePreview = value; // Update preview to new URL
+      this.locationForm.get('imageFile')?.setValue(null); // Clear file field
+    } else {
+      imageUrlControl?.setValue('');
+      this.imagePreview = this.data.image_url && !this.data.image_url.startsWith('data:image/') ? this.data.image_url : null;
+    }
+    imageUrlControl?.updateValueAndValidity();
+    this.cdr.detectChanges();
   }
 
   // Form validation helpers
@@ -197,16 +210,13 @@ export class EditLocationComponent implements OnInit {
         return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['maxlength'].requiredLength} characters`;
       }
       if (field.errors['invalidType']) {
-        return 'Please select a valid image (PNG, JPG, WEBP or JPEG)';
-      }
-      if (field.errors['fileTooLarge']) {
-        return 'Image file must not exceed 5MB';
+        return 'Please select a valid image (PNG, JPG, JPEG or WEBP)';
       }
       if (field.errors['readError']) {
         return 'Error reading the image file';
       }
       if (field.errors['pattern'] && fieldName === 'imageUrl') {
-        return 'Please enter a valid image URL (PNG, JPG, WEBP or JPEG)';
+        return 'Please enter a valid image URL (PNG, JPG, JPEG or WEBP)';
       }
       if (field.errors['pattern'] && fieldName === 'iframe360') {
         return 'Please enter a valid URL starting with http:// or https://';
@@ -267,5 +277,27 @@ export class EditLocationComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  // Reset image inputs to original state
+  private resetImageInputs(): void {
+    if (this.data.image_url) {
+      this.imagePreview = this.data.image_url;
+      this.imageInputType = this.data.image_url.startsWith('data:image/') ? 'file' : 'url';
+      if (this.imageInputType === 'file') {
+        this.locationForm.get('imageFile')?.setValue(this.data.image_url);
+        this.locationForm.get('imageUrl')?.setValue('');
+      } else {
+        this.locationForm.get('imageUrl')?.setValue(this.data.image_url);
+        this.locationForm.get('imageFile')?.setValue(null);
+      }
+    } else {
+      this.imagePreview = null;
+      this.imageInputType = 'url';
+      this.locationForm.get('imageUrl')?.setValue('');
+      this.locationForm.get('imageFile')?.setValue(null);
+    }
+    this.setImageInputType(this.imageInputType);
+    this.cdr.detectChanges();
   }
 }

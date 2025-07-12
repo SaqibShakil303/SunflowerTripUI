@@ -25,6 +25,7 @@ export class LocationsComponent implements OnInit {
   filteredLocations: LocationModel[] = [];
   paginatedLocations: LocationModel[] = [];
   destinations: Destination[] = [];
+  isLoading: boolean = true;
   fallbackImage: string = 'https://via.placeholder.com/100x100?text=No+Image'; // Fallback image URL
 
   // Search and filter properties
@@ -53,6 +54,7 @@ export class LocationsComponent implements OnInit {
 
   // Load locations and destinations data
   loadData(): void {
+    this.isLoading = true;
     forkJoin([
       this.locationService.getAllLocations().pipe(
         tap((locations) => {
@@ -72,6 +74,7 @@ export class LocationsComponent implements OnInit {
     ]).subscribe(([locations, destinations]) => {
       this.locations = locations;
       this.destinations = destinations;
+      this.isLoading = false;
       this.applyFilters();
     });
   }

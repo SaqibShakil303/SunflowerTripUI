@@ -213,23 +213,21 @@ exportUsers(): void {
    */
   confirmDelete(): void {
     if (this.userToDelete) {
-      // Set deleting state
       this.userToDelete.isDeleting = true;
-
-      // Simulate API call delay
-      setTimeout(() => {
-        // Remove user from array
-        this.users = this.users.filter(u => u.id !== this.userToDelete!.id);
-
-        // Reset modal state
-        this.showDeleteModal = false;
-        this.userToDelete = null;
-
-        // Refresh the display
-        this.applyFiltersAndSort();
-
-        console.log('User deleted successfully');
-      }, 1500); // 1.5 second delay to show loading state
+      this.userService.deleteUser(this.userToDelete.id!).subscribe({
+        next: () => {
+          this.users = this.users.filter(u => u.id !== this.userToDelete!.id);
+          this.showDeleteModal = false;
+          this.userToDelete = null;
+        },
+        error: (error) => {
+          console.error('Error deleting user:', error);
+          this.userToDelete!.isDeleting = false;
+          this.showDeleteModal = false;
+          this.userToDelete = null;
+          alert('Failed to delete user. Please try again.');
+        }
+      });
     }
   }
 
