@@ -35,8 +35,8 @@ export class AddTourComponent implements OnInit {
     title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
     slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
     destination_id: [null, Validators.required],
-    location_ids: [''], // Store as comma-separated string
-    location: [''],
+    // location_ids: [''], // Store as comma-separated string
+    // location: [''],
     duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
     category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
     price_per_person: [0, [Validators.required, Validators.min(0)]],
@@ -108,7 +108,8 @@ export class AddTourComponent implements OnInit {
   loadDestinations(): void {
     this.destinationService.getDestinationNames().subscribe({
       next: (destinations) => {
-        this.destinations = destinations.filter(dest => dest.parent_id !== null);
+        // this.destinations = destinations.filter(dest => dest.parent_id !== null);
+        this.destinations = destinations;
         this.cdr.detectChanges();
       },
       error: () => {
@@ -175,8 +176,8 @@ export class AddTourComponent implements OnInit {
           title: formValue.title,
           slug: formValue.slug,
           destination_id: formValue.destination_id,
-          location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
-        location: formValue.location || undefined,
+        //   location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
+        // location: formValue.location || undefined,
           description: formValue.description,
           price: formValue.price_per_person.toFixed(2),
           price_per_person: formValue.price_per_person.toFixed(2),
@@ -322,8 +323,8 @@ export class AddTourComponent implements OnInit {
       title: 'Tour title',
       slug: 'Slug',
       destination_id: 'Destination',
-      location_ids: 'Location IDs',
-    location: 'Location',
+    //   location_ids: 'Location IDs',
+    // location: 'Location',
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',

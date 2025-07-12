@@ -61,12 +61,12 @@ constructor(private stateSvc: StatePersistenceService) {}
   setMinDate() {
     const today = new Date();
     let monthsToAdd = 2; // Default to 2 months
-    if (this.tour?.location) {
-      // Example logic: adjust based on location
-      if (['Europe', 'Asia'].includes(this.tour.location)) {
-        monthsToAdd = 4;
-      }
-    }
+    // if (this.tour?.location) {
+    //   // Example logic: adjust based on location
+    //   if (['Europe', 'Asia'].includes(this.tour.location)) {
+    //     monthsToAdd = 4;
+    //   }
+    // }
     today.setMonth(today.getMonth() + monthsToAdd);
     this.minDate = today.toISOString().split('T')[0];
     this.bookingData.travelDate = this.minDate;

@@ -67,6 +67,9 @@ export class ToursComponent implements OnInit {
     .filter(t => t.title && t.slug) // remove invalid entries like id:14
     .map(tour => ({
       ...tour,
+          available_from : this.formatDate(tour.available_from),
+          available_to : this.formatDate(tour.available_to),
+          // created_at: this.formatDate(tour.created_at),
       itinerary: this.parseItinerary(tour.itinerary),
       // Convert stringified JSON arrays to actual arrays
       inclusions: this.parseStringArray(tour.inclusions),
@@ -113,6 +116,10 @@ private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     accommodation: ''
   }));
 }
+
+  private formatDate(dateStr: string): string {
+    return new Date(dateStr).toISOString().split('T')[0];
+  }
   getItineraryArray(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     return Array.isArray(itinerary) ? itinerary : [];
   }
@@ -144,7 +151,7 @@ private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     // Filter tours based on search term
     this.filteredTours = this.tours.filter(tour =>
       (tour.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-      (tour.location?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
+      // (tour.location?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
       (tour.category?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
       (tour.description?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false)
     );
@@ -156,8 +163,8 @@ private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
 
       switch (this.sortBy) {
         case 'destination':
-          aValue = a.location || '';
-          bValue = b.location || '';
+          // aValue = a.location || '';
+          // bValue = b.location || '';
           break;
         case 'price':
           aValue = typeof a.price === 'string' ? parseFloat(a.price) : a.price || 0;
@@ -280,10 +287,10 @@ private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
         id: tour.id || 0,
         destination_id: tour.destination_id || 0,
         destination_title: tour.destination_title || '',
-        location_ids: tour.location_ids || [],
+        // location_ids: tour.location_ids || [],
         title: tour.title || 'Untitled Tour',
         slug: tour.slug || '',
-        location: tour.location || '',
+        // location: tour.location || '',
         description: tour.description || '',
         price: tour.price || '0.00',
         price_per_person: tour.price_per_person || '0.00',
