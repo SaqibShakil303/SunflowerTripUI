@@ -114,6 +114,11 @@ export class TourService {
   getByCategory(category: string): Observable<Tour[]> {
     return this.http.get<Tour[]>(`${this.apiUrl}/Tours/category/${category}`);
   }
+
+  deleteTour(id: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/Tours/${id}`);
+}
+
   getTours(params: {
     page?: number;
     limit?: number;

@@ -72,4 +72,8 @@ updateDestination(id: number, destinationPayload: any): Observable<any> {
   return this.http.patch(`${this.APIurl}/Destination/update/${id}`, destinationPayload);
 }
   
+deleteDestination(id: number): Observable<any> {
+  return this.http.delete(`${this.APIurl}/Destination/${id}`);
+}
+
 }

@@ -226,23 +226,31 @@ export class DestinationsComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
-  confirmDelete(): void {
-    if (this.destinationToDelete) {
-      this.destinationToDelete.isDeleting = true;
-      setTimeout(() => {
-        if (this.destinationToDelete) {
-          this.destinations = this.destinations.filter(d => d.id !== this.destinationToDelete!.id);
-          this.applyFiltersAndSort();
-          const totalPages = this.getTotalPages();
-          if (this.currentPage > totalPages && totalPages > 0) {
-            this.currentPage = totalPages;
-            this.updatePagination();
-          }
+confirmDelete(): void {
+  if (this.destinationToDelete) {
+    this.destinationToDelete.isDeleting = true;
+
+    this.destinationService.deleteDestination(this.destinationToDelete.id).subscribe({
+      next: () => {
+        this.destinations = this.destinations.filter(d => d.id !== this.destinationToDelete!.id);
+        this.applyFiltersAndSort();
+
+        const totalPages = this.getTotalPages();
+        if (this.currentPage > totalPages && totalPages > 0) {
+          this.currentPage = totalPages;
+          this.updatePagination();
         }
+
         this.cancelDelete();
-      }, 1000);
-    }
+      },
+      error: (err) => {
+        console.error('Error deleting destination:', err);
+        this.cancelDelete();
+      }
+    });
   }
+}
+
 
   cancelDelete(): void {
     if (this.destinationToDelete) {

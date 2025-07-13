@@ -115,15 +115,15 @@ export class ToursComponent implements OnInit {
     }));
   }
 
-  return itinerary.split(' · ').map((day, index) => ({
-    day: index + 1,
-    title: day.split(': ')[0] || `Day ${index + 1}`,
-    description: day.split(': ')[1] || 'No description',
-    activities: [],
-    meals_included: [],
-    accommodation: ''
-  }));
-}
+//   return itinerary.split(' · ').map((day, index) => ({
+//     day: index + 1,
+//     title: day.split(': ')[0] || `Day ${index + 1}`,
+//     description: day.split(': ')[1] || 'No description',
+//     activities: [],
+//     meals_included: [],
+//     accommodation: ''
+//   }));
+// }
 
   private formatDate(dateStr: string): string {
     return new Date(dateStr).toISOString().split('T')[0];
@@ -387,32 +387,31 @@ export class ToursComponent implements OnInit {
     this.showDeleteModal = true;
   }
 
-  confirmDelete(): void {
-    if (this.tourToDelete) {
-      // Set deleting state
-      this.tourToDelete.isDeleting = true;
+confirmDelete(): void {
+  if (this.tourToDelete) {
+    this.tourToDelete.isDeleting = true;
 
-      // Simulate API call delay
-      setTimeout(() => {
-        if (this.tourToDelete) {
-          // Remove from tours array
-          this.tours = this.tours.filter(t => t.id !== this.tourToDelete!.id);
+    this.tourService.deleteTour(this.tourToDelete.id).subscribe({
+      next: () => {
+        this.tours = this.tours.filter(t => t.id !== this.tourToDelete!.id);
+        this.applyFiltersAndSort();
 
-          // Reapply filters and update pagination
-          this.applyFiltersAndSort();
-
-          // Adjust current page if necessary
-          const totalPages = this.getTotalPages();
-          if (this.currentPage > totalPages && totalPages > 0) {
-            this.currentPage = totalPages;
-            this.updatePagination();
-          }
+        const totalPages = this.getTotalPages();
+        if (this.currentPage > totalPages && totalPages > 0) {
+          this.currentPage = totalPages;
+          this.updatePagination();
         }
 
         this.cancelDelete();
-      }, 1000);
-    }
+      },
+      error: (err) => {
+        console.error('Error deleting tour:', err);
+        this.cancelDelete();
+      }
+    });
   }
+}
+
 
   cancelDelete(): void {
     if (this.tourToDelete) {
