@@ -38,18 +38,19 @@ export class HomeComponent implements AfterViewInit {
   searchResults: Tour[] = [];
   searching = false;
 iframeLoaded = false;
-kuulaUrl!: SafeResourceUrl;
+videoUrl!: SafeResourceUrl;
   loading = false;
   error: string | null = null;
+    videoLoaded = false;
    private searchSubject = new Subject<string>();
      private dialog = inject(MatDialog);
 
      constructor(private tourService: TourService,private sanitizer: DomSanitizer,
       private router: Router,private planner: TripPlannerService
      ) {
-      this.kuulaUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-    'https://kuula.co/share/5D6pm?logo=1&info=1&fs=1&vr=0&sd=1&autorotate=0.39&thumbs=1&margin=1&inst=0'
-  );
+      // this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+    // 'https://kuula.co/share/5D6pm?logo=1&info=1&fs=1&vr=0&sd=1&autorotate=0.39&thumbs=1&margin=1&inst=0'
+  // );
     this.searchSubject.pipe(debounceTime(400)).subscribe((term) => {
       this.performSearch(term);
     });
@@ -69,6 +70,15 @@ onIframeLoad() {
 onIframeError() {
   this.iframeLoaded = false;
 }
+
+ onVideoLoad() {
+    this.videoLoaded = true;
+  }
+
+  // This function will be called if there's an error loading the video
+  onVideoError() {
+    this.videoLoaded = false;
+  }
   onSearch() {
     this.searching = true;
     this.searchSubject.next(this.searchTerm);
