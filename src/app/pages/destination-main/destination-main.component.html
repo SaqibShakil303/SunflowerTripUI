@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <ng-container *ngIf="destination; else loading">
-<!-- Navigation -->
-<!-- <nav class="navbar">
+  <!-- Navigation -->
+  <!-- <nav class="navbar">
   <div class="nav-container">
     <a href="#hero" class="nav-item active">Home</a>
     <a href="#" class="nav-item">Top Packages</a>
@@ -12,124 +12,112 @@
   </div>
 </nav> -->
 
-<!-- Hero Section -->
-<section class="hero" id="hero" [style.backgroundImage]="'url(' + destination.image_url + ')'">
-  
-  <div class="hero-overlay">
-    <div class="hero-content">
-      <h1 class="hero-title">
-        Discover the Beauty of
-        <span class="destination-name">{{ destination.title || 'INDONESIA' }}</span>
-      </h1>
-      
-      <div class="info-cards">
-        <div class="info-card">
-          <div class="info-label">Best time to visit</div>
-          <div class="info-value">{{ destination.best_time_to_visit || 'May to September' }}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-label">Weather</div>
-          <div class="info-value">{{ destination.weather || '31C' }}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-label">Currency</div>
-          <div class="info-value">{{ destination.currency || 'Indonesian Rupiah' }}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-label">Language</div>
-          <div class="info-value">{{ destination.language || 'Indonesian' }}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-label">Time Zone</div>
-          <div class="info-value">{{ destination.time_zone || 'GMT +7' }}</div>
+  <!-- Hero Section -->
+  <section class="hero" id="hero" [style.backgroundImage]="'url(' + destination.image_url + ')'">
+
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Discover the Beauty of
+          <span class="destination-name">{{ destination.title || 'INDONESIA' }}</span>
+        </h1>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-label">Best time to visit</div>
+            <div class="info-value">{{ destination.best_time_to_visit || 'May to September' }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Weather</div>
+            <div class="info-value">{{ destination.weather || '31C' }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Currency</div>
+            <div class="info-value">{{ destination.currency || 'Indonesian Rupiah' }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Language</div>
+            <div class="info-value">{{ destination.language || 'Indonesian' }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Time Zone</div>
+            <div class="info-value">{{ destination.time_zone || 'GMT +7' }}</div>
+          </div>
         </div>
       </div>
-    </div>
-   
-  </div>
-   <button
-  class="explore-btn"
-  [routerLink]="['/tours']"
-  [queryParams]="{ destination: destination.id }">
-  Explore All Tours
-</button>
 
-</section>
- 
+    </div>
+    <button class="explore-btn" [routerLink]="['/tours']" [queryParams]="{ destination: destination.id }">
+      Explore All Tours
+    </button>
+
+  </section>
+
   <!-- 2. Featured Location -->
-<!-- Featured Locations Section -->
-<section class="featured-locations" *ngIf="destination.locations && destination.locations.length">
-  
-  <div class="locations-container">
-  
-    <div class="locations-wrapper" 
-         #locationsWrapper
-         [style.transform]="'translateX(' + (-currentSlide * 100) + '%)'"
-         (touchstart)="onTouchStart($event)"
-         (touchmove)="onTouchMove($event)"
-         (touchend)="onTouchEnd($event)">
-      
-      <div class="location-slide" *ngFor="let location of destination.locations; let i = index">
-        <div class="slide-content">
-          <div class="text-content">
-            <h2 class="location-title">Why {{ location.name }} Shines :</h2>
-            <p class="location-description">{{ location.description }}</p>
-            <button class="explore-btn"
-                    (click)="exploreLocation(location)"
-                    [routerLink]="['/tours']"
-                    [queryParams]="{ location: location.id }">
-              Explore Tours
-            </button>
-          </div>
-          
-          <div class="image-content">
-            <div class="image-wrapper">
-              <img [src]="location.image_url" 
-                   [alt]="location.name"
-                   class="location-image">
+  <!-- Featured Locations Section -->
+  <section class="featured-locations" *ngIf="destination.locations && destination.locations.length">
+
+    <div class="locations-container">
+
+      <div class="locations-wrapper" #locationsWrapper [style.transform]="'translateX(' + (-currentSlide * 100) + '%)'"
+        (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
+
+        <div class="location-slide" *ngFor="let location of destination.locations; let i = index">
+          <div class="slide-content">
+            <div class="text-content">
+              <h2 class="location-title">Why {{ location.name }} Shines :</h2>
+              <p class="location-description">{{ location.description }}</p>
+              <button class="explore-btn" (click)="exploreLocation(location)" [routerLink]="['/tours']"
+                [queryParams]="{ location: location.id }">
+                Explore Tours
+              </button>
+            </div>
+
+            <div class="image-content">
+              <div class="image-wrapper">
+                <img [src]="location.image_url" [alt]="location.name" class="location-image">
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+
+      <!-- Swipe Indicator -->
+      <!-- Swipe Indicator -->
+      <div class="swipe-indicator" *ngIf="destination.locations.length > 1">
+        <span class="swipe-text">Swipe</span>
+        <div class="swipe-arrows">
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" (click)="previousSlide()">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" (click)="nextSlide()">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
+
+
+
+      </div>
+
+
+      <!-- Slide Indicators -->
+      <div class="slide-indicators" *ngIf="destination.locations.length > 1">
+        <button class="indicator" *ngFor="let location of destination.locations; let i = index"
+          [class.active]="i === currentSlide" (click)="goToSlide(i)">
+        </button>
+      </div>
     </div>
+  </section>
 
-    
-    <!-- Swipe Indicator -->
-  <!-- Swipe Indicator -->
-<div class="swipe-indicator" *ngIf="destination.locations.length > 1">
-  <span class="swipe-text">Swipe</span>
-  <div class="swipe-arrows">
-    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" (click)="previousSlide()">
-      <path d="M15 18l-6-6 6-6"/>
-    </svg>
-    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" (click)="nextSlide()">
-      <path d="M9 18l6-6-6-6"/>
-    </svg>
-  </div>
-     
-   
-
-</div>
-
-    
-    <!-- Slide Indicators -->
-    <div class="slide-indicators" *ngIf="destination.locations.length > 1">
-      <button class="indicator" 
-              *ngFor="let location of destination.locations; let i = index"
-              [class.active]="i === currentSlide"
-              (click)="goToSlide(i)">
-      </button>
-    </div>
-  </div>
-</section>
-
-  <!-- 3. Top Packages -->
-  <section class="section top-packages" [style.backgroundImage]="'url(' + destination!.attractions[1]!.image_url + ')'">
+  <!-- Top Packages -->
+  <section class="section top-packages"
+    [style.backgroundImage]="destination.attractions.length ? 'url(' + destination.attractions[0].image_url + ')' : 'ur[](https://via.placeholder.com/1200x600)'">
     <h2>Top Packages</h2>
-     <div class="swiper packages-swiper" #packagesSwiper>
+    <div class="swiper packages-swiper" #packagesSwiper>
       <div class="swiper-wrapper">
-        <div class="swiper-slide" *ngFor="let t of destination.tours">
-          <img [src]="t.image_url" alt="{{ t.title }}">
+        <div class="swiper-slide" *ngFor="let t of destination?.tours">
+          <img [src]="t.image_url || 'https://via.placeholder.com/300'" alt="{{ t.title }}">
           <h3>{{ t.title }}</h3>
           <p>{{ t.duration_days }} Days / {{ t.duration_days - 1 }} Nights</p>
           <p>₹ {{ t.price }}</p>
@@ -142,71 +130,72 @@
     </div>
   </section>
 
-  <!-- 4. Attractions -->
-<section class="best-attractions" [style.backgroundImage]="'url(' + destination!.attractions[0]!.image_url + ')'">
-  <div class="overlay">
-    <h1 class="attraction-section-title">BEST ATTRACTIONS</h1>
-    <div class="content-wrapper">
-      <div class="left-section">
-        <h2 class="main-title">DISCOVER THE {{destination!.title | uppercase}} IN A NEW WAY...</h2>
-        <div class="top-attraction">
-          <span class="top-label">Top Attraction</span>
-          <span class="arrow">➔</span>
+  <!-- Best Attractions -->
+  <section class="best-attractions"
+    [style.backgroundImage]="destination.attractions.length ? 'url(' + destination.attractions[0].image_url + ')' : 'ur[](https://via.placeholder.com/1200x600)'">
+    <div class="overlay">
+      <h1 class="attraction-section-title">BEST ATTRACTIONS</h1>
+      <div class="content-wrapper">
+        <div class="left-section">
+          <h2 class="main-title">DISCOVER THE {{destination.title | uppercase}} IN A NEW WAY...</h2>
+          <div class="top-attraction">
+            <span class="top-label">Top Attraction</span>
+            <span class="arrow">➔</span>
+          </div>
+          <div class="attraction-list">
+            <div class="attraction-item" *ngFor="let attraction of destination?.attractions">
+              <img [src]="attraction.image_url || 'https://via.placeholder.com/150'" alt="{{attraction.title}}"
+                class="attraction-image" />
+              <p class="attraction-title">{{attraction.title}}</p>
+            </div>
+          </div>
         </div>
-        <div class="attraction-list">
-          <div class="attraction-item" *ngFor="let attraction of destination?.attractions">
-            <img [src]="attraction.image_url" alt="{{attraction.title}}" class="attraction-image" />
-            <p class="attraction-title">{{attraction.title}}</p>
+        <div class="right-section">
+          <div class="video-tile" *ngIf="destination?.attractions?.length && destination.attractions[0].video_url"
+            (click)="openVideoDialog(destination.attractions[0].video_url)">
+            <img [src]="destination.attractions[0].image_url || 'https://via.placeholder.com/300'" alt="Video 1"
+              class="video-thumbnail" />
+            <div class="play-button"></div>
+          </div>
+          <div class="video-tile" *ngIf="destination.attractions.length > 1 && destination.attractions[1].video_url"
+            (click)="openVideoDialog(destination.attractions[1].video_url)">
+            <img [src]="destination.attractions[1].image_url || 'https://via.placeholder.com/300'" alt="Video 2"
+              class="video-thumbnail" />
+            <div class="play-button"></div>
           </div>
         </div>
       </div>
-      <div class="right-section">
-       <div
-          class="video-tile"
-          *ngIf="destination?.attractions && destination.attractions.length > 0 && destination.attractions[0].video_url"
-          (click)="openVideoDialog(destination.attractions[0].video_url)"
-        >
-          <img [src]="destination!.attractions[0]!.image_url" alt="Video 1" class="video-thumbnail" />
-          <div class="play-button"></div>
-        </div>
-<div
-          class="video-tile"
-          *ngIf="destination?.attractions && destination.attractions.length > 1 && destination.attractions[1].video_url"
-          (click)="openVideoDialog(destination.attractions[1].video_url)"
-        >
-          <img [src]="destination!.attractions[1]!.image_url" alt="Video 2" class="video-thumbnail" />
-          <div class="play-button"></div>
-        </div>
-      </div>
     </div>
-  </div>
-</section>
-
-  <!-- 5. Culture / Ethnicities -->
-  <section class="section culture"  [style.backgroundImage]="'url(' + destination!.ethnicities[1]!.image_url + ')'">
-    <div class="culture-overlay">
-    <h2>Experience Local Culture</h2>
-    <div class="swiper culture-swiper" #cultureSwiper>
-      <div class="swiper-wrapper">
-        <div class="swiper-slide" *ngFor="let e of destination.ethnicities">
-          <img [src]="e.image_url" alt="{{ e.title }}">
-          <h4>{{ e.title }}</h4>
-        </div>
-      </div>
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-    </div>
-      </div>
   </section>
 
-  <!-- 6. Cuisines -->
-  <section class="section cuisines"  [style.backgroundImage]="'url(' + destination!.cuisines[1]!.image_url + ')'">
+  <!-- Culture / Ethnicities -->
+  <section class="section culture"
+    [style.backgroundImage]="destination.ethnicities.length ? 'url(' + destination.ethnicities[0].image_url + ')' : 'ur[](https://via.placeholder.com/1200x600)'">
+    <div class="culture-overlay">
+      <h2>Experience Local Culture</h2>
+      <div class="swiper culture-swiper" #cultureSwiper *ngIf="destination?.ethnicities?.length">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" *ngFor="let e of destination?.ethnicities">
+            <img [src]="e.image_url || 'https://via.placeholder.com/300'" alt="{{ e.title }}">
+            <h4>{{ e.title }}</h4>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+      <div *ngIf="!destination?.ethnicities?.length" class="no-data">No cultural experiences available.</div>
+    </div>
+  </section>
+
+  <!-- Cuisines -->
+  <section class="section cuisines"
+    [style.backgroundImage]="destination.cuisines.length ? 'url(' + destination.cuisines[0].image_url + ')' : 'ur[](https://via.placeholder.com/1200x600)'">
     <h2>Local Cuisines</h2>
-    <div class="swiper cuisine-swiper" #cuisineSwiper>
+    <div class="swiper cuisine-swiper" #cuisineSwiper *ngIf="destination?.cuisines?.length">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" *ngFor="let c of destination.cuisines">
-          <img [src]="c.image_url" alt="{{ c.title }}">
+        <div class="swiper-slide" *ngFor="let c of destination?.cuisines">
+          <img [src]="c.image_url || 'https://via.placeholder.com/300'" alt="{{ c.title }}">
           <h4>{{ c.title }}</h4>
         </div>
       </div>
@@ -214,15 +203,17 @@
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
     </div>
+    <div *ngIf="!destination?.cuisines?.length" class="no-data">No cuisines available.</div>
   </section>
 
-  <!-- 7. Activities -->
-  <section class="section activities"  [style.backgroundImage]="'url(' + destination!.activities[1]!.image_url + ')'">
+  <!-- Activities -->
+  <section class="section activities"
+    [style.backgroundImage]="destination.activities.length ? 'url(' + destination.activities[0].image_url + ')' : 'ur[](https://via.placeholder.com/1200x600)'">
     <h2>Exciting Activities</h2>
-    <div class="swiper" #activitiesSwiper>
+    <div class="swiper" #activitiesSwiper *ngIf="destination?.activities?.length">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" *ngFor="let a of destination.activities">
-          <img [src]="a.image_url" alt="{{ a.title }}">
+        <div class="swiper-slide" *ngFor="let a of destination?.activities">
+          <img [src]="a.image_url || 'https://via.placeholder.com/300'" alt="{{ a.title }}">
           <h4>{{ a.title }}</h4>
         </div>
       </div>
@@ -230,6 +221,7 @@
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
     </div>
+    <div *ngIf="!destination?.activities?.length" class="no-data">No activities available.</div>
   </section>
 
   <!-- 8. Itinerary Timeline -->
@@ -251,12 +243,7 @@
     <h2>Explore in 360°</h2>
     <div *ngFor="let loc of destination.locations">
       <h3>{{ loc.name }} 360° view</h3>
-      <iframe
-        [src]="loc.iframe_360 | safeUrl"
-        width="100%"
-        height="400"
-        frameborder="0"
-        allowfullscreen>
+      <iframe [src]="loc.iframe_360 | safeUrl" width="100%" height="400" frameborder="0" allowfullscreen>
       </iframe>
     </div>
   </section>

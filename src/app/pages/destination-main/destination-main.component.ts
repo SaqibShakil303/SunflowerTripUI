@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import  { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { SafeUrlPipe } from '../../common/pipes/safe-url.pipe';
 import { DestinationService } from '../../services/destination/destination.service';
 import { Destination } from '../../models/destination.model';
@@ -28,10 +28,10 @@ import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.co
   templateUrl: './destination-main.component.html',
   styleUrls: ['./destination-main.component.scss']
 })
-export class DestinationMainComponent implements OnInit{
+export class DestinationMainComponent implements OnInit {
   destination: Destination | null = null;
-    // @Input() destination: any = {};
- @ViewChild('locationsWrapper') locationsWrapper!: ElementRef;
+  // @Input() destination: any = {};
+  @ViewChild('locationsWrapper') locationsWrapper!: ElementRef;
   // One Swiper instance per section
   @ViewChild('packagesSwiper') packagesSwiper!: ElementRef;
   @ViewChild('attractionsSwiper') attractionsSwiper!: ElementRef;
@@ -40,8 +40,8 @@ export class DestinationMainComponent implements OnInit{
   @ViewChild('activitiesSwiper') activitiesSwiper!: ElementRef;
 
   // private swipers: Swiper[] = [];
- currentSlide = 0;
-  
+  currentSlide = 0;
+
   // Touch/Swipe properties
   private startX = 0;
   private currentX = 0;
@@ -53,9 +53,9 @@ export class DestinationMainComponent implements OnInit{
     private destSvc: DestinationService,
     public dialog: MatDialog,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) { }
 
-openVideoDialog(videoUrl: string): void {
+  openVideoDialog(videoUrl: string): void {
     if (videoUrl) {
       this.dialog.open(VideoDialogComponent, {
         width: '80%',
@@ -64,32 +64,39 @@ openVideoDialog(videoUrl: string): void {
     }
   }
   ngOnInit(): void {
-    const titleParam = this.route.snapshot.paramMap.get('title');
+  const titleParam = this.route.snapshot.paramMap.get('title');
   if (!titleParam) {
+    console.error('No title parameter provided, navigating to home.');
     this.router.navigateByUrl('/');
     return;
   }
-    this.destSvc.getDestinationByTitle(titleParam).subscribe({
-      next: dest => {
-        this.destination = dest;
-        // Once data is bound, initialize each Swiper
-        if (isPlatformBrowser(this.platformId)) {
-          setTimeout(() => {
-            this.initSwiper(this.packagesSwiper);
-            this.initSwiper(this.attractionsSwiper);
-            this.initSwiper(this.cultureSwiper);
-            this.initSwiper(this.cuisineSwiper);
-            this.initSwiper(this.activitiesSwiper);
-          }, 0);
-        }
-      },
-      error: () => {
-        this.router.navigateByUrl('/');
-      }
-    });
-  }
 
-    private initSwiper(elRef: ElementRef): void {
+  this.destSvc.getDestinationByTitle(titleParam).subscribe({
+    next: (dest) => {
+      console.log('Destination data received:', JSON.stringify(dest, null, 2));
+      this.destination = dest;
+      if (isPlatformBrowser(this.platformId)) {
+        setTimeout(() => {
+          if (this.destination?.tours?.length) this.initSwiper(this.packagesSwiper);
+          if (this.destination?.attractions?.length) this.initSwiper(this.attractionsSwiper);
+          if (this.destination?.ethnicities?.length) this.initSwiper(this.cultureSwiper);
+          if (this.destination?.cuisines?.length) this.initSwiper(this.cuisineSwiper);
+          if (this.destination?.activities?.length) this.initSwiper(this.activitiesSwiper);
+        }, 0);
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching destination:', err);
+      console.error('Error details:', JSON.stringify(err, null, 2));
+      this.router.navigateByUrl('/');
+    },
+    complete: () => {
+      console.log('Destination fetch completed.');
+    }
+  });
+}
+
+  private initSwiper(elRef: ElementRef): void {
     if (!elRef?.nativeElement) return;
     new Swiper(elRef.nativeElement, {
       modules: [Navigation, Pagination, Autoplay],
@@ -101,20 +108,20 @@ openVideoDialog(videoUrl: string): void {
       pagination: { el: '.swiper-pagination', clickable: true },
       navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
       breakpoints: {
-        640:  { slidesPerView: 1, spaceBetween: 20 },
-        768:  { slidesPerView: 2, spaceBetween: 30 },
+        640: { slidesPerView: 1, spaceBetween: 20 },
+        768: { slidesPerView: 2, spaceBetween: 30 },
         1024: { slidesPerView: 3, spaceBetween: 40 }
       }
     });
   }
 
 
-   onTouchStart(event: TouchEvent): void {
+  onTouchStart(event: TouchEvent): void {
     this.startX = event.touches[0].clientX;
     this.currentX = this.startX;
     this.isDragging = true;
     this.startTime = Date.now();
-    
+
     if (this.locationsWrapper) {
       this.locationsWrapper.nativeElement.classList.add('dragging');
     }
@@ -122,13 +129,13 @@ openVideoDialog(videoUrl: string): void {
 
   onTouchMove(event: TouchEvent): void {
     if (!this.isDragging) return;
-    
+
     event.preventDefault();
     this.currentX = event.touches[0].clientX;
-    
+
     const diff = this.currentX - this.startX;
     const translateX = -this.currentSlide * 100 + (diff / window.innerWidth) * 100;
-    
+
     if (this.locationsWrapper) {
       this.locationsWrapper.nativeElement.style.transform = `translateX(${translateX}%)`;
     }
@@ -136,21 +143,21 @@ openVideoDialog(videoUrl: string): void {
 
   onTouchEnd(event: TouchEvent): void {
     if (!this.isDragging) return;
-    
+
     this.isDragging = false;
     const endTime = Date.now();
     const timeDiff = endTime - this.startTime;
     const distance = this.currentX - this.startX;
     const velocity = Math.abs(distance) / timeDiff;
-    
+
     if (this.locationsWrapper) {
       this.locationsWrapper.nativeElement.classList.remove('dragging');
     }
-    
+
     // Determine if swipe should trigger slide change
     const threshold = window.innerWidth * 0.25; // 25% of screen width
     const velocityThreshold = 0.5; // pixels per millisecond
-    
+
     if (Math.abs(distance) > threshold || velocity > velocityThreshold) {
       if (distance > 0 && this.currentSlide > 0) {
         // Swipe right - go to previous slide
@@ -172,7 +179,7 @@ openVideoDialog(videoUrl: string): void {
   goToSlide(index: number): void {
     if (index >= 0 && index < this.destination!.locations.length) {
       this.currentSlide = index;
-      
+
       if (this.locationsWrapper) {
         this.locationsWrapper.nativeElement.style.transform = `translateX(-${this.currentSlide * 100}%)`;
       }
@@ -221,6 +228,6 @@ openVideoDialog(videoUrl: string): void {
   }
 
   ngOnDestroy(): void {
-      this.stopAutoSlide();
+    this.stopAutoSlide();
   }
 }
