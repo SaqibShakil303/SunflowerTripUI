@@ -5,17 +5,16 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { TourService } from '../../../services/tours/tour.service';
-import { DestinationService } from '../../../services/destination/destination.service';
-import { Destination } from '../../../models/destination.model';
+import { DestinationNav, DestinationService } from '../../../services/destination/destination.service';
+
 
 interface TourPayload {
   tour: {
     id: number;
     title: string;
     destination_id: number;
-    // location_ids: number[];
+    location_ids: number[];
     slug: string;
-    // location?: string;
     description: string;
     price: string;
     price_per_person: string;
@@ -85,7 +84,7 @@ interface TourPayload {
     max_occupancy: number;
   }[];
   itinerary: {
-    day: number;
+    day_number: number;
     title: string;
     description: string;
     activities?: string[];
@@ -105,8 +104,9 @@ export class EditTourComponent implements OnInit {
   tourForm!: FormGroup;
   imagePreviews: { [key: string]: string } = {};
   isSubmitting = false;
-  destinations: Destination[] = [];
+  destinations: DestinationNav[] = [];
   categories: string[] = [];
+  availableLocations: { id: number; name: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -124,6 +124,11 @@ export class EditTourComponent implements OnInit {
     this.loadDestinations();
     this.loadCategories();
     this.populateForm();
+
+    // Listen for destination_id changes to update available locations
+    this.tourForm.get('destination_id')?.valueChanges.subscribe(destinationId => {
+      this.updateAvailableLocations(destinationId);
+    });
   }
 
   private createForm(): FormGroup {
@@ -131,8 +136,7 @@ export class EditTourComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
       destination_id: [null, Validators.required],
-      // location_ids: [''],
-      // location: [''],
+      location_ids: [[]], // Initialize as an array for multi-select
       duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
       category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       price_per_person: [0, [Validators.required, Validators.min(0)]],
@@ -190,8 +194,7 @@ export class EditTourComponent implements OnInit {
       title: tour.title,
       slug: tour.slug,
       destination_id: tour.destination_id,
-      // location_ids: tour.location_ids?.join(',') || '',
-      // location: tour.location || '',
+      location_ids: tour.location_ids || [],
       duration_days: tour.duration_days,
       category: tour.category,
       price_per_person: parseFloat(tour.price_per_person),
@@ -242,6 +245,7 @@ export class EditTourComponent implements OnInit {
     this.populateItinerary();
     this.populateRoomTypes();
     this.populateReviews();
+    this.updateAvailableLocations(tour.destination_id); // Initialize locations for the selected destination
     this.cdr.detectChanges();
   }
 
@@ -263,7 +267,7 @@ export class EditTourComponent implements OnInit {
     itineraryArray.clear();
     this.data.itinerary.forEach(item => {
       itineraryArray.push(this.fb.group({
-        day: [item.day, [Validators.required, Validators.min(1)]],
+        day_number: [item.day_number, [Validators.required, Validators.min(1)]],
         title: [item.title, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
         description: [item.description, [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
         activities: [item.activities?.join('\n') || ''],
@@ -322,10 +326,9 @@ export class EditTourComponent implements OnInit {
   }
 
   loadDestinations(): void {
-    this.destinationService.getDestinationNames().subscribe({
+    this.destinationService.getNamesAndLocations().subscribe({
       next: (destinations) => {
         this.destinations = destinations;
-           // this.destinations = destinations.filter(dest => dest.parent_id !== null);
         this.cdr.detectChanges();
       },
       error: () => {
@@ -336,6 +339,23 @@ export class EditTourComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  updateAvailableLocations(destinationId: number | null): void {
+    if (destinationId) {
+      const destination = this.destinations.find(dest => dest.id === destinationId);
+      this.availableLocations = destination ? destination.locations : [];
+      // Only reset location_ids if they don't match the available locations
+      const currentLocationIds = this.tourForm.get('location_ids')?.value || [];
+      const validLocationIds = currentLocationIds.filter((id: number) =>
+        this.availableLocations.some(loc => loc.id === id)
+      );
+      this.tourForm.get('location_ids')?.setValue(validLocationIds);
+    } else {
+      this.availableLocations = [];
+      this.tourForm.get('location_ids')?.setValue([]);
+    }
+    this.cdr.detectChanges();
   }
 
   addPhoto(): void {
@@ -349,7 +369,7 @@ export class EditTourComponent implements OnInit {
 
   addItineraryDay(): void {
     this.itineraryDays.push(this.fb.group({
-      day: [this.itineraryDays.length + 1, [Validators.required, Validators.min(1)]],
+      day_number: [this.itineraryDays.length + 1, [Validators.required, Validators.min(1)]],
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       activities: [''],
@@ -393,8 +413,7 @@ export class EditTourComponent implements OnInit {
           title: formValue.title,
           slug: formValue.slug,
           destination_id: formValue.destination_id,
-          // location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
-          // location: formValue.location || undefined,
+          location_ids: formValue.location_ids || [],
           description: formValue.description,
           price: formValue.price_per_person.toFixed(2),
           price_per_person: formValue.price_per_person.toFixed(2),
@@ -464,7 +483,7 @@ export class EditTourComponent implements OnInit {
           max_occupancy: room.max_occupancy
         })),
         itinerary: formValue.itinerary.map((day: any) => ({
-          day: day.day,
+          day_number: day.day_number,
           title: day.title,
           description: day.description,
           activities: day.activities ? day.activities.split('\n').filter((item: string) => item.trim()) : [],
@@ -473,7 +492,7 @@ export class EditTourComponent implements OnInit {
         }))
       };
 
-      this.tourService.updateTour( this.data.tour.id,payload).subscribe({
+      this.tourService.updateTour(this.data.tour.id, payload).subscribe({
         next: (result) => {
           this.snackBar.open('Tour updated successfully', 'Close', {
             duration: 3000,
@@ -540,8 +559,7 @@ export class EditTourComponent implements OnInit {
       title: 'Tour title',
       slug: 'Slug',
       destination_id: 'Destination',
-      // location_ids: 'Location IDs',
-      // location: 'Location',
+      location_ids: 'Locations',
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',
@@ -581,7 +599,7 @@ export class EditTourComponent implements OnInit {
       advance_booking_days: 'Advance booking days',
       url: 'Image URL',
       caption: 'Caption',
-      day: 'Day number',
+      day_number: 'Day number',
       name: 'Room name',
       max_occupancy: 'Max occupancy',
       reviewer_name: 'Reviewer name',

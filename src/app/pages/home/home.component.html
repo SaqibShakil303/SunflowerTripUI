@@ -7,7 +7,7 @@
         height="100%"
         frameborder="0" -->
       <div class="background-fallback" *ngIf="!videoLoaded"></div>
-    <video
+    <video 
     class="background-iframe"
     autoplay
     muted
@@ -54,9 +54,9 @@
 </section>
 
 <!-- Main content components -->
-<app-testimonials></app-testimonials>
-<app-services></app-services>
-<app-why-us></app-why-us>
+<app-testimonials  *ngIf="isTestimonialsLoaded"></app-testimonials>
+<app-services  *ngIf="isTestimonialsLoaded"></app-services>
+<app-why-us  *ngIf="isTestimonialsLoaded"></app-why-us>
 <app-chat-widget></app-chat-widget>
 <app-map></app-map>
 <app-footer></app-footer>

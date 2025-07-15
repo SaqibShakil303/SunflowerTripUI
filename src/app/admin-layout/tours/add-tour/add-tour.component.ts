@@ -5,7 +5,7 @@ import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { Destination } from '../../../models/destination.model';
-import { DestinationService } from '../../../services/destination/destination.service';
+import { DestinationNav, DestinationService } from '../../../services/destination/destination.service';
 import { TourService } from '../../../services/tours/tour.service';
 
 @Component({
@@ -19,8 +19,10 @@ export class AddTourComponent implements OnInit {
   tourForm!: FormGroup;
   imagePreviews: { [key: string]: string } = {};
   isSubmitting = false;
-  destinations: Destination[] = [];
+  destinations: DestinationNav[] = [];
   categories: string[] = [];
+  availableLocations: { id: number; name: string }[] = [];
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddTourComponent>,
@@ -30,85 +32,89 @@ export class AddTourComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) { }
 
- ngOnInit(): void {
-  this.tourForm = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
-    destination_id: [null, Validators.required],
-    // location_ids: [''], // Store as comma-separated string
-    // location: [''],
-    duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
-    category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-    price_per_person: [0, [Validators.required, Validators.min(0)]],
-    price_currency: ['INR', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
-    image_url: [''],
-    description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-    departure_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    arrival_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    available_from: ['', Validators.required],
-    available_to: ['', Validators.required],
-    max_group_size: [null],
-    min_group_size: [null],
-    inclusions: [''],
-    exclusions: [''],
-    complementaries: [''],
-    highlights: [''],
-    booking_terms: [''],
-    cancellation_policy: [''],
-    meta_title: [''],
-    meta_description: [''],
-    early_bird_discount: [null],
-    group_discount: [null],
-    difficulty_level: ['Moderate'],
-    physical_requirements: [''],
-    best_time_to_visit: [''],
-    weather_info: [''],
-    packing_list: [''],
-    languages_supported: [''],
-    guide_included: [true],
-    guide_languages: [''],
-    transportation_included: [true],
-    transportation_details: [''],
-    meals_included: [''],
-    dietary_restrictions_supported: [''],
-    accommodation_type: [''],
-    accommodation_rating: [null],
-    activity_types: [''],
-    interests: [''],
-    instant_booking: [false],
-    requires_approval: [true],
-    advance_booking_days: [null],
-    is_active: [true],
-    is_featured: [true],
-    is_customizable: [true],
-    photos: this.fb.array([]),
-    itinerary: this.fb.array([], Validators.required),
-    room_types: this.fb.array([]),
-    reviews: this.fb.array([])
-  });
+  ngOnInit(): void {
+    this.tourForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
+      destination_id: [null, Validators.required],
+      location_ids: [[]], // Initialize as an array for multi-select
+      duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
+      category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      price_per_person: [0, [Validators.required, Validators.min(0)]],
+      price_currency: ['INR', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      image_url: [''],
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+      departure_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      arrival_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      available_from: ['', Validators.required],
+      available_to: ['', Validators.required],
+      max_group_size: [null],
+      min_group_size: [null],
+      inclusions: [''],
+      exclusions: [''],
+      complementaries: [''],
+      highlights: [''],
+      booking_terms: [''],
+      cancellation_policy: [''],
+      meta_title: [''],
+      meta_description: [''],
+      early_bird_discount: [null],
+      group_discount: [null],
+      difficulty_level: ['Moderate'],
+      physical_requirements: [''],
+      best_time_to_visit: [''],
+      weather_info: [''],
+      packing_list: [''],
+      languages_supported: [''],
+      guide_included: [true],
+      guide_languages: [''],
+      transportation_included: [true],
+      transportation_details: [''],
+      meals_included: [''],
+      dietary_restrictions_supported: [''],
+      accommodation_type: [''],
+      accommodation_rating: [null],
+      activity_types: [''],
+      interests: [''],
+      instant_booking: [false],
+      requires_approval: [true],
+      advance_booking_days: [null],
+      is_active: [true],
+      is_featured: [true],
+      is_customizable: [true],
+      photos: this.fb.array([]),
+      itinerary: this.fb.array([], Validators.required),
+      room_types: this.fb.array([]),
+      reviews: this.fb.array([])
+    });
 
-  this.loadDestinations();
-  this.loadCategories();
-}
+    this.loadDestinations();
+    this.loadCategories();
+
+    // Listen for destination_id changes to update available locations
+    this.tourForm.get('destination_id')?.valueChanges.subscribe(destinationId => {
+      this.updateAvailableLocations(destinationId);
+    });
+  }
 
   get photos() { return this.tourForm.get('photos') as FormArray<FormGroup>; }
   get itineraryDays() { return this.tourForm.get('itinerary') as FormArray<FormGroup>; }
   get roomTypes() { return this.tourForm.get('room_types') as FormArray<FormGroup>; }
   get reviews() { return this.tourForm.get('reviews') as FormArray<FormGroup>; }
 
- loadCategories(): void{
-      this.tourService.getCategories().subscribe({
+  loadCategories(): void {
+    this.tourService.getCategories().subscribe({
       next: (data) => {
         this.categories = data;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed loading categories', err)
     });
- }
+  }
 
   loadDestinations(): void {
-    this.destinationService.getDestinationNames().subscribe({
+    this.destinationService.getNamesAndLocations().subscribe({
       next: (destinations) => {
-        // this.destinations = destinations.filter(dest => dest.parent_id !== null);
         this.destinations = destinations;
         this.cdr.detectChanges();
       },
@@ -120,6 +126,19 @@ export class AddTourComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  updateAvailableLocations(destinationId: number | null): void {
+    if (destinationId) {
+      const destination = this.destinations.find(dest => dest.id === destinationId);
+      this.availableLocations = destination ? destination.locations : [];
+      // Reset location_ids when destination changes
+      this.tourForm.get('location_ids')?.setValue([]);
+    } else {
+      this.availableLocations = [];
+      this.tourForm.get('location_ids')?.setValue([]);
+    }
+    this.cdr.detectChanges();
   }
 
   addPhoto(): void {
@@ -176,8 +195,7 @@ export class AddTourComponent implements OnInit {
           title: formValue.title,
           slug: formValue.slug,
           destination_id: formValue.destination_id,
-        //   location_ids: formValue.location_ids ? formValue.location_ids.split(',').map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id)) : [],
-        // location: formValue.location || undefined,
+          location_ids: formValue.location_ids || [], // Include selected location IDs
           description: formValue.description,
           price: formValue.price_per_person.toFixed(2),
           price_per_person: formValue.price_per_person.toFixed(2),
@@ -323,8 +341,7 @@ export class AddTourComponent implements OnInit {
       title: 'Tour title',
       slug: 'Slug',
       destination_id: 'Destination',
-    //   location_ids: 'Location IDs',
-    // location: 'Location',
+      location_ids: 'Locations',
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',

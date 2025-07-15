@@ -29,16 +29,23 @@ export function app(): express.Express {
   server.get('**', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
 
-    commonEngine
-      .render({
+    const timeout = 60000; // Timeout in milliseconds
+    Promise.race([
+      commonEngine.render({
         bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: browserDistFolder,
         providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-      })
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('SSR Timeout')), timeout)) // Timeout after specified duration
+    ])
       .then((html) => res.send(html))
-      .catch((err) => next(err));
+      .catch((err) => {
+        console.error('SSR Error:', err);
+        res.status(500).send('Error during SSR rendering');
+        next(err);
+      });
   });
 
   return server;

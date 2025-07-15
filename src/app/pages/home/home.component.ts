@@ -40,6 +40,7 @@ export class HomeComponent implements AfterViewInit {
 iframeLoaded = false;
 videoUrl!: SafeResourceUrl;
   loading = false;
+  isTestimonialsLoaded = false;
   error: string | null = null;
     videoLoaded = false;
    private searchSubject = new Subject<string>();
@@ -108,7 +109,9 @@ onIframeError() {
    
   }
   ngAfterViewInit() {
-     
+     setTimeout(() => {
+    this.isTestimonialsLoaded = true;
+  }, 3000);  // Simulate a small delay or load other heavy components after a delay
     // Any additional initialization if needed
   }
 handleSearch(filters: any) {

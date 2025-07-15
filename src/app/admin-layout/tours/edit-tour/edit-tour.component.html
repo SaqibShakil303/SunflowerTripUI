@@ -48,6 +48,16 @@
 
           <div class="form-row">
             <div class="form-group">
+              <label for="location_ids" class="form-label">Locations</label>
+              <select id="location_ids" formControlName="location_ids" class="form-control" multiple>
+                <option *ngFor="let location of availableLocations" [ngValue]="location.id">
+                  {{ location.name }}
+                </option>
+              </select>
+              <div class="form-help">Hold Ctrl (Windows) or Cmd (Mac) to select multiple locations</div>
+            </div>
+
+            <div class="form-group">
               <label for="duration_days" class="form-label">Duration (days) *</label>
               <input type="number" id="duration_days" formControlName="duration_days" class="form-control"
                 [class.error]="isFieldInvalid(tourForm, 'duration_days')" placeholder="Enter duration in days">
@@ -55,7 +65,9 @@
                 {{ getFieldError(tourForm, 'duration_days') }}
               </div>
             </div>
+          </div>
 
+          <div class="form-row">
             <div class="form-group">
               <label for="category" class="form-label">Category *</label>
               <select id="category" formControlName="category" class="form-control"
@@ -69,9 +81,7 @@
                 {{ getFieldError(tourForm, 'category') }}
               </div>
             </div>
-          </div>
 
-          <div class="form-row">
             <div class="form-group">
               <label for="price_per_person" class="form-label">Price per Person *</label>
               <input type="number" id="price_per_person" formControlName="price_per_person"
@@ -81,7 +91,9 @@
                 {{ getFieldError(tourForm, 'price_per_person') }}
               </div>
             </div>
+          </div>
 
+          <div class="form-row">
             <div class="form-group">
               <label for="price_currency" class="form-label">Currency *</label>
               <input type="text" id="price_currency" formControlName="price_currency" class="form-control"
@@ -90,9 +102,7 @@
                 {{ getFieldError(tourForm, 'price_currency') }}
               </div>
             </div>
-          </div>
 
-          <div class="form-row">
             <div class="form-group">
               <label for="slug" class="form-label">Slug *</label>
               <input type="text" id="slug" formControlName="slug" class="form-control"
@@ -101,27 +111,15 @@
                 {{ getFieldError(tourForm, 'slug') }}
               </div>
             </div>
+          </div>
 
+          <div class="form-row">
             <div class="form-group">
               <label for="image_url" class="form-label">Main Image URL</label>
               <input type="text" id="image_url" formControlName="image_url" class="form-control"
                 placeholder="Enter main image URL">
             </div>
           </div>
-
-          <!-- <div class="form-row">
-            <div class="form-group">
-              <label for="location_ids" class="form-label">Location IDs</label>
-              <input type="text" id="location_ids" formControlName="location_ids" class="form-control"
-                placeholder="Enter location IDs (comma-separated, e.g., 1,2,3)">
-            </div>
-
-            <div class="form-group">
-              <label for="location" class="form-label">Location</label>
-              <input type="text" id="location" formControlName="location" class="form-control"
-                placeholder="Enter location (optional)">
-            </div>
-          </div> -->
         </div>
 
         <!-- Tour Details Section -->
@@ -144,7 +142,7 @@
             <div class="form-group">
               <label for="arrival_airport" class="form-label">Arrival Airport *</label>
               <input type="text" id="arrival_airport" formControlName="arrival_airport" class="form-control"
-                [class.error]="isFieldInvalid(tourForm, 'departure_airport')" placeholder="e.g., Da Nang International Airport">
+                [class.error]="isFieldInvalid(tourForm, 'arrival_airport')" placeholder="e.g., Da Nang International Airport">
               <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'arrival_airport')">
                 {{ getFieldError(tourForm, 'arrival_airport') }}
               </div>
@@ -511,11 +509,11 @@
               </div>
               <div class="form-group">
                 <label [attr.for]="'itinerary-day-' + i" class="form-label">Day Number *</label>
-                <input type="number" [attr.id]="'itinerary-day-' + i" formControlName="day"
-                  class="form-control" [class.error]="isFieldInvalid(day, 'day')"
+                <input type="number" [attr.id]="'itinerary-day-' + i" formControlName="day_number"
+                  class="form-control" [class.error]="isFieldInvalid(day, 'day_number')"
                   placeholder="e.g., 1">
-                <div class="error-message" *ngIf="isFieldInvalid(day, 'day')">
-                  {{ getFieldError(day, 'day') }}
+                <div class="error-message" *ngIf="isFieldInvalid(day, 'day_number')">
+                  {{ getFieldError(day, 'day_number') }}
                 </div>
               </div>
             </div>
