@@ -150,35 +150,27 @@ $font-heading: 'Playfair Display', serif;
 
         .table-wrapper {
             overflow-x: auto;
-            /* Allow vertical scroll if needed, but constrain horizontally */
             max-width: 100%;
-            /* Ensure wrapper doesn't exceed container */
         }
 
         .tours-table {
             width: 100%;
-            /* Fit to container */
             border-collapse: collapse;
             table-layout: auto;
-            /* Changed to auto to allow columns to adjust dynamically */
             min-width: 0;
 
-            /* Prevent table from forcing a minimum width */
             thead {
                 th {
                     background: lighten($peacock-blue, 45%);
                     padding: 1rem 0.5rem;
-                    /* Reduced padding for tighter columns */
                     text-align: left;
                     font-family: $font-heading;
                     font-weight: 500;
                     color: $peacock-blue;
                     font-size: 0.9rem;
-                    /* Slightly smaller font size for better fit */
                     letter-spacing: 0.5px;
                     border-bottom: 2px solid $saffron;
 
-                    /* Use percentage-based widths to ensure responsiveness */
                     &.col-serial {
                         width: 8%;
                     }
@@ -229,15 +221,11 @@ $font-heading: 'Playfair Display', serif;
 
                     td {
                         padding: 1.2rem 0.5rem;
-                        /* Reduced padding */
                         border-bottom: 1px solid #E0E0E0;
                         vertical-align: middle;
                         overflow: hidden;
-                        /* Prevent content overflow */
                         text-overflow: ellipsis;
-                        /* Truncate long text */
                         white-space: nowrap;
-                        /* Prevent text wrapping */
 
                         &.col-serial {
                             .serial-number {
@@ -259,7 +247,6 @@ $font-heading: 'Playfair Display', serif;
                                 display: flex;
                                 align-items: center;
                                 gap: 0.5rem;
-                                /* Reduced gap */
                                 overflow: hidden;
 
                                 .expand-icon {
@@ -281,7 +268,6 @@ $font-heading: 'Playfair Display', serif;
 
                                 .tour-image {
                                     width: 50px;
-                                    /* Smaller image */
                                     height: 50px;
                                     border-radius: 8px;
                                     object-fit: cover;
@@ -297,7 +283,6 @@ $font-heading: 'Playfair Display', serif;
 
                                     .tour-title {
                                         font-size: 1rem;
-                                        /* Smaller font */
                                         color: $dark-brown;
                                         font-weight: 500;
                                         white-space: nowrap;
@@ -406,7 +391,6 @@ $font-heading: 'Playfair Display', serif;
                             .actions-wrapper {
                                 display: flex;
                                 flex-direction: row;
-                                /* Horizontal for space */
                                 gap: 0.3rem;
                                 width: 100%;
                                 max-width: none;
@@ -423,7 +407,6 @@ $font-heading: 'Playfair Display', serif;
 
                                 .btn-text {
                                     display: none;
-                                    /* Hide text to save space */
                                 }
                             }
                         }
@@ -454,7 +437,6 @@ $font-heading: 'Playfair Display', serif;
                             .details-grid {
                                 display: grid;
                                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                                /* Smaller min width */
                                 gap: 1rem;
 
                                 .detail-item {
@@ -506,6 +488,49 @@ $font-heading: 'Playfair Display', serif;
                                 }
                             }
 
+                            .image-preview {
+                                display: grid;
+                                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                                gap: 1rem;
+                                margin-top: 1rem;
+
+                                .image-item {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    gap: 0.5rem;
+
+                                    .preview-image {
+                                        max-width: 150px;
+                                        max-height: 100px;
+                                        width: 100%;
+                                        height: auto;
+                                        border-radius: 8px;
+                                        border: 2px solid $saffron;
+                                        box-shadow: 0 4px 15px rgba(244, 164, 96, 0.2);
+                                        object-fit: cover;
+                                    }
+
+                                    .image-info {
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: center;
+                                        gap: 0.3rem;
+                                        font-size: 0.85rem;
+                                        color: $dark-brown;
+
+                                        .badge-primary {
+                                            background: $saffron;
+                                            color: white;
+                                            padding: 0.2rem 0.4rem;
+                                            border-radius: 10px;
+                                            font-size: 0.7rem;
+                                            font-weight: 500;
+                                        }
+                                    }
+                                }
+                            }
+
                             .policy-text {
                                 .policy-item {
                                     margin-bottom: 1rem;
@@ -542,7 +567,7 @@ $font-heading: 'Playfair Display', serif;
         }
 
         h3 {
-            font-family: $font-heading;
+            font-family: $font-body;
             font-size: 1.8rem;
             color: $peacock-blue;
             margin: 0 0 1rem 0;
@@ -625,7 +650,6 @@ $font-heading: 'Playfair Display', serif;
         }
     }
 }
-
 
 // Button Styles
 .btn {
@@ -822,7 +846,6 @@ $font-heading: 'Playfair Display', serif;
 
                     tbody td {
                         font-size: 0.85rem;
-                        /* Smaller text */
                     }
                 }
             }
@@ -869,12 +892,10 @@ $font-heading: 'Playfair Display', serif;
             .table-wrapper {
                 .tours-table {
                     display: block;
-                    /* Switch to block for mobile-friendly layout */
                     overflow-x: hidden;
 
                     thead {
                         display: none;
-                        /* Hide headers on small screens */
                     }
 
                     tbody,
@@ -895,11 +916,9 @@ $font-heading: 'Playfair Display', serif;
                         td {
                             display: block;
                             width: 100% !important;
-                            /* Full width for each cell */
                             padding: 0.5rem 0;
                             text-align: left;
                             white-space: normal;
-                            /* Allow wrapping for mobile */
 
                             &.col-serial {
                                 order: 1;
@@ -966,7 +985,6 @@ $font-heading: 'Playfair Display', serif;
                                 }
                             }
 
-                            /* Add pseudo-labels for clarity */
                             &:before {
                                 content: attr(data-label);
                                 font-weight: 500;
@@ -987,6 +1005,26 @@ $font-heading: 'Playfair Display', serif;
                             .details-grid {
                                 grid-template-columns: 1fr;
                                 gap: 0.8rem;
+                            }
+
+                            .image-preview {
+                                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                                gap: 0.8rem;
+
+                                .image-item {
+                                    .preview-image {
+                                        max-width: 120px;
+                                        max-height: 80px;
+                                    }
+
+                                    .image-info {
+                                        font-size: 0.8rem;
+
+                                        .badge-primary {
+                                            font-size: 0.65rem;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
