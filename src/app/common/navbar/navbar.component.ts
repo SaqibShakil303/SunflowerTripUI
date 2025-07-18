@@ -80,8 +80,8 @@ export class NavbarComponent implements OnInit {
     this.isMobileNavVisible = true;
   }
 
-  navigateTo(route: string) {
-    this.router.navigate([route]);
+  navigateTo(route: string,queryParams?: any) {
+  this.router.navigate([route], { queryParams });
     this.isMobileNavVisible = false;
   }
 

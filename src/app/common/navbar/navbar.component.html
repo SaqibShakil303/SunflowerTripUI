@@ -16,8 +16,8 @@
     <button class="custom-btn" [routerLink]="['/itinerary']"
       (click)="customizeHoliday(); navigateTo('/itinerary')">Customize My Holiday</button>
     <ng-container *ngFor="let group of navGroups">
-      <button class="custom-btn nav-btn" [routerLink]="group.items[0].route" [queryParams]="group.items[0].queryParams"
-        (click)="navigateTo(group.items[0].route)">
+      <button class="custom-btn nav-btn" 
+        (click)="navigateTo(group.items[0].route, group.items[0].queryParams)">
         {{ group.label }}
       </button>
     </ng-container>

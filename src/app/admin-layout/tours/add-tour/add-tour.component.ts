@@ -191,7 +191,6 @@ export class AddTourComponent implements OnInit {
       this.isSubmitting = true;
       const formValue = this.tourForm.value;
       const payload = {
-        tour: {
           title: formValue.title,
           slug: formValue.slug,
           destination_id: formValue.destination_id,
@@ -243,8 +242,8 @@ export class AddTourComponent implements OnInit {
           is_customizable: formValue.is_customizable,
           adults: 0,
           children: 0,
-          rooms: 1
-        },
+          rooms: 1,
+
         photos: formValue.photos.map((photo: any) => ({
           url: photo.url,
           caption: photo.caption,
@@ -345,6 +344,7 @@ export class AddTourComponent implements OnInit {
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',
+      price: 'Price',
       price_currency: 'Currency',
       departure_airport: 'Departure airport',
       arrival_airport: 'Arrival airport',

@@ -16,7 +16,7 @@ import { DestinationPayload } from '../destination/destination.service';
 // }
 
 export interface TourPayload {
-  tour: {
+  // tour: {
     title: string;
     destination_id: number;
     // location_ids: number[];
@@ -65,7 +65,7 @@ export interface TourPayload {
     is_active?: boolean;
     is_featured?: boolean;
     is_customizable?: boolean;
-  };
+  // };
   photos?: TourPhoto[];
   reviews?: TourReview[];
   room_types?: RoomType[];

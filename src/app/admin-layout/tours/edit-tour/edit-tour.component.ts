@@ -491,7 +491,7 @@ export class EditTourComponent implements OnInit {
           accommodation: day.accommodation || null
         }))
       };
-
+console.log(payload);
       this.tourService.updateTour(this.data.tour.id, payload).subscribe({
         next: (result) => {
           this.snackBar.open('Tour updated successfully', 'Close', {
