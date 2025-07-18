@@ -8,13 +8,14 @@ import {
   query,
   stagger
 } from '@angular/animations';
+
 @Component({
   selector: 'app-map',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './map.component.html',
-  styleUrl: './map.component.scss',
-    animations: [
+  styleUrls: ['./map.component.scss'],
+  animations: [
     trigger('fadeInUp', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(30px)' }),
@@ -33,6 +34,4 @@ import {
     ])
   ]
 })
-export class MapComponent {
-
-}
+export class MapComponent {}

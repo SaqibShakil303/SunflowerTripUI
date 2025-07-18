@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class AdminLayoutComponent implements OnInit {
   isSidebarCollapsed: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     // Component initialization
@@ -24,16 +24,7 @@ export class AdminLayoutComponent implements OnInit {
   }
 
   logout(): void {
-    console.log('Logout clicked');
-
-    // Show confirmation and redirect
-    if (confirm('Are you sure you want to logout?')) {
-      // Clear any stored tokens/data
-      localStorage.removeItem('authToken');
-      sessionStorage.clear();
-
-      // Redirect to login or home page
-      this.router.navigate(['/login']);
-    }
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

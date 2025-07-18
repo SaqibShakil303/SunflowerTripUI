@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TripPlannerComponent } from '../../common/trip-planner/trip-planner.component';
 import { TripPlannerService } from '../../services/TripPlanner/trip-planner.service';
+import { DestinationsComponent } from '../../components/destinations/destinations.component';
 
 @Component({
   selector: 'app-home',
@@ -28,15 +29,16 @@ import { TripPlannerService } from '../../services/TripPlanner/trip-planner.serv
     CommonModule,
     FormsModule,
     AnimationDirective,
-    TestimonialsComponent,
+    // TestimonialsComponent,
     ToursComponent,
     ServicesComponent,
     ChatWidgetComponent,
     FooterComponent,
     MapComponent,
     WhyUsComponent,
-    TourFilterComponent
-  ],
+    TourFilterComponent,
+    DestinationsComponent
+],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
