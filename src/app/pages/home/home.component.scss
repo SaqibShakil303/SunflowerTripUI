@@ -1,14 +1,22 @@
-
-/* CLEANED SCSS - Removed duplicates and unnecessary code */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&display=swap');
 
 /* Utility classes for responsive visibility */
-.desktop-only { display: block; }
-.mobile-only { display: none; }
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
 
 @media (max-width: 768px) {
-  .desktop-only { display: none !important; }
-  .mobile-only { display: block !important; }
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
 }
 
 /* Header styles */
@@ -18,7 +26,7 @@
   background-position: center;
   position: relative;
   overflow: hidden;
-  
+
   .background-iframe {
     position: absolute;
     inset: 0;
@@ -26,7 +34,7 @@
     height: 100%;
     z-index: 0;
   }
-  
+
   .background-fallback {
     position: absolute;
     inset: 0;
@@ -34,7 +42,7 @@
     background-size: cover;
     z-index: 0;
   }
-  
+
   app-header {
     position: relative;
     z-index: 10;
@@ -48,47 +56,15 @@
   justify-content: space-between;
   gap: 2rem;
 }
+
 #bg-video {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the video covers the entire screen */
-  z-index: -1; /* Ensures the video stays in the background */
-}
-
-.main-title {
-  margin-top: 70px;
-  align-items: left;
-  margin-right: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.top__text {
-  display: flex;
-  flex-direction: column;
-  color: whitesmoke;
-  font-family: "Forum", cursive;
-  text-transform: uppercase;
-  line-height: 1.2;
-  margin-bottom: 60px;
-  margin-left: 100px;
-  margin-top: 20px;
-  transform: scale3d(1, 1, 1) rotateY(500deg);
-  opacity: 0;
-
-  .step1 { margin-left: 0; font-size: 30px; }
-  .step2 { margin-left: 2rem; font-size: 30px; }
-  .step3 { margin-left: 4rem; font-size: 30px; }
-}
-
-.top__text._active {
-  transform: scale3d(1, 1, 1) rotateY(0deg);
-  transition: all 0.8s ease 0s;
-  opacity: 1;
+  object-fit: cover;
+  z-index: -1;
 }
 
 /* Typography */
@@ -134,10 +110,61 @@ h2._active {
   transition: all 0.8s ease 0.4s;
 }
 
+.main-title {
+  margin-top: 70px;
+  align-items: left;
+  margin-right: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.top__text {
+  display: flex;
+  flex-direction: column;
+  color: whitesmoke;
+  font-family: "Forum", cursive;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin-bottom: 60px;
+  margin-left: 100px;
+  margin-top: 20px;
+  transform: scale3d(1, 1, 1) rotateY(500deg);
+  opacity: 0;
+
+  .step1 {
+    margin-left: 0;
+    font-size: 30px;
+  }
+
+  .step2 {
+    margin-left: 2rem;
+    font-size: 30px;
+  }
+
+  .step3 {
+    margin-left: 4rem;
+    font-size: 30px;
+  }
+}
+
+.top__text._active {
+  transform: scale3d(1, 1, 1) rotateY(0deg);
+  transition: all 0.8s ease 0s;
+  opacity: 1;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
-  h1 { font-size: 140px; width: 100%; }
-  h2 { font-size: 100px; margin-left: 20px; }
+  h1 {
+    font-size: 140px;
+    width: 100%;
+  }
+
+  h2 {
+    font-size: 100px;
+    margin-left: 20px;
+  }
 }
 
 @media (max-width: 992px) {
@@ -147,12 +174,12 @@ h2._active {
     text-align: center;
     padding: 0 1.5rem;
   }
-  
+
   .main-title {
     align-items: center;
     margin: 1rem auto;
   }
-  
+
   .top__text {
     font-size: 22px;
     margin: 1rem auto 40px;
@@ -179,8 +206,14 @@ h2._active {
     text-align: center;
   }
 
-  h1 { font-size: 60px; line-height: 70px; }
-  h2 { font-size: 45px; }
+  h1 {
+    font-size: 60px;
+    line-height: 70px;
+  }
+
+  h2 {
+    font-size: 45px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -197,21 +230,25 @@ h2._active {
     text-align: center;
   }
 
-  h1 { font-size: 40px; line-height: 50px; }
-  h2 { font-size: 32px; }
+  h1 {
+    font-size: 40px;
+    line-height: 50px;
+  }
+
+  h2 {
+    font-size: 32px;
+  }
 }
 
 /* Ensure full width for centered text */
-.main-title h1, 
+.main-title h1,
 .main-title h2 {
   width: 100%;
 }
 
-  .tour-filter-section {
-    position: relative;
-    // position: sticky;
-    top: 0;
-    z-index: 1000;
-    // background: var(--background-gradient);
-    padding: 1rem 0;
-  }
+.tour-filter-section {
+  position: relative;
+  top: 0;
+  z-index: 1000;
+  padding: 1rem 0;
+}

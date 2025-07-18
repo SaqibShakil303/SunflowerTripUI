@@ -1,0 +1,31 @@
+<section class="section tours" id="tours">
+  <div class="container">
+    <div class="section-title text-center">
+      <h2>Featured Tours</h2>
+      <p>Embark on unforgettable adventures with our curated selection of tours</p>
+    </div>
+    <div class="swiper tour-slider" #swiperContainer>
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let tour of tours; let i = index">
+          <div class="tour-card fade-in-up" [style.--delay]="i">
+            <div class="tour-image">
+              <img [src]="tour.image_url" [alt]="tour.title">
+            </div>
+            <div class="tour-content">
+              <h3>{{ tour.title }}</h3>
+              <p class="tour-meta">{{ tour.duration_days }} Days | {{ tour.price_currency }} {{ tour.price_per_person }}</p>
+              <p class="tour-description">{{ tour.description | slice:0:100 }}...</p>
+              <a *ngIf="tour.id" [routerLink]="['/tour', tour.slug]" class="btn-explore">
+                Explore Tour
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section>
