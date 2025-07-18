@@ -93,7 +93,7 @@
                                 <span class="duration-text">{{ tour.duration_days ? (tour.duration_days + ' days') :
                                     'N/A' }}</span>
                             </td>
-                            <td class="col-price" data-label="Price">
+                            <td class="col-price" data-label sette="Price">
                                 <div class="price-info">
                                     <span class="price-amount">
                                         {{ tour.price != null && tour.price !== undefined
@@ -298,7 +298,9 @@
                                             </div>
                                             <div class="detail-item">
                                                 <span class="detail-label">Guide Languages:</span>
-                                                <span class="detail-value">{{ tour.guide_languages?.length ?
+                                                <span class="detail-value">{{ tour
+
+                                                    .guide_languages?.length ?
                                                     tour.guide_languages!.join(', ') : 'None' }}</span>
                                             </div>
                                             <div class="detail-item">
@@ -367,13 +369,15 @@
                                     <!-- Photos -->
                                     <div class="details-section">
                                         <h4 class="section-title">Photos</h4>
-                                        <div class="list-items" *ngIf="tour.photos?.length; else noPhotos">
-                                            <div *ngFor="let photo of tour.photos" class="list-item">
+                                        <div class="image-preview" *ngIf="tour.photos?.length; else noPhotos">
+                                            <div *ngFor="let photo of tour.photos" class="image-item">
                                                 <img [src]="photo.url || 'assets/placeholder-image.jpg'"
-                                                    [alt]="photo.caption || 'Tour photo'" class="photo-preview">
-                                                <span *ngIf="photo.caption">{{ photo.caption }}</span>
-                                                <span *ngIf="photo.is_primary"
-                                                    class="badge badge-primary">Primary</span>
+                                                    [alt]="photo.caption || 'Tour photo'" class="preview-image">
+                                                <div class="image-info">
+                                                    <span *ngIf="photo.caption">{{ photo.caption }}</span>
+                                                    <span *ngIf="photo.is_primary"
+                                                        class="badge badge-primary">Primary</span>
+                                                </div>
                                             </div>
                                         </div>
                                         <ng-template #noPhotos>
