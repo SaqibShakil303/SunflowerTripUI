@@ -1,16 +1,16 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient }  from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { environment }     from '../../../environments/environments.prod';
-import { isPlatformBrowser }               from '@angular/common';
+import { environment } from '../../../environments/environments.prod';
+import { isPlatformBrowser } from '@angular/common';
 
 interface Tokens { accessToken: string; refreshToken: string; }
-interface AuthResponse { tokens: Tokens; }
+interface AuthResponse { tokens: Tokens; userRole: string | null; } // Allow null for cases where role is not found
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-   private tokensSubject = new BehaviorSubject<Tokens|null>(null);
+  private tokensSubject = new BehaviorSubject<Tokens | null>(null);
   tokens$ = this.tokensSubject.asObservable();
 
   private jwt = new JwtHelperService();
@@ -25,7 +25,7 @@ export class AuthService {
       if (raw) {
         try {
           this.tokensSubject.next(JSON.parse(raw));
-        } catch {}
+        } catch { }
       }
     }
   }
@@ -36,10 +36,21 @@ export class AuthService {
       .pipe(tap(r => this.persistTokens(r.tokens)));
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${environment.apiDomain}/auth/login`, { email, password })
-      .pipe(tap(r => this.persistTokens(r.tokens)));
+      .pipe(
+        tap(response => this.persistToken(response.tokens, response.userRole))
+      );
+  }
+
+  private persistToken(tokens: Tokens, userRole: string | null) {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('tokens', JSON.stringify(tokens));
+      localStorage.setItem('userRole', userRole || ''); // Store empty string if null
+      localStorage.setItem('isLoggedIn', 'true');
+    }
+    this.tokensSubject.next(tokens);
   }
 
   private persistTokens(tokens: Tokens) {
@@ -50,7 +61,7 @@ export class AuthService {
     this.tokensSubject.next(tokens);
   }
 
-refreshToken(): Observable<any> {
+  refreshToken(): Observable<any> {
     const tokens = this.tokensSubject.value;
     if (!tokens) throw new Error('No tokens available');
     return this.http.post(`${environment.apiDomain}/auth/refresh-token`, { refreshToken: tokens.refreshToken }).pipe(
@@ -60,11 +71,13 @@ refreshToken(): Observable<any> {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('tokens');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('isLoggedIn');
     }
     this.tokensSubject.next(null);
   }
 
-googleAuth(code: string): Observable<any> {
+  googleAuth(code: string): Observable<any> {
     console.log('Sending Google auth request with code:', code);
     return this.http.post(`${environment.apiDomain}/auth/google`, { code }, { observe: 'response' }).pipe(
       tap((response: any) => {
@@ -73,13 +86,13 @@ googleAuth(code: string): Observable<any> {
       })
     );
   }
-truecallerAuth(code: string): Observable<any> {
+  truecallerAuth(code: string): Observable<any> {
     return this.http.post(`${environment.apiDomain}/auth/truecaller`, { code }).pipe(
       tap((response: any) => this.persistTokens(response.tokens))
     );
   }
 
- 
+
 
   private setTokens(tokens: { accessToken: string; refreshToken: string }) {
     localStorage.setItem('tokens', JSON.stringify(tokens));
@@ -96,7 +109,7 @@ truecallerAuth(code: string): Observable<any> {
     return token ? this.jwt.decodeToken(token) : null;
   }
 
-  
+
   hasRole(roles: string | string[]): boolean {
     const user = this.getUser();
     if (!user) return false;

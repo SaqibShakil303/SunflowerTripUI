@@ -1,11 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterModule, Router } from '@angular/router';
+import { AuthService } from '../../services/authService/auth.service';
 
 interface NavItem {
   name: string;
   route: string;
-  queryParams?: { 
+  queryParams?: {
     destination?: number;
     location?: number;
     category?: string;
@@ -23,33 +24,48 @@ interface NavGroup {
   standalone: true,
   imports: [CommonModule, RouterLink, RouterModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   isScrolled = false;
   isMobileNavVisible = true;
+  isLoggedIn: boolean = false;
   navGroups: NavGroup[] = [
     {
       label: 'Holiday Packages',
-      items: [{ 
-        name: 'Holiday Packages', 
-        route: '/tours', 
-        queryParams: { category: 'holiday' } 
-      }],
+      items: [
+        {
+          name: 'Holiday Packages',
+          route: '/tours',
+          queryParams: { category: 'holiday' }
+        }
+      ],
       locations: []
     },
     {
       label: 'Group Packages',
-      items: [{ 
-        name: 'Group Packages', 
-        route: '/tours', 
-        queryParams: { category: 'group' } 
-      }],
+      items: [
+        {
+          name: 'Group Packages',
+          route: '/tours',
+          queryParams: { category: 'group' }
+        }
+      ],
       locations: []
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    }
+  }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -71,6 +87,16 @@ export class NavbarComponent {
 
   customizeHoliday() {
     console.log('Customize holiday button clicked');
+  }
+
+  logout() {
+    this.authService.logout();
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('isLoggedIn');
+    }
+    this.isLoggedIn = false;
+    this.router.navigate(['/home']);
+    this.isMobileNavVisible = false;
   }
 
   @HostListener('document:click', ['$event'])

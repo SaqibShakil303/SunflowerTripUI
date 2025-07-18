@@ -5,50 +5,53 @@
         <i class="fa fa-home"></i> Home
       </a>
     </div>
-    
+
     <h2 class="auth-title">Login</h2>
-    
+
     <form (ngSubmit)="onSubmit()">
       <div class="custom-input-container">
+        <input id="email" type="email" [(ngModel)]="email" name="email" required placeholder=" " autocomplete="email">
         <label for="email" [class.filled]="email">Email</label>
-        <input id="email" type="email" [(ngModel)]="email" name="email" required>
         <i class="fa fa-envelope input-icon"></i>
       </div>
-      
-      <div class="custom-input-container">
+
+      <div class="custom-input-container password-container">
+        <input id="password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required
+          placeholder=" " autocomplete="current-password">
         <label for="password" [class.filled]="password">Password</label>
-        <input id="password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required>
-        <i class="fa" [ngClass]="hidePassword ? 'fa-eye-slash' : 'fa-eye'" (click)="hidePassword = !hidePassword"></i>
+        <button type="button" class="password-toggle-btn" (click)="togglePasswordVisibility()" tabindex="-1">
+          <i class="fa" [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+        </button>
       </div>
-      
+
       <div class="forgot-password">
         <a routerLink="/forgot-password">Forgot Password?</a>
       </div>
-      
+
       <button type="submit" class="submit-btn">
         Login
       </button>
     </form>
-    
+
     <div class="divider">
-      <span>or continue with</span>
+      <!-- <span>or continue with</span> -->
     </div>
-    
+
     <!-- <div class="social-login">
-      <button (click)="googleLogin()" class="google-btn">
+      <button type="button" (click)="googleLogin()" class="google-btn">
         <i class="fa fa-google"></i>
         <span>Google</span>
       </button>
       
-      <button (click)="truecallerLogin()" class="truecaller-btn">
+      <button type="button" (click)="truecallerLogin()" class="truecaller-btn">
         <i class="fa fa-phone"></i>
         <span>Truecaller</span>
       </button>
-    </div>
-     -->
+    </div> -->
+
     <div class="signup-link">
       <span>Don't have an account?</span>
-      <a routerLink="/signup">Signup</a>
+      <a routerLink="/signup">Sign Up</a>
     </div>
   </div>
 </div>

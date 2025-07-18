@@ -3,7 +3,8 @@
     <div class="footer-grid">
       <div class="footer-col footer-brand">
         <div class="footer-logo">
-          <img src="https://github.com/SaqibShakil303/Sunflowertrip/blob/master/src/assets/hero/logo56.png?raw=true" alt="Sunflower Trip Logo">
+          <img src="https://github.com/SaqibShakil303/Sunflowertrip/blob/master/src/assets/hero/logo56.png?raw=true"
+            alt="Sunflower Trip Logo">
           <span>Sunflower Trip</span>
         </div>
         <p>Your Kolkata-based travel partner crafting personalized journeys worldwide.</p>
@@ -23,11 +24,18 @@
           <li><a routerLink="/destinations">Destinations</a></li>
           <li><a routerLink="/testimonials">Testimonials</a></li>
           <li><a routerLink="/contact">Contact</a></li>
-          <li><a routerLink="/privacyPolicy">Privacy Policy</a></li>
-           <li><a routerLink="/customize-planner">Customize your trip</a></li>
-          <li><a routerLink="/company-portfolio">Our company portfolio</a></li>
-          <li><a routerLink="/group-brochure">Group Brochure</a></li>
         </ul>
+        <div class="collapsible-section">
+          <button class="toggle-btn" (click)="toggleMore()">
+            More
+            <i class="fas" [ngClass]="isMoreOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </button>
+          <ul *ngIf="isMoreOpen" [@collapseAnimation]>
+            <li><a routerLink="/privacyPolicy">Privacy Policy</a></li>
+            <li><a routerLink="/customize-planner">Customize your trip</a></li>
+            <li><a routerLink="/group-brochure">Group Brochure</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-col">
         <h4>Popular Destinations</h4>
@@ -35,8 +43,6 @@
           <li><a href="#">Paris</a></li>
           <li><a href="#">Bali</a></li>
           <li><a href="#">Dubai</a></li>
-          <li><a href="#">Sikkim</a></li>
-          <li><a href="#">Rajasthan</a></li>
           <li><a href="#">Singapore</a></li>
         </ul>
       </div>
@@ -46,12 +52,12 @@
           <li><i class="fas fa-map-marker-alt"></i> 230 BD block, sector 1, Kolkata, West Bengal 700016, India</li>
           <li><i class="fas fa-phone-alt"></i> <a href="tel:+913323456789">+91 33 2345 6789</a></li>
           <li><i class="fas fa-envelope"></i> <a href="mailto:info@sunflowertrip.com">info&#64;sunflowertrip.com</a></li>
-          <li><i class="fas fa-clock"></i> Mon-Sat: 10:00 AM - 7:00 PM</li>
+          <li><i class="fas fa-clock"></i> Mon-Sat: 10:00 AM - 6:00 PM</li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} Sunflower Trip. All Rights Reserved.</p>
+      <p>© {{ currentYear }} Sunflower Trip. All Rights Reserved.</p>
     </div>
   </div>
 </footer>

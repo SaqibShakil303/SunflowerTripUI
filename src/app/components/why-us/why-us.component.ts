@@ -39,12 +39,12 @@ export class WhyUsComponent implements AfterViewInit {
 
   private swiper!: Swiper;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       AOS.init({ duration: 800, once: true });
-      setTimeout(() => this.initSwiper(), 0);
+      setTimeout(() => this.initSwiper(), 100); // Slight delay for DOM readiness
     }
   }
 
@@ -58,22 +58,29 @@ export class WhyUsComponent implements AfterViewInit {
         centeredSlides: true,
         autoplay: {
           delay: 5000,
-          disableOnInteraction: false
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true
         },
         pagination: {
           el: '.swiper-pagination',
-          clickable: true
+          clickable: true,
+          dynamicBullets: false,
+          renderBullet: (index, className) => {
+            return `<span class="${className}"></span>`;
+          }
         },
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev'
         },
         breakpoints: {
-          640: { slidesPerView: 1 },
-          768: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 }
+          640: { slidesPerView: 1, spaceBetween: 20 },
+          768: { slidesPerView: 2, spaceBetween: 30 },
+          1024: { slidesPerView: 3, spaceBetween: 40 }
         }
       });
+    } else {
+      console.error('Swiper container not found or DOM not ready');
     }
   }
 }

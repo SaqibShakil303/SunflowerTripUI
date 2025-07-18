@@ -23,7 +23,6 @@ $transition: 0.3s ease;
   font-weight: bold;
   padding: 8px 25px 8px 100px;
   z-index: 1000;
-  
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -40,8 +39,8 @@ $transition: 0.3s ease;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom right, 
-      rgba(163, 200, 240, 0.3) 0%, 
+  background: linear-gradient(to bottom right,
+      rgba(163, 200, 240, 0.3) 0%,
       rgba(212, 169, 226, 0.3) 100%);
   clip-path: polygon(0 0, 10% 100%, 100% 100%, 100% 0);
   z-index: -1;
@@ -49,7 +48,8 @@ $transition: 0.3s ease;
   transition: all 0.4s ease;
 }
 
-.contact-info a, .contact-info button {
+.contact-info a,
+.contact-info button {
   color: #ffffff;
   text-transform: uppercase;
   position: relative;
@@ -61,37 +61,44 @@ $transition: 0.3s ease;
   overflow: hidden;
 }
 
-.contact-info a::before, .contact-info button::before {
+.contact-info a::before,
+.contact-info button::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-      120deg, 
-      transparent, 
-      rgba(255,255,255,0.3), 
-      transparent
-  );
+  background: linear-gradient(120deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
   transition: all 0.6s ease;
 }
 
-.contact-info a:hover::before, .contact-info button:hover::before {
+.contact-info a:hover::before,
+.contact-info button:hover::before {
   left: 100%;
 }
 
-.contact-info a:hover, .contact-info button:hover {
+.contact-info button:hover {
   transform: scale(1.05);
   color: #f0f0f0;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.contact-info .login {
+.contact-info .login,
+.contact-info .logout {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
   border-left: 2px solid rgba(255, 255, 255, 0.5);
   padding-left: 15px;
   font-weight: bolder;
   position: relative;
+}
+
+.contact-info .logout {
+  border: none;
+  cursor: pointer;
 }
 
 .contact-info.scrolled {
@@ -118,9 +125,7 @@ $transition: 0.3s ease;
 .custom-btn {
   background-color: transparent;
   color: $color-accent;
-  // border: 2px solid #fff;
   padding: 8px 16px;
-  // border-radius: 25px;
   font-family: $font-accent;
   font-size: 16px;
   text-transform: uppercase;
@@ -137,7 +142,7 @@ $transition: 0.3s ease;
   }
 }
 
-/* Mobile Close/Show Buttons - Hidden on Desktop */
+/* Mobile Close/Show Buttons */
 .mobile-close-btn,
 .mobile-show-btn {
   display: none;
@@ -158,7 +163,6 @@ $transition: 0.3s ease;
     justify-content: center;
     align-items: center;
     gap: 15px;
-    
     background: rgba(0, 15, 35, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -166,14 +170,13 @@ $transition: 0.3s ease;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     clip-path: none;
-    
     transform: translateY(0);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .contact-info::before {
-    background: linear-gradient(135deg, 
-        rgba(74, 144, 226, 0.2) 0%, 
+    background: linear-gradient(135deg,
+        rgba(74, 144, 226, 0.2) 0%,
         rgba(143, 90, 224, 0.2) 50%,
         rgba(255, 107, 107, 0.2) 100%);
     clip-path: none;
@@ -255,7 +258,8 @@ $transition: 0.3s ease;
     transform: rotate(90deg);
   }
 
-  .contact-info a, .contact-info button {
+  .contact-info a,
+  .contact-info button {
     font-size: 13px;
     padding: 8px 12px;
     margin: 3px;
@@ -268,13 +272,15 @@ $transition: 0.3s ease;
     transition: all 0.3s ease;
   }
 
-  .contact-info a:hover, .contact-info button:hover {
+  .contact-info a:hover,
+  .contact-info button:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
-  .contact-info .login {
+  .contact-info .login,
+  .contact-info .logout {
     border-left: none;
     padding-left: 12px;
     background: linear-gradient(135deg, #ff6b6b, #feca57);
@@ -282,7 +288,8 @@ $transition: 0.3s ease;
     font-weight: bolder;
   }
 
-  .contact-info .login:hover {
+  .contact-info .login:hover,
+  .contact-info .logout:hover {
     background: linear-gradient(135deg, #ff5252, #ffb300);
   }
 
@@ -304,7 +311,8 @@ $transition: 0.3s ease;
     gap: 20px;
   }
 
-  .contact-info a, .contact-info button {
+  .contact-info a,
+  .contact-info button {
     font-size: 14px;
     padding: 10px 15px;
   }
@@ -318,7 +326,8 @@ $transition: 0.3s ease;
     padding-left: 40px;
   }
 
-  .contact-info a, .contact-info button {
+  .contact-info a,
+  .contact-info button {
     font-size: 11px;
     padding: 6px 10px;
     margin: 2px;
@@ -359,10 +368,12 @@ $transition: 0.3s ease;
     transform: translateX(100px) scale(0.8);
     opacity: 0;
   }
+
   60% {
     transform: translateX(-10px) scale(1.05);
     opacity: 1;
   }
+
   100% {
     transform: translateX(0) scale(1);
     opacity: 1;
@@ -375,7 +386,7 @@ $transition: 0.3s ease;
     transform: translateY(-2px);
     box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
   }
-  
+
   .contact-info:hover::before {
     opacity: 1;
   }
