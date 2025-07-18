@@ -76,7 +76,7 @@ export interface TourPayload {
   providedIn: 'root'
 })
 export class TourService {
- 
+
   constructor(private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
@@ -90,12 +90,16 @@ export class TourService {
         map(raw => this.transformTourData(raw))
       );
   }
- updateTour(id: number, payload: any):Observable<any> {
- return this.http.patch(`${this.apiUrl}/Tours/Update/${id}`, payload);
+  updateTour(id: number, payload: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/Tours/Update/${id}`, payload);
   }
 
   getFilteredTours(params: any): Observable<Tour[]> {
     return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params });
+  }
+
+  getFeaturedTours(): Observable<Tour[]> {
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/getFeaturedTours`);
   }
 
   getCategories(): Observable<string[]> {
@@ -116,8 +120,8 @@ export class TourService {
   }
 
   deleteTour(id: number): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/Tours/${id}`);
-}
+    return this.http.delete(`${this.apiUrl}/Tours/${id}`);
+  }
 
   getTours(params: {
     page?: number;
@@ -228,13 +232,6 @@ export class TourService {
     comment: string;
   }): Observable<any> {
     return this.http.post(`${this.apiUrl}/tours/${tourId}/reviews`, reviewData);
-  }
-
-  // Get featured tours
-  getFeaturedTours(limit: number = 6): Observable<Tour[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/tours/featured?limit=${limit}`).pipe(
-      map(response => response.map(tour => this.transformTourData(tour)))
-    );
   }
 
   // Get similar tours
