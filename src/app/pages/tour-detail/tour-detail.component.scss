@@ -20,7 +20,7 @@
 
   .hero-section {
     position: relative;
-    height: 110vh;
+    height: 100vh;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -32,143 +32,153 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: brightness(0.5) contrast(1.1);
+      filter: brightness(0.6) contrast(1.2);
       transition: transform 0.8s ease;
       will-change: transform;
 
       &:hover {
-        transform: scale(1.05);
+        transform: scale(1.03);
       }
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(10,24,40,0.8), rgba(23,133,130,0.6), rgba(76,215,208,0.4));
+      background: linear-gradient(135deg, rgba(10, 24, 40, 0.85), rgba(23, 133, 130, 0.65), rgba(76, 215, 208, 0.45));
     }
 
     .container {
       position: relative;
       display: grid;
-      grid-template-columns: 1fr 350px;
-      gap: 2rem;
-      max-width: 1200px;
+      grid-template-columns: 1fr 360px;
+      gap: 2.5rem;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 2.5rem;
     }
 
     .hero-content {
       h1.tour-title {
         color: var(--white);
-        padding-top: 40px;
-        font-size: clamp(2rem, 6vw, 3.5rem);
+        padding-top: 2rem;
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
         font-weight: 700;
-        margin-bottom: 0.5rem;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
         animation: fadeInUp 0.8s ease-out both;
       }
 
       .tour-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 0.75rem;
+        margin-bottom: 1.75rem;
 
-        .duration, .availability, .difficulty {
+        .duration,
+        .availability,
+        .difficulty,
+        .category {
           background: var(--blur-bg);
-          padding: 0.5rem 1rem;
+          padding: 0.6rem 1.2rem;
           border-radius: 999px;
           backdrop-filter: blur(8px);
-          font-size: 0.9rem;
+          font-size: 0.95rem;
+          font-weight: 500;
         }
       }
 
-      .airports, .group-size, .customizable {
+      .airports,
+      .group-size,
+      .customizable,
+      .status,
+      .featured {
         display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 1rem;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        color: var(--text-light);
 
-        .airport-info, &>span, &>i {
+        .airport-info {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          font-size: 0.95rem;
-          color: var(--text-light);
+        }
 
-          .icon-plane, .icon-users, .icon-check {
-            color: var(--accent-color);
-            font-size: 1.2rem;
-          }
+        .icon-plane,
+        .icon-users,
+        .icon-check,
+        .icon-star {
+          color: var(--accent-color);
+          font-size: 1.25rem;
         }
       }
     }
 
     .booking-card {
-      margin-top: 40px;
+      margin-top: 2rem;
       @include glass-card(0.1, 12px, 0.15);
       backdrop-filter: blur(15px);
-      border-radius: 1rem;
-      padding: clamp(1rem, 3vw, 1.5rem);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      border-radius: 1.25rem;
+      padding: clamp(1.5rem, 3.5vw, 2rem);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
       position: sticky;
-      top: 2rem;
+      top: 2.5rem;
+      max-height: calc(100vh - 5rem);
       overflow-y: auto;
       animation: fadeIn 1s ease-in both;
       width: 100%;
-      max-width: 350px;
+      max-width: 360px;
       margin-left: auto;
-      margin-right: auto;
 
       .price-section {
         text-align: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 2rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 
         .price-label {
-          font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-          opacity: 0.8;
+          font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+          opacity: 0.9;
           display: block;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.5rem;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 1px;
         }
 
         .price {
-          font-size: clamp(1.8rem, 5vw, 2.2rem);
+          font-size: clamp(2rem, 5vw, 2.5rem);
           font-weight: 700;
           color: var(--accent-color);
-          display: block;
-          line-height: 1.1;
+          line-height: 1.2;
         }
 
-        .discount {
-          font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        .discount,
+        .advance-booking {
+          font-size: clamp(0.85rem, 2.5vw, 0.95rem);
           color: #ffd700;
           display: block;
-          margin-top: 0.5rem;
+          margin-top: 0.75rem;
         }
       }
 
       .booking-forms {
         display: flex;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
+        gap: 1rem;
+        margin-bottom: 2rem;
         flex-wrap: wrap;
 
         .btn {
           flex: 1;
-          padding: clamp(0.6rem, 2vw, 0.75rem);
+          padding: clamp(0.75rem, 2.5vw, 0.9rem);
           border-radius: 0.75rem;
           font-weight: 600;
-          font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+          font-size: clamp(0.9rem, 2.5vw, 1rem);
           transition: all 0.3s ease;
           border: 2px solid transparent;
           cursor: pointer;
           text-align: center;
-          text-decoration: none;
-          min-height: 40px;
+          min-height: 48px;
 
           &.btn-outline {
             border-color: var(--accent-color);
@@ -178,7 +188,7 @@
             &:hover {
               background: var(--accent-color);
               color: var(--primary-bg);
-              transform: translateY(-1px);
+              transform: translateY(-2px);
             }
           }
 
@@ -190,21 +200,21 @@
             &:hover {
               background: transparent;
               color: var(--accent-color);
-              transform: translateY(-1px);
+              transform: translateY(-2px);
             }
           }
         }
       }
 
       .booking-details {
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
 
         .form-group {
-          margin-bottom: 1rem;
+          margin-bottom: 1.25rem;
 
           label {
-            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
-            margin-bottom: 0.5rem;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            margin-bottom: 0.75rem;
             font-weight: 600;
             display: block;
             color: var(--text-light);
@@ -212,24 +222,24 @@
 
           .form-control {
             width: 100%;
-            padding: clamp(0.6rem, 2vw, 0.75rem);
-            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
-            border-radius: 0.6rem;
+            padding: clamp(0.75rem, 2.5vw, 0.9rem);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border-radius: 0.75rem;
             background: var(--blur-bg);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             color: var(--text-light);
             transition: all 0.3s ease;
-            min-height: 40px;
+            min-height: 48px;
 
             &:focus {
               outline: none;
               border-color: var(--accent-color);
-              box-shadow: 0 0 0 3px rgba(76, 215, 208, 0.2);
-              background: rgba(255, 255, 255, 0.1);
+              box-shadow: 0 0 0 4px rgba(76, 215, 208, 0.25);
+              background: rgba(255, 255, 255, 0.15);
             }
 
             &::placeholder {
-              color: rgba(255, 255, 255, 0.5);
+              color: rgba(255, 255, 255, 0.6);
             }
 
             &::-webkit-calendar-picker-indicator {
@@ -239,9 +249,9 @@
           }
 
           select.form-control {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
             color: var(--text-light);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
 
             option {
               background-color: #0a1828;
@@ -252,70 +262,63 @@
       }
 
       .room-selection {
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1.25rem;
 
         .room-option {
           label {
-            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-            display: block;
-            margin-bottom: 0.5rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            margin-bottom: 0.75rem;
             font-weight: 600;
             color: var(--text-light);
           }
 
           .form-control {
             width: 100%;
-            padding: clamp(0.5rem, 2vw, 0.6rem);
-            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-            border-radius: 0.5rem;
+            padding: clamp(0.6rem, 2vw, 0.75rem);
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            border-radius: 0.75rem;
             background: var(--blur-bg);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             color: var(--text-light);
             transition: all 0.3s ease;
 
             &:focus {
               outline: none;
               border-color: var(--accent-color);
-              box-shadow: 0 0 0 2px rgba(76, 215, 208, 0.2);
-            }
-
-            option {
-              background-color: #0a1828;
-              color: #ffffff;
+              box-shadow: 0 0 0 3px rgba(76, 215, 208, 0.25);
             }
           }
         }
       }
 
       .btn-success {
-        display: block;
         width: 100%;
-        padding: clamp(0.8rem, 2.5vw, 1rem);
-        font-size: clamp(0.9rem, 3vw, 1rem);
+        padding: clamp(0.9rem, 2.5vw, 1.1rem);
+        font-size: clamp(1rem, 3vw, 1.1rem);
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
         border-radius: 0.75rem;
         background: linear-gradient(135deg, #20b2aa, var(--accent-color));
         border: none;
         color: var(--primary-bg);
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-bottom: 1rem;
-        min-height: 44px;
+        margin-bottom: 1.5rem;
+        min-height: 50px;
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(76, 215, 208, 0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 30px rgba(76, 215, 208, 0.35);
           background: linear-gradient(135deg, #1a9b94, #3bc2bb);
         }
 
         &:active {
           transform: translateY(0);
-          box-shadow: 0 4px 15px rgba(76, 215, 208, 0.3);
+          box-shadow: 0 4px 20px rgba(76, 215, 208, 0.25);
         }
       }
 
@@ -323,24 +326,23 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 0.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.75rem;
 
         .btn-link {
-          font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+          font-size: clamp(0.85rem, 2.5vw, 0.95rem);
           text-decoration: underline;
           background: none;
           border: none;
           color: var(--accent-color);
           cursor: pointer;
-          padding: 0.25rem 0;
+          padding: 0.5rem;
           transition: all 0.2s ease;
-          min-height: 40px;
+          min-height: 44px;
           display: flex;
           align-items: center;
-          justify-content: center;
 
           &:hover {
             color: var(--text-light);
@@ -352,35 +354,38 @@
   }
 
   .container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    max-width: 1240px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
   }
 
   .detail-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 
     .tab-btn {
-      padding: 0.75rem 1.25rem;
+      padding: 0.9rem 1.5rem;
       border: none;
       background: var(--blur-bg);
       color: var(--text-faint);
-      border-radius: 0.75rem 0.75rem 0 0;
+      border-radius: 1rem 1rem 0 0;
       cursor: pointer;
       transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 1rem;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.15);
+        color: var(--text-light);
       }
 
       &.active {
         background: var(--accent-color);
         color: var(--primary-bg);
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.25);
       }
     }
   }
@@ -389,136 +394,142 @@
     animation: fadeIn 0.5s ease-out both;
 
     h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
       color: var(--accent-color);
-      position: relative;
+      font-weight: 600;
 
       &::after {
         content: '';
         display: block;
-        width: 4rem;
+        width: 5rem;
         height: 4px;
         background: var(--accent-color);
-        margin-top: 0.5rem;
+        margin-top: 0.75rem;
         border-radius: 2px;
       }
     }
 
-    .overview-section, .inclusions-section, .highlights-section, .itinerary-section,
-    .photos-section, .map-section, .reviews-section, .info-section {
+    .overview-section,
+    .inclusions-section,
+    .highlights-section,
+    .itinerary-section,
+    .photos-section,
+    .map-section,
+    .reviews-section,
+    .info-section {
       background: var(--blur-bg);
-      padding: 2rem;
-      border-radius: 1rem;
-      margin-bottom: 2rem;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 2.5rem;
+      border-radius: 1.25rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .overview-section {
       .description {
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
 
         p {
-          font-size: 1rem;
-          line-height: 1.6;
+          font-size: 1.1rem;
+          line-height: 1.7;
           color: var(--text-faint);
         }
       }
 
       .details-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
 
         .detail-item {
-          padding: 1rem;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 0.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 1.25rem;
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 0.75rem;
+          border: 1px solid rgba(255, 255, 255, 0.15);
 
           strong {
             display: block;
             font-weight: 600;
             color: var(--text-light);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
           }
 
           .rating {
             color: #ffd700;
-            margin-left: 0.5rem;
+            margin-left: 0.75rem;
           }
         }
       }
     }
 
     .inclusions-section {
-      margin-bottom: 3rem;
+      margin-bottom: 3.5rem;
 
       .tabs-container {
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
       }
 
       .inclusion-tabs {
         display: flex;
-        gap: 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 0.5rem;
+        gap: 1.25rem;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 0.75rem;
         border-radius: 1rem;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
 
         .tab-btn {
           background: none;
           border: none;
-          color: rgba(255, 255, 255, 0.7);
+          color: var(--text-faint);
           font-weight: 600;
-          padding: 0.75rem 1.5rem;
-          border-radius: 0.5rem;
+          padding: 0.9rem 1.75rem;
+          border-radius: 0.75rem;
           cursor: pointer;
           transition: all 0.3s ease;
 
           &:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.15);
           }
 
           &.active {
-            background: #4cd7d0;
-            color: #0a1828;
+            background: var(--accent-color);
+            color: var(--primary-bg);
           }
         }
       }
 
       .inclusion-content {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.08);
         padding: 2rem;
         border-radius: 1rem;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
 
         .inclusion-list {
           .inclusion-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
 
             .icon-check {
               color: #4cd7d0;
-              font-size: 1.2rem;
+              font-size: 1.3rem;
             }
 
             .icon-close {
               color: #ff6b6b;
-              font-size: 1.2rem;
+              font-size: 1.3rem;
             }
 
             span {
-              font-size: 1rem;
-              line-height: 1.5;
+              font-size: 1.1rem;
+              line-height: 1.6;
             }
           }
         }
@@ -526,32 +537,57 @@
     }
 
     .highlights-section {
-      margin-bottom: 3rem;
+      margin-bottom: 3.5rem;
 
       .highlights-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.25rem;
 
         .highlight-item {
           display: flex;
           align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 0.5rem;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          gap: 1.25rem;
+          padding: 1.25rem;
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 0.75rem;
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
 
           .icon-check {
             color: #4cd7d0;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
           }
 
           span {
-            font-size: 1rem;
-            line-height: 1.5;
+            font-size: 1.1rem;
+            line-height: 1.6;
           }
+        }
+      }
+    }
+
+    .policies-section {
+      margin-bottom: 3.5rem;
+
+      .policy-item {
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        margin-bottom: 1.25rem;
+
+        strong {
+          display: block;
+          font-weight: 600;
+          color: var(--text-light);
+          margin-bottom: 0.75rem;
+        }
+
+        p {
+          font-size: 1.1rem;
+          line-height: 1.7;
+          color: var(--text-faint);
         }
       }
     }
@@ -559,20 +595,20 @@
     .info-section {
       .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
 
         .info-item {
-          padding: 1rem;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 0.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 1.25rem;
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 0.75rem;
+          border: 1px solid rgba(255, 255, 255, 0.15);
 
           strong {
             display: block;
             font-weight: 600;
             color: var(--text-light);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
           }
 
           ul {
@@ -580,10 +616,10 @@
             padding: 0;
 
             li {
-              font-size: 1rem;
-              line-height: 1.6;
+              font-size: 1.1rem;
+              line-height: 1.7;
               color: var(--text-faint);
-              padding-left: 1.5rem;
+              padding-left: 1.75rem;
               position: relative;
 
               &:before {
@@ -591,7 +627,7 @@
                 position: absolute;
                 left: 0;
                 color: var(--accent-color);
-                font-size: 1.2rem;
+                font-size: 1.3rem;
               }
             }
           }
@@ -601,29 +637,43 @@
 
     .photo-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
 
       .photo-item {
-        border-radius: 0.75rem;
+        border-radius: 1rem;
         overflow: hidden;
         transition: transform 0.3s ease;
+        position: relative;
 
         &:hover {
-          transform: scale(1.05);
+          transform: scale(1.03);
         }
 
         img {
           display: block;
           width: 100%;
           height: auto;
+          object-fit: cover;
+        }
+
+        .image-info {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: rgba(0, 0, 0, 0.6);
+          padding: 0.75rem;
+          font-size: 0.95rem;
+          color: var(--text-light);
+          text-align: center;
         }
       }
     }
 
     .timeline {
       position: relative;
-      margin-left: 2rem;
+      margin-left: 2.5rem;
 
       &::before {
         content: '';
@@ -631,23 +681,23 @@
         left: 0;
         top: 0;
         bottom: 0;
-        width: 4px;
+        width: 5px;
         background: var(--accent-color);
-        border-radius: 2px;
+        border-radius: 3px;
       }
 
       .timeline-item {
         position: relative;
-        padding: 1.5rem 0 1.5rem 3rem;
-        margin-bottom: 1rem;
+        padding: 2rem 0 2rem 3.5rem;
+        margin-bottom: 1.5rem;
 
         &::before {
           content: '';
           position: absolute;
-          left: -12px;
-          top: 1.5rem;
-          width: 20px;
-          height: 20px;
+          left: -14px;
+          top: 2rem;
+          width: 24px;
+          height: 24px;
           background: var(--accent-color);
           border: 4px solid var(--primary-bg);
           border-radius: 50%;
@@ -655,28 +705,28 @@
 
         .day-number {
           font-weight: 700;
-          font-size: 1.1rem;
+          font-size: 1.2rem;
           color: var(--accent-color);
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.75rem;
         }
 
         .day-content {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 0.75rem;
-          padding: 1rem;
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 1rem;
+          padding: 1.5rem;
           transition: all 0.3s ease;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.2);
           cursor: pointer;
 
           &:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
           }
 
           &:focus {
-            outline: 2px solid var(--accent-color);
-            outline-offset: 2px;
+            outline: 3px solid var(--accent-color);
+            outline-offset: 3px;
           }
 
           .day-header {
@@ -685,15 +735,15 @@
             align-items: center;
 
             h4 {
-              font-size: 1.3rem;
+              font-size: 1.4rem;
               margin: 0;
               color: var(--text-light);
               font-weight: 600;
             }
 
             .toggle-icon {
-              width: 24px;
-              height: 24px;
+              width: 28px;
+              height: 28px;
               background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234cd7d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat center;
               transition: transform 0.3s ease;
               flex-shrink: 0;
@@ -713,26 +763,26 @@
 
             p {
               margin: 0;
-              font-size: 1rem;
-              line-height: 1.6;
+              font-size: 1.1rem;
+              line-height: 1.7;
               color: var(--text-faint);
             }
 
             &.open {
-              max-height: 600px;
+              max-height: 800px;
               opacity: 1;
-              padding: 1rem 0;
+              padding: 1.5rem 0;
             }
           }
 
           .day-teaser {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
             color: var(--accent-color);
-            opacity: 0.7;
+            opacity: 0.8;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
 
             span {
               font-style: italic;
@@ -748,17 +798,17 @@
 
     .reviews-section {
       .review-item {
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
 
         .reviewer-info {
           display: flex;
           align-items: center;
-          gap: 1rem;
-          margin-bottom: 0.5rem;
+          gap: 1.25rem;
+          margin-bottom: 0.75rem;
 
           strong {
             font-weight: 600;
@@ -767,33 +817,34 @@
 
           .rating {
             color: #ffd700;
+            font-size: 1.1rem;
           }
         }
 
         p {
-          font-size: 1rem;
-          line-height: 1.6;
+          font-size: 1.1rem;
+          line-height: 1.7;
           color: var(--text-faint);
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.75rem;
         }
 
         small {
-          font-size: 0.85rem;
+          font-size: 0.9rem;
           color: var(--text-faint);
-          opacity: 0.7;
+          opacity: 0.8;
         }
       }
     }
 
     .map-container {
-      margin: 2rem 0;
-      border-radius: 12px;
+      margin: 2.5rem 0;
+      border-radius: 1rem;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
 
       iframe {
         width: 100%;
-        height: 400px;
+        height: 450px;
         border: none;
         display: block;
       }
@@ -812,125 +863,159 @@
       border: 4px solid rgba(255, 255, 255, 0.3);
       border-top: 4px solid var(--accent-color);
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       animation: spin 1s linear infinite;
     }
 
     p {
-      margin-top: 1rem;
-      font-size: 1rem;
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
       color: var(--text-light);
     }
+  }
+
+  .badge-primary {
+    background: var(--accent-color);
+    color: var(--primary-bg);
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.4rem;
+    margin-left: 0.75rem;
+    font-size: 0.9rem;
   }
 }
 
 @keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* Responsive Media Queries */
 @media (min-width: 1200px) {
   .hero-section .container {
-    gap: 3rem;
+    gap: 3.5rem;
   }
 
   .booking-card {
-    position: sticky;
-    top: 2rem;
-    max-height: calc(100vh - 4rem);
-    overflow-y: auto;
-
     &::-webkit-scrollbar {
-      width: 6px;
+      width: 8px;
     }
 
     &::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
       background: var(--accent-color);
-      border-radius: 6px;
+      border-radius: 8px;
     }
   }
 }
 
 @media (max-width: 1199px) and (min-width: 769px) {
   .hero-section .container {
-    grid-template-columns: 1fr 320px;
-    gap: 1.5rem;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
   }
 
   .booking-card {
-    width: 320px;
-    padding: 1.25rem;
-    top: 1.5rem;
-    max-height: calc(100vh - 3rem);
-    margin-left: auto;
-    margin-right: auto;
+    width: 340px;
+    padding: 1.75rem;
+    top: 2rem;
+    max-height: calc(100vh - 4rem);
   }
 }
 
 @media (max-width: 768px) {
   .hero-section {
-    height: 80vh;
+    height: 70vh;
     min-height: 500px;
   }
 
   .hero-section .container {
-    display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.25rem;
+    gap: 2rem;
+    padding: 1.5rem;
   }
 
   .booking-card {
     position: relative;
     top: 0;
     width: 100%;
-    max-width: 500px;
+    max-width: 90%;
     margin: 0 auto;
-    padding: 1.5rem;
-    margin-top: 0;
-    animation: slideInUp 0.3s ease-out;
+    padding: 1.75rem;
+    border-radius: 1rem;
   }
 
   .detail-tabs {
-    justify-content: flex-start;
     gap: 0.5rem;
 
     .tab-btn {
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9rem;
     }
   }
 
   .tab-content {
-    .overview-section, .inclusions-section, .highlights-section, .itinerary-section,
-    .photos-section, .map-section, .reviews-section, .info-section {
-      padding: 1.5rem;
+    .overview-section,
+    .inclusions-section,
+    .highlights-section,
+    .itinerary-section,
+    .photos-section,
+    .map-section,
+    .reviews-section,
+    .info-section {
+      padding: 2rem;
     }
 
     .photo-gallery {
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
     .map-container {
       iframe {
-        height: 300px;
+        height: 350px;
       }
     }
   }
@@ -939,83 +1024,294 @@
 @media (max-width: 480px) {
   .hero-section {
     height: 60vh;
-    min-height: 400px;
+    min-height: 450px;
   }
 
   .hero-section .container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 0.5rem;
+    gap: 1.5rem;
+    padding: 1rem;
   }
 
   .hero-content {
-    padding-top: 1rem;
-
     .tour-title {
-      font-size: clamp(1.25rem, 5vw, 2rem);
-      margin-bottom: 0.5rem;
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      margin-bottom: 0.75rem;
     }
 
     .tour-meta {
-      gap: 0.4rem;
-      margin-bottom: 1rem;
+      gap: 0.5rem;
 
-      .duration, .availability, .difficulty {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
+      .duration,
+      .availability,
+      .difficulty,
+      .category {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
       }
     }
 
-    .airports, .group-size, .customizable {
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
+    .airports,
+    .group-size,
+    .customizable,
+    .status,
+    .featured {
+      gap: 0.75rem;
+      font-size: 0.9rem;
 
-      .airport-info, &>span, &>i {
-        font-size: 0.8rem;
-
-        .icon-plane, .icon-users, .icon-check {
-          font-size: 1rem;
-        }
+      .icon-plane,
+      .icon-users,
+      .icon-check,
+      .icon-star {
+        font-size: 1.1rem;
       }
     }
   }
 
   .booking-card {
-    position: relative;
-    top: 0;
-    width: 100%;
     max-width: 95%;
-    margin: 1rem auto;
-    padding: clamp(0.75rem, 2.5vw, 1rem);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: slideInUp 0.3s ease-out;
+    padding: 1.5rem;
+    margin: 1.5rem auto;
 
     .price-section {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
 
       .price {
-        font-size: clamp(1.5rem, 4.5vw, 1.8rem);
+        font-size: clamp(1.8rem, 4.5vw, 2rem);
       }
 
-      .discount {
-        font-size: clamp(0.75rem, 2vw, 0.8rem);
+      .discount,
+      .advance-booking {
+        font-size: 0.85rem;
       }
     }
 
     .booking-forms {
       flex-direction: column;
-      gap: 0.5rem;
-      width: 100%;
+      gap: 0.75rem;
 
       .btn {
-        width: 100%;
-        padding: clamp(0.6rem, 2vw, 0.65rem);
-        font-size: clamp(0.8rem, 2.5vw, 0.85rem);
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        min-height: 44px;
+      }
+    }
+
+    .booking-details {
+      .form-group {
+        .form-control {
+          padding: 0.75rem;
+          font-size: 0.9rem;
+          min-height: 44px;
+        }
+      }
+    }
+
+    .room-selection {
+      grid-template-columns: 1fr;
+
+      .room-option {
+        label {
+          font-size: 0.85rem;
+        }
+
+        .form-control {
+          padding: 0.75rem;
+          font-size: 0.85rem;
+        }
+      }
+    }
+
+    .btn-success {
+      padding: 0.8rem;
+      font-size: 0.95rem;
+      min-height: 46px;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .btn-link {
+        font-size: 0.85rem;
+        min-height: 40px;
+      }
+    }
+  }
+
+  .detail-tabs {
+    gap: 0.25rem;
+
+    .tab-btn {
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+    }
+  }
+
+  .tab-content {
+    .overview-section,
+    .inclusions-section,
+    .highlights-section,
+    .itinerary-section,
+    .photos-section,
+    .map-section,
+    .reviews-section,
+    .info-section {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+
+      h2 {
+        font-size: 1.75rem;
+      }
+    }
+
+    .overview-section {
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .inclusions-section {
+      .inclusion-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .tab-btn {
+          padding: 0.75rem;
+          font-size: 0.85rem;
+        }
+      }
+
+      .inclusion-content {
+        padding: 1.5rem;
+
+        .inclusion-list {
+          .inclusion-item {
+            padding: 1rem;
+            gap: 0.75rem;
+
+            span {
+              font-size: 1rem;
+            }
+          }
+        }
+      }
+    }
+
+    .highlights-section {
+      .highlights-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+
+        .highlight-item {
+          padding: 1rem;
+          gap: 0.75rem;
+
+          span {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+
+    .info-section {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .photo-gallery {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .timeline {
+      margin-left: 1.5rem;
+
+      .timeline-item {
+        padding: 1.5rem 0 1.5rem 2.5rem;
+
+        .day-content {
+          padding: 1.25rem;
+
+          .day-header h4 {
+            font-size: 1.2rem;
+          }
+
+          .day-description {
+            p {
+              font-size: 1rem;
+            }
+          }
+
+          .day-teaser {
+            font-size: 0.85rem;
+          }
+        }
+      }
+    }
+
+    .map-container {
+      iframe {
+        height: 300px;
+      }
+    }
+
+    .reviews-section {
+      .review-item {
+        padding: 1.25rem;
+
+        .reviewer-info {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 319px) {
+  .hero-section {
+    height: 50vh;
+    min-height: 400px;
+  }
+
+  .hero-section .container {
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+
+  .hero-content {
+    .tour-title {
+      font-size: clamp(1.5rem, 5vw, 1.8rem);
+    }
+  }
+
+  .booking-card {
+    padding: 1rem;
+    max-width: 98%;
+    margin: 1rem auto;
+
+    .price-section {
+      .price {
+        font-size: 1.6rem;
+      }
+
+      .discount,
+      .advance-booking {
+        font-size: 0.8rem;
+      }
+    }
+
+    .booking-forms {
+      gap: 0.5rem;
+
+      .btn {
+        padding: 0.6rem;
+        font-size: 0.85rem;
         min-height: 40px;
       }
     }
@@ -1029,279 +1325,52 @@
       }
     }
 
-    .room-selection {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-
-      .room-option {
-        label {
-          font-size: 0.8rem;
-          margin-bottom: 0.4rem;
-        }
-
-        .form-control {
-          padding: 0.5rem;
-          font-size: 0.8rem;
-        }
-      }
-    }
-
     .btn-success {
-      padding: clamp(0.65rem, 2vw, 0.8rem);
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-      min-height: 40px;
+      padding: 0.7rem;
+      font-size: 0.9rem;
+      min-height: 42px;
     }
 
     .action-buttons {
-      flex-direction: column;
-      gap: 0.5rem;
-      width: 100%;
-      align-items: center;
-
       .btn-link {
-        width: 100%;
-        text-align: center;
-        padding: 0.4rem;
-        font-size: clamp(0.75rem, 2.5vw, 0.8rem);
+        font-size: 0.8rem;
         min-height: 38px;
       }
     }
   }
 
   .detail-tabs {
-    gap: 0.1rem;
-    margin-bottom: 1.5rem;
-
     .tab-btn {
-      padding: 0.5rem 0.7rem;
+      padding: 0.5rem 0.75rem;
       font-size: 0.75rem;
-      border-radius: 0.5rem 0.5rem 0 0;
     }
   }
 
   .tab-content {
-    .overview-section, .inclusions-section, .highlights-section, .itinerary-section,
-    .photos-section, .map-section, .reviews-section, .info-section {
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-
-      h2 {
-        font-size: 1.5rem;
-      }
-    }
-
-    .overview-section {
-      .details-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .inclusions-section {
-      .inclusion-tabs {
-        flex-direction: column;
-        gap: 0.25rem;
-
-        .tab-btn {
-          padding: 0.5rem;
-          font-size: 0.75rem;
-          text-align: center;
-        }
-      }
-
-      .inclusion-content {
-        padding: 1rem;
-
-        .inclusion-list {
-          .inclusion-item {
-            padding: 0.75rem;
-            flex-direction: column;
-            gap: 0.5rem;
-            text-align: left;
-
-            i {
-              align-self: flex-start;
-            }
-          }
-        }
-      }
-    }
-
-    .highlights-section {
-      .highlights-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-
-        .highlight-item {
-          padding: 0.75rem;
-          flex-direction: column;
-          gap: 0.5rem;
-          text-align: left;
-
-          i {
-            align-self: flex-start;
-          }
-        }
-      }
-    }
-
+    .overview-section,
+    .inclusions-section,
+    .highlights-section,
+    .itinerary-section,
+    .photos-section,
+    .map-section,
+    .reviews-section,
     .info-section {
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
+      padding: 1rem;
     }
 
     .photo-gallery {
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: 1fr;
     }
 
     .timeline {
-      margin-left: 1rem;
-
       .timeline-item {
-        padding: 1rem 0 1rem 2rem;
-        margin-bottom: 0.5rem;
-
         .day-content {
-          padding: 0.75rem;
-
           .day-header h4 {
             font-size: 1.1rem;
           }
 
           .day-teaser {
             font-size: 0.8rem;
-          }
-        }
-      }
-    }
-
-    .map-container {
-      iframe {
-        height: 250px;
-      }
-    }
-
-    .reviews-section {
-      .review-item {
-        .reviewer-info {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.5rem;
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 319px) {
-  .hero-section {
-    height: 50vh;
-    min-height: 350px;
-  }
-
-  .hero-section .container {
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
-
-  .hero-content {
-    .tour-title {
-      font-size: 1.1rem;
-    }
-  }
-
-  .booking-card {
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    max-width: 98%;
-    margin: 0.5rem auto;
-
-    .price-section {
-      margin-bottom: 1rem;
-
-      .price {
-        font-size: 1.4rem;
-      }
-
-      .discount {
-        font-size: 0.75rem;
-      }
-    }
-
-    .booking-forms {
-      gap: 0.4rem;
-
-      .btn {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-        min-height: 36px;
-      }
-    }
-
-    .booking-details {
-      .form-group {
-        .form-control {
-          padding: 0.5rem;
-          font-size: 0.8rem;
-        }
-      }
-    }
-
-    .room-selection {
-      grid-template-columns: 1fr;
-
-      .room-option {
-        .form-control {
-          padding: 0.5rem;
-          font-size: 0.75rem;
-        }
-      }
-    }
-
-    .btn-success {
-      padding: 0.6rem;
-      font-size: 0.8rem;
-      min-height: 38px;
-    }
-
-    .action-buttons {
-      gap: 0.4rem;
-
-      .btn-link {
-        padding: 0.3rem;
-        font-size: 0.75rem;
-        min-height: 36px;
-      }
-    }
-  }
-
-  .detail-tabs {
-    .tab-btn {
-      padding: 0.4rem 0.6rem;
-      font-size: 0.7rem;
-    }
-  }
-
-  .tab-content {
-    .overview-section, .inclusions-section, .highlights-section, .itinerary-section,
-    .photos-section, .map-section, .reviews-section, .info-section {
-      padding: 0.75rem;
-    }
-
-    .photo-gallery {
-      grid-template-columns: 1fr;
-    }
-
-    .timeline {
-      .timeline-item {
-        .day-content {
-          .day-header h4 {
-            font-size: 1rem;
-          }
-
-          .day-teaser {
-            font-size: 0.75rem;
           }
         }
       }
@@ -1340,8 +1409,8 @@
 
 @media (prefers-contrast: high) {
   :root {
-    --blur-bg: rgba(255, 255, 255, 0.15);
-    --border-light: rgba(255, 255, 255, 0.5);
+    --blur-bg: rgba(255, 255, 255, 0.2);
+    --border-light: rgba(255, 255, 255, 0.6);
   }
 
   .booking-card {
@@ -1377,9 +1446,4 @@
   .timeline .toggle-icon {
     transform: none !important;
   }
-}
-
-@keyframes slideInUp {
-  0% { transform: translateY(30px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
 }

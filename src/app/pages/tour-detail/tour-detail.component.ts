@@ -51,7 +51,7 @@ export class TourDetailComponent implements OnInit {
     private meta: Meta,
     private title: Title,
     private snackBar: MatSnackBar,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -159,13 +159,13 @@ export class TourDetailComponent implements OnInit {
   }
 
   getMaxDate(): string {
-    if (!this.tour) return ''; 
+    if (!this.tour) return '';
     return new Date(this.tour.available_to).toISOString().split('T')[0];
   }
 
   getItineraryDays(): any[] {
     if (!this.tour?.itinerary) return [];
-    
+
     if (typeof this.tour.itinerary === 'string') {
       return this.tour.itinerary.split('\n').map((day, index) => ({
         day: index + 1,
@@ -173,7 +173,7 @@ export class TourDetailComponent implements OnInit {
         description: day.replace(/^Day \d+:\s*/, '')
       }));
     }
-    
+
     return this.tour.itinerary;
   }
 
@@ -228,7 +228,7 @@ export class TourDetailComponent implements OnInit {
       next: (response) => {
         console.log('Booking submitted successfully:', response);
         if (isPlatformBrowser(this.platformId)) {
-          this.snackBar.open(`Your booking has been submitted successfully!`,'Close', { duration: 3000 });
+          this.snackBar.open(`Your booking has been submitted successfully!`, 'Close', { duration: 3000 });
         }
       },
       error: (error) => {

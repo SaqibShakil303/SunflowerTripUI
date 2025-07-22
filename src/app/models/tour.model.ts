@@ -139,6 +139,8 @@ export class Tour {
   // Customizable flag
   is_customizable?: boolean; // Changed to is_customizable to match JSON
 
+  flight_included?: boolean;
+
   // Booking counts
   adults?: number;
   children?: number;
