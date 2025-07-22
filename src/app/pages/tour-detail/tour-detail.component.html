@@ -4,21 +4,22 @@
     <img [src]="tour.image_url" alt="{{ tour.title }}" class="hero-image" />
     <div class="hero-overlay">
       <div class="container">
-           <div class="hero-content">
+        <div class="hero-content">
           <h1 class="tour-title">{{ tour.title }}</h1>
           <div class="tour-meta">
             <span class="duration">{{ tour.duration_days }} Days</span>
             <span class="availability">{{ getAvailabilityText() }}</span>
             <span class="difficulty" *ngIf="tour.difficulty_level">{{ tour.difficulty_level }}</span>
+            <span class="category" *ngIf="tour.category">{{ tour.category | titlecase }}</span>
           </div>
-          <div class="airports" *ngIf="tour.departure_airport && tour.arrival_airport">
-            <div class="airport-info">
+          <div class="airports" *ngIf="tour.departure_airport || tour.arrival_airport">
+            <div class="airport-info" *ngIf="tour.departure_airport">
               <i class="icon-plane"></i>
-              <span>{{ tour.departure_airport }}</span>
+              <span>Departure: {{ tour.departure_airport }}</span>
             </div>
-            <div class="airport-info">
+            <div class="airport-info" *ngIf="tour.arrival_airport">
               <i class="icon-plane"></i>
-              <span>{{ tour.arrival_airport }}</span>
+              <span>Arrival: {{ tour.arrival_airport }}</span>
             </div>
           </div>
           <div class="group-size" *ngIf="tour.min_group_size || tour.max_group_size">
@@ -29,17 +30,26 @@
             <i class="icon-check"></i>
             <span>Customizable Tour</span>
           </div>
+          <!-- <div class="status" *ngIf="tour.is_active != null">
+            <i class="icon-check"></i>
+            <span>{{ tour.is_active ? 'Active' : 'Inactive' }}</span>
+          </div>
+          <div class="featured" *ngIf="tour.is_featured">
+            <i class="icon-star"></i>
+            <span>Featured Tour</span>
+          </div> -->
         </div>
         <div class="booking-card">
           <div class="price-section">
-            <span class="price-label">Price</span>
-           <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price) }}</span>
-           <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{ formatDiscount(tour.early_bird_discount) }} off</span>
+            <span class="price-label">Price per Person</span>
+            <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price_per_person || tour.price) }}</span>
+            <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{ formatDiscount(tour.early_bird_discount) }} off</span>
             <span class="discount" *ngIf="tour.group_discount">Group: {{ formatDiscount(tour.group_discount) }} off</span>
+            <span class="advance-booking" *ngIf="tour.advance_booking_days">Book {{ tour.advance_booking_days }} days in advance</span>
           </div>
           <div class="booking-forms">
             <button class="btn btn-outline" (click)="openEnquiryForm()">Enquiry Form</button>
-            <button class="btn btn-primary" (click)="openBookingForm()">Book Form</button>
+            <button class="btn btn-primary" (click)="openBookingForm()">Book Now</button>
           </div>
           <div class="booking-details">
             <!-- <div class="form-group">
@@ -69,9 +79,7 @@
               </select>
             </div>
           </div> -->
-          <button class="btn btn-success btn-full" (click)="proceedBooking()">
-            PROCEED BOOKING
-          </button>
+          <button class="btn btn-success btn-full" (click)="proceedBooking()">PROCEED BOOKING</button>
           <div class="action-buttons">
             <button class="btn btn-link" (click)="saveToWishlist()">Save To Wish List</button>
             <button class="btn btn-link" (click)="viewReviews()">Reviews</button>
@@ -82,35 +90,43 @@
   </div>
 
   <div class="container">
-    <!-- Navigation Tabs -->
     <div class="detail-tabs">
       <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">Details</button>
       <button class="tab-btn" [class.active]="activeTab === 'itinerary'" (click)="setActiveTab('itinerary')">Itinerary</button>
       <button class="tab-btn" [class.active]="activeTab === 'map'" (click)="setActiveTab('map')">Map</button>
       <button class="tab-btn" [class.active]="activeTab === 'photos'" (click)="setActiveTab('photos')">Photos</button>
       <button class="tab-btn" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">Reviews</button>
-        <button class="tab-btn" [class.active]="activeTab === 'info'" (click)="setActiveTab('info')">Additional Info</button>
+      <button class="tab-btn" [class.active]="activeTab === 'info'" (click)="setActiveTab('info')">Additional Info</button>
     </div>
 
-    <!-- Overview Section -->
     <div class="tab-content" *ngIf="activeTab === 'overview'">
       <div class="overview-section">
-        <h2>OVERVIEWS</h2>
+        <h2>OVERVIEW</h2>
         <div class="description">
-          <p>{{ tour.description }}</p>
+          <p>{{ tour.description || 'No description available' }}</p>
         </div>
-          <div class="details-grid">
+        <div class="details-grid">
+          <!-- <div class="detail-item" *ngIf="tour.id">
+            <strong>Tour ID:</strong> {{ tour.id }}
+          </div> --> <!-- Irrelevant: Internal identifier for developers -->
+          <!-- <div class="detail-item" *ngIf="tour.destination_id">
+            <strong>Destination ID:</strong> {{ tour.destination_id }}
+          </div> --> <!-- Irrelevant: Internal identifier for developers -->
+          <!-- <div class="detail-item" *ngIf="tour.slug">
+            <strong>Slug:</strong> {{ tour.slug }}
+          </div> --> <!-- Irrelevant: Used for URL structure, not customer-facing -->
           <div class="detail-item" *ngIf="tour.accommodation_type">
             <strong>Accommodation Type:</strong> {{ tour.accommodation_type }}
-            <span *ngIf="tour.accommodation_rating" class="rating">
+            <span class="rating" *ngIf="tour.accommodation_rating">
               <span *ngFor="let star of getAccommodationRatingStars()">★</span>
             </span>
           </div>
-          <div class="detail-item" *ngIf="tour.guide_included">
-            <strong>Guide:</strong> Included (Languages: {{ tour.guide_languages?.join(', ') || 'N/A' }})
+          <div class="detail-item" *ngIf="tour.guide_included != null">
+            <strong>Guide:</strong> {{ tour.guide_included ? 'Included' : 'Not Included' }}
+            <span *ngIf="tour.guide_languages?.length"> (Languages: {{ tour.guide_languages?.join(', ') }})</span>
           </div>
-          <div class="detail-item" *ngIf="tour.transportation_included">
-            <strong>Transportation:</strong> {{ tour.transportation_details || 'Included' }}
+          <div class="detail-item" *ngIf="tour.transportation_included != null">
+            <strong>Transportation:</strong> {{ tour.transportation_included ? tour.transportation_details || 'Included' : 'Not Included' }}
           </div>
           <div class="detail-item" *ngIf="tour.activity_types?.length">
             <strong>Activities:</strong> {{ tour.activity_types?.join(', ') }}
@@ -121,25 +137,43 @@
           <div class="detail-item" *ngIf="tour.physical_requirements">
             <strong>Physical Requirements:</strong> {{ tour.physical_requirements }}
           </div>
+          <div class="detail-item" *ngIf="tour.languages_supported?.length">
+            <strong>Supported Languages:</strong> {{ tour.languages_supported?.join(', ') }}
+          </div>
+          <div class="detail-item" *ngIf="tour.meals_included?.length">
+            <strong>Meals Included:</strong> {{ tour.meals_included?.join(', ') }}
+          </div>
+          <div class="detail-item" *ngIf="tour.dietary_restrictions_supported?.length">
+            <strong>Dietary Restrictions:</strong> {{ tour.dietary_restrictions_supported?.join(', ') }}
+          </div>
+          <div class="detail-item" *ngIf="tour.flight_included != null">
+            <strong>Flights:</strong> {{ tour.flight_included ? 'Included' : 'Not Included' }}
+          </div>
+          <div class="detail-item" *ngIf="tour.instant_booking != null">
+            <strong>Instant Booking:</strong> {{ tour.instant_booking ? 'Available' : 'Not Available' }}
+          </div>
+          <div class="detail-item" *ngIf="tour.requires_approval != null">
+            <strong>Requires Approval:</strong> {{ tour.requires_approval ? 'Yes' : 'No' }}
+          </div>
         </div>
       </div>
 
-      <!-- Inclusions/Exclusions -->
       <div class="inclusions-section">
         <div class="tabs-container">
           <div class="inclusion-tabs">
-            <!-- <button class="tab-btn" [class.active]="inclusionTab === 'departure'" (click)="inclusionTab = 'departure'">Departure</button> -->
             <button class="tab-btn" [class.active]="inclusionTab === 'inclusions'" (click)="inclusionTab = 'inclusions'">Inclusions</button>
             <button class="tab-btn" [class.active]="inclusionTab === 'exclusions'" (click)="inclusionTab = 'exclusions'">Exclusions</button>
             <button class="tab-btn" [class.active]="inclusionTab === 'complementaries'" (click)="inclusionTab = 'complementaries'">Complementaries</button>
           </div>
         </div>
-
         <div class="inclusion-content">
           <div *ngIf="inclusionTab === 'inclusions'" class="inclusion-list">
             <div class="inclusion-item" *ngFor="let inclusion of tour.inclusions">
               <i class="icon-check"></i>
               <span>{{ inclusion }}</span>
+            </div>
+            <div class="inclusion-item" *ngIf="!tour.inclusions?.length">
+              <span>No inclusions available</span>
             </div>
           </div>
           <div *ngIf="inclusionTab === 'exclusions'" class="inclusion-list">
@@ -147,17 +181,22 @@
               <i class="icon-close"></i>
               <span>{{ exclusion }}</span>
             </div>
+            <div class="inclusion-item" *ngIf="!tour.exclusions?.length">
+              <span>No exclusions available</span>
+            </div>
           </div>
           <div *ngIf="inclusionTab === 'complementaries'" class="inclusion-list">
             <div class="inclusion-item" *ngFor="let comp of tour.complementaries">
               <i class="icon-check"></i>
               <span>{{ comp }}</span>
             </div>
+            <div class="inclusion-item" *ngIf="!tour.complementaries?.length">
+              <span>No complementaries available</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Highlights -->
       <div class="highlights-section">
         <h2>HIGHLIGHTS</h2>
         <div class="highlights-grid">
@@ -165,81 +204,113 @@
             <i class="icon-check"></i>
             <span>{{ highlight }}</span>
           </div>
+          <div class="highlight-item" *ngIf="!tour.highlights?.length">
+            <span>No highlights available</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="policies-section">
+        <h2>BOOKING POLICIES</h2>
+        <div class="policy-item" *ngIf="tour.booking_terms">
+          <strong>Booking Terms:</strong>
+          <p>{{ tour.booking_terms }}</p>
+        </div>
+        <div class="policy-item" *ngIf="tour.cancellation_policy">
+          <strong>Cancellation Policy:</strong>
+          <p>{{ tour.cancellation_policy }}</p>
+        </div>
+        <div class="policy-item" *ngIf="!tour.booking_terms && !tour.cancellation_policy">
+          <p>No booking policies available</p>
         </div>
       </div>
     </div>
 
-    <!-- Itinerary Section -->
     <div class="tab-content" *ngIf="activeTab === 'itinerary'">
       <div class="itinerary-section">
         <h2>ITINERARY</h2>
         <div class="timeline">
           <div class="timeline-item" *ngFor="let day of getItineraryDays(); let i = index" [attr.aria-expanded]="openDayIndex === i" [attr.aria-controls]="'day-desc-' + i">
-            <div class="day-number">Day {{ i + 1 }}</div>
+            <div class="day-number">Day {{ day.day || i + 1 }}</div>
             <div class="day-content" (click)="toggleDay(i)" role="button" tabindex="0" (keydown)="onKeydown($event, i)">
               <div class="day-header">
                 <h4>{{ day.title || 'Day ' + (i + 1) }}</h4>
                 <span class="toggle-icon" [class.open]="openDayIndex === i"></span>
               </div>
               <div class="day-description" [class.open]="openDayIndex === i" [id]="'day-desc-' + i">
-                <p>{{ day.description }}</p>
+                <p>{{ day.description || 'No description available' }}</p>
+                <div *ngIf="day.activities?.length">
+                  <strong>Activities:</strong> {{ day.activities.join(', ') }}
+                </div>
+                <div *ngIf="day.meals_included?.length">
+                  <strong>Meals:</strong> {{ day.meals_included.join(', ') }}
+                </div>
+                <div *ngIf="day.accommodation">
+                  <strong>Accommodation:</strong> {{ day.accommodation }}
+                </div>
               </div>
               <div class="day-teaser" *ngIf="openDayIndex !== i">
                 <span>Click to view details</span>
               </div>
             </div>
           </div>
+          <div class="timeline-item" *ngIf="!getItineraryDays().length">
+            <p>No itinerary available</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Photos Section -->
     <div class="tab-content" *ngIf="activeTab === 'photos'">
       <div class="photos-section">
         <h2>PHOTOS</h2>
         <div class="photo-gallery">
           <div class="photo-item" *ngFor="let photo of tour.photos">
-            <img [src]="photo.url" [alt]="photo.caption" (click)="openPhotoModal(photo)">
+            <img [src]="photo.url" [alt]="photo.caption || 'Tour photo'" (click)="openPhotoModal(photo)">
+            <div class="image-info">
+              <span *ngIf="photo.caption">{{ photo.caption }}</span>
+              <!-- <span *ngIf="photo.is_primary" class="badge badge-primary">Primary</span> -->
+            </div>
+          </div>
+          <div class="photo-item" *ngIf="!tour.photos?.length">
+            <span>No photos available</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Map Section -->
     <div class="tab-content" *ngIf="activeTab === 'map'">
       <div class="map-section">
         <h2>MAP</h2>
-        <div class="map-container">
-          <!-- Map implementation would go here -->
-          <!-- <p>Map showing tour locations</p> -->
-          <div class="map-container" *ngIf="tour?.map_embed_url">
-  <iframe
-    [src]="sanitizer.bypassSecurityTrustResourceUrl(tour.map_embed_url)"
-    width="100%" height="400" frameborder="0" allowfullscreen>
-  </iframe>
-</div>
+        <div class="map-container" *ngIf="tour.map_embed_url">
+          <iframe [src]="sanitizer.bypassSecurityTrustResourceUrl(tour.map_embed_url)" width="100%" height="400" frameborder="0" allowfullscreen>
+          </iframe>
+        </div>
+        <div *ngIf="!tour.map_embed_url">
+          <p>No map available</p>
         </div>
       </div>
     </div>
 
-    <!-- Reviews Section -->
     <div class="tab-content" *ngIf="activeTab === 'reviews'">
       <div class="reviews-section">
         <h2>REVIEWS</h2>
         <div class="review-item" *ngFor="let review of tour.reviews">
           <div class="reviewer-info">
-            <strong>{{ review.reviewer_name }}</strong>
+            <strong>{{ review.reviewer_name || 'Anonymous' }}</strong>
             <div class="rating">
               <span *ngFor="let star of getStarArray(review.rating)">★</span>
             </div>
           </div>
-          <p>{{ review.comment }}</p>
+          <p>{{ review.comment || 'No comment available' }}</p>
           <small>{{ review.date | date }}</small>
+        </div>
+        <div class="review-item" *ngIf="!tour.reviews?.length">
+          <p>No reviews available</p>
         </div>
       </div>
     </div>
 
-       <!-- Additional Info Section -->
     <div class="tab-content" *ngIf="activeTab === 'info'">
       <div class="info-section">
         <h2>ADDITIONAL INFORMATION</h2>
@@ -256,6 +327,21 @@
               <li *ngFor="let item of tour.packing_list">{{ item }}</li>
             </ul>
           </div>
+          <!-- <div class="info-item" *ngIf="tour.created_at">
+            <strong>Created:</strong> {{ tour.created_at | date }}
+          </div> --> <!-- Irrelevant: Internal timestamp for developers -->
+          <!-- <div class="info-item" *ngIf="tour.updated_at">
+            <strong>Last Updated:</strong> {{ tour.updated_at | date }}
+          </div> --> <!-- Irrelevant: Internal timestamp for developers -->
+          <!-- <div class="info-item" *ngIf="tour.meta_title">
+            <strong>Meta Title:</strong> {{ tour.meta_title }}
+          </div> --> <!-- Irrelevant: SEO metadata, not customer-facing -->
+          <!-- <div class="info-item" *ngIf="tour.meta_description">
+            <strong>Meta Description:</strong> {{ tour.meta_description }}
+          </div> --> <!-- Irrelevant: SEO metadata, not customer-facing -->
+          <div class="info-item" *ngIf="!tour.best_time_to_visit && !tour.weather_info && !tour.packing_list?.length && !tour.created_at && !tour.updated_at && !tour.meta_title && !tour.meta_description">
+            <p>No additional information available</p>
+          </div>
         </div>
       </div>
     </div>
@@ -267,14 +353,7 @@
   <p>Loading tour details...</p>
 </div>
 
-<app-booking-modal
-  [isOpen]="isModalOpen"
-  [formType]="modalFormType"
-  [tour]="tour"
-  (close)="closeModal()"
-  (onSubmitEnquiry)="handleEnquirySubmit($event)"
-  (onSubmitBooking)="handleBookingSubmit($event)"
-></app-booking-modal>
+<app-booking-modal [isOpen]="isModalOpen" [formType]="modalFormType" [tour]="tour" (close)="closeModal()" (onSubmitEnquiry)="handleEnquirySubmit($event)" (onSubmitBooking)="handleBookingSubmit($event)"></app-booking-modal>
 
 <app-chat-widget></app-chat-widget>
 <app-footer></app-footer>
