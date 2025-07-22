@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { Destination } from '../../../models/destination.model';
 import { DestinationNav, DestinationService } from '../../../services/destination/destination.service';
 import { TourService } from '../../../services/tours/tour.service';
+import { Subscription } from 'rxjs';
+import { StatePersistenceService } from '../../../services/state-persistence/state-persistence.service';
 
 @Component({
   selector: 'app-add-tour',
@@ -22,14 +24,15 @@ export class AddTourComponent implements OnInit {
   destinations: DestinationNav[] = [];
   categories: string[] = [];
   availableLocations: { id: number; name: string }[] = [];
-
+private formSubscription!: Subscription;
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddTourComponent>,
     private tourService: TourService,
     private destinationService: DestinationService,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private stateService: StatePersistenceService
   ) { }
 
   ngOnInit(): void {
@@ -88,6 +91,10 @@ export class AddTourComponent implements OnInit {
       reviews: this.fb.array([])
     });
 
+const savedTourState = this.stateService.tour;
+    if (savedTourState && Object.keys(savedTourState).length > 0) {
+      this.restoreFormState(savedTourState);
+    }
     this.loadDestinations();
     this.loadCategories();
 
@@ -96,7 +103,81 @@ export class AddTourComponent implements OnInit {
       this.updateAvailableLocations(destinationId);
     });
   }
+  // Restore form state from saved data
+  private restoreFormState(savedState: any): void {
+    // Patch top-level fields
+    this.tourForm.patchValue({
+      title: savedState.title || '',
+      slug: savedState.slug || '',
+      destination_id: savedState.destination_id || null,
+      location_ids: savedState.location_ids || [],
+      duration_days: savedState.duration_days || 1,
+      category: savedState.category || '',
+      price_per_person: savedState.price_per_person || 0,
+      price_currency: savedState.price_currency || 'INR',
+      image_url: savedState.image_url || '',
+      description: savedState.description || '',
+      departure_airport: savedState.departure_airport || '',
+      arrival_airport: savedState.arrival_airportКоллback || '',
+      available_from: savedState.available_from || '',
+      available_to: savedState.available_to || '',
+      max_group_size: savedState.max_group_size || null,
+      min_group_size: savedState.min_group_size || null,
+      inclusions: savedState.inclusions || '',
+      exclusions: savedState.exclusions || '',
+      complementaries: savedState.complementaries || '',
+      highlights: savedState.highlights || '',
+      booking_terms: savedState.booking_terms || '',
+      cancellation_policy: savedState.cancellation_policy || '',
+      meta_title: savedState.meta_title || '',
+      meta_description: savedState.meta_description || '',
+      early_bird_discount: savedState.early_bird_discount || null,
+      group_discount: savedState.group_discount || null,
+      difficulty_level: savedState.difficulty_level || 'Moderate',
+      physical_requirements: savedState.physical_requirements || '',
+      best_time_to_visit: savedState.best_time_to_visit || '',
+      weather_info: savedState.weather_info || '',
+      packing_list: savedState.packing_list || '',
+      languages_supported: savedState.languages_supported || '',
+      guide_included: savedState.guide_included ?? true,
+      guide_languages: savedState.guide_languages || '',
+      transportation_included: savedState.transportation_included ?? true,
+      transportation_details: savedState.transportation_details || '',
+      meals_included: savedState.meals_included || '',
+      dietary_restrictions_supported: savedState.dietary_restrictions_supported || '',
+      accommodation_type: savedState.accommodation_type || '',
+      accommodation_rating: savedState.accommodation_rating || null,
+      activity_types: savedState.activity_types || '',
+      interests: savedState.interests || '',
+      instant_booking: savedState.instant_booking ?? false,
+      requires_approval: savedState.requires_approval ?? true,
+      advance_booking_days: savedState.advance_booking_days || null,
+      is_active: savedState.is_active ?? true,
+      is_featured: savedState.is_featured ?? true,
+      is_customizable: savedState.is_customizable ?? true
+    });
 
+    // Restore FormArray fields
+    this.restoreFormArray(savedState.photos, this.photos, this.addPhoto.bind(this));
+    this.restoreFormArray(savedState.itinerary, this.itineraryDays, this.addItineraryDay.bind(this));
+    this.restoreFormArray(savedState.room_types, this.roomTypes, this.addRoomType.bind(this));
+    this.restoreFormArray(savedState.reviews, this.reviews, this.addReview.bind(this));
+  }
+
+  // Helper method to restore FormArray
+  private restoreFormArray(savedArray: any[], formArray: FormArray, addFn: () => void): void {
+    if (savedArray && savedArray.length > 0) {
+      formArray.clear();
+      savedArray.forEach(() => addFn());
+      formArray.patchValue(savedArray);
+    }
+  }
+ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+  }
   get photos() { return this.tourForm.get('photos') as FormArray<FormGroup>; }
   get itineraryDays() { return this.tourForm.get('itinerary') as FormArray<FormGroup>; }
   get roomTypes() { return this.tourForm.get('room_types') as FormArray<FormGroup>; }
@@ -279,6 +360,7 @@ export class AddTourComponent implements OnInit {
             duration: 3000,
             panelClass: ['success-snackbar']
           });
+          this.stateService.clearTour();
           this.dialogRef.close(result);
           this.isSubmitting = false;
           this.cdr.detectChanges();
@@ -314,6 +396,7 @@ export class AddTourComponent implements OnInit {
   }
 
   onCancel(): void {
+    this.stateService.setTour(this.tourForm.value);
     this.dialogRef.close();
   }
 
@@ -362,5 +445,29 @@ export class AddTourComponent implements OnInit {
       date: 'Date'
     };
     return labels[fieldName] || fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+  }
+
+
+  clearForm(): void {
+    this.stateService.clearTour();
+    this.tourForm.reset({
+      duration_days: 1,
+      price_per_person: 0,
+      price_currency: 'INR',
+      guide_included: true,
+      transportation_included: true,
+      instant_booking: false,
+      requires_approval: true,
+      is_active: true,
+      is_featured: true,
+      is_customizable: true,
+      difficulty_level: 'Moderate'
+    });
+    this.photos.clear();
+    this.itineraryDays.clear();
+    this.roomTypes.clear();
+    this.reviews.clear();
+    this.imagePreviews = {};
+    this.cdr.detectChanges();
   }
 }

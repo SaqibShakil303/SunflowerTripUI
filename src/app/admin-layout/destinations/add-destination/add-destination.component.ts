@@ -6,6 +6,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { Destination, Location, Attraction, Ethnicity, Cuisine, Activity } from '../../../models/destination.model';
 import { DestinationService } from '../../../services/destination/destination.service';
+import { Subscription } from 'rxjs';
+import { StatePersistenceService } from '../../../services/state-persistence/state-persistence.service';
 
 @Component({
   selector: 'app-add-destination',
@@ -20,13 +22,15 @@ export class AddDestinationComponent implements OnInit {
   isSubmitting = false;
   languageInput: string = '';
   continents: Destination[] = [];
+  private formSubscription!: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddDestinationComponent>,
     private destinationService: DestinationService,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private stateService: StatePersistenceService
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +51,19 @@ export class AddDestinationComponent implements OnInit {
       activities: this.fb.array([])
     });
 
+    const savedDestinationState = this.stateService.destination;
+    if (savedDestinationState && Object.keys(savedDestinationState).length > 0) {
+      this.restoreFormState(savedDestinationState);
+    }
+
     this.loadContinents();
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
   }
 
   get locations() { return this.destinationForm.get('locations') as FormArray<FormGroup>; }
@@ -195,6 +211,7 @@ export class AddDestinationComponent implements OnInit {
             duration: 3000,
             panelClass: ['success-snackbar']
           });
+          this.stateService.clearDestination();
           this.dialogRef.close(result);
           this.isSubmitting = false;
           this.cdr.detectChanges();
@@ -226,9 +243,33 @@ export class AddDestinationComponent implements OnInit {
   }
 
   onCancel(): void {
+    this.stateService.setDestination(this.destinationForm.value);
     this.dialogRef.close();
   }
 
+  clearForm(): void {
+    this.stateService.clearDestination();
+    this.destinationForm.reset({
+      title: '',
+      parent_id: null,
+      image_url: '',
+      best_time_to_visit: '',
+      weather: '',
+      currency: '',
+      language: '',
+      time_zone: '',
+      description: ''
+    });
+    this.locations.clear();
+    this.attractions.clear();
+    this.ethnicities.clear();
+    this.cuisines.clear();
+    this.activities.clear();
+    this.imagePreviews = {};
+    this.languageInput = '';
+    this.cdr.detectChanges();
+  }
+  
   isFieldInvalid(control: FormGroup | FormArray, fieldName: string): boolean {
     const field = control.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
@@ -299,6 +340,58 @@ export class AddDestinationComponent implements OnInit {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.addLanguage();
+    }
+  }
+
+  // Restore form state from saved data
+  private restoreFormState(savedState: any): void {
+    // Patch top-level fields
+    this.destinationForm.patchValue({
+      title: savedState.title || '',
+      parent_id: savedState.parent_id || null,
+      image_url: savedState.image_url || '',
+      best_time_to_visit: savedState.best_time_to_visit || '',
+      weather: savedState.weather || '',
+      currency: savedState.currency || '',
+      language: savedState.language || '',
+      time_zone: savedState.time_zone || '',
+      description: savedState.description || ''
+    });
+
+    // Restore FormArray fields
+    this.restoreFormArray(savedState.locations, this.locations, this.addLocation.bind(this));
+    this.restoreFormArray(savedState.attractions, this.attractions, this.addAttraction.bind(this));
+    this.restoreFormArray(savedState.ethnicities, this.ethnicities, this.addEthnicity.bind(this));
+    this.restoreFormArray(savedState.cuisines, this.cuisines, this.addCuisine.bind(this));
+    this.restoreFormArray(savedState.activities, this.activities, this.addActivity.bind(this));
+
+    // Restore image previews
+    if (savedState.image_url) {
+      this.imagePreviews['destination'] = savedState.image_url;
+    }
+    savedState.locations?.forEach((loc: any, i: number) => {
+      if (loc.image_url) this.imagePreviews[`locations-${i}`] = loc.image_url;
+    });
+    savedState.attractions?.forEach((attr: any, i: number) => {
+      if (attr.image_url) this.imagePreviews[`attractions-${i}`] = attr.image_url;
+    });
+    savedState.ethnicities?.forEach((eth: any, i: number) => {
+      if (eth.image_url) this.imagePreviews[`ethnicities-${i}`] = eth.image_url;
+    });
+    savedState.cuisines?.forEach((cui: any, i: number) => {
+      if (cui.image_url) this.imagePreviews[`cuisines-${i}`] = cui.image_url;
+    });
+    savedState.activities?.forEach((act: any, i: number) => {
+      if (act.image_url) this.imagePreviews[`activities-${i}`] = act.image_url;
+    });
+  }
+
+  // Helper method to restore FormArray
+  private restoreFormArray(savedArray: any[], formArray: FormArray, addFn: () => void): void {
+    if (savedArray && savedArray.length > 0) {
+      formArray.clear();
+      savedArray.forEach(() => addFn());
+      formArray.patchValue(savedArray);
     }
   }
 }

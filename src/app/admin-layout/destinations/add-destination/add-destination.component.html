@@ -365,6 +365,9 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="clearForm()" [disabled]="isSubmitting">
+    Clear Form
+  </button>
             <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isSubmitting">
                 Cancel
             </button>

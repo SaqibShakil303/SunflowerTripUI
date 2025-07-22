@@ -23,6 +23,14 @@ export class StatePersistenceService {
     this.isBrowser ? safeParse(localStorage.getItem('filter')) : {}
   );
 
+
+  private tourState$ = new BehaviorSubject<any>(
+    this.isBrowser ? safeParse(localStorage.getItem('tour')) : {}
+  );
+  private destinationState$ = new BehaviorSubject<any>(
+    this.isBrowser ? safeParse(localStorage.getItem('destination')) : {}
+  );
+
   get enquiry() {
     return this.enquiryState$.value;
   }
@@ -35,9 +43,19 @@ export class StatePersistenceService {
     return this.filterState$.value;
   }
 
+  get tour() {
+    return this.tourState$.value;
+  }
+  get destination() {
+    return this.destinationState$.value;
+  }
+
+
   enquiry$ = this.enquiryState$.asObservable();
   booking$ = this.bookingState$.asObservable();
   filter$ = this.filterState$.asObservable();
+  tour$ = this.tourState$.asObservable();
+  destination$ = this.destinationState$.asObservable();
 
   setEnquiry(data: any) {
     this.enquiryState$.next(data);
@@ -54,9 +72,29 @@ export class StatePersistenceService {
     if (this.isBrowser) localStorage.setItem('filter', JSON.stringify(data));
   }
 
+  setTour(data: any) {
+    this.tourState$.next(data);
+    if (this.isBrowser) localStorage.setItem('tour', JSON.stringify(data));
+  }
+
+  setDestination(data: any) {
+    this.destinationState$.next(data);
+    if (this.isBrowser) localStorage.setItem('destination', JSON.stringify(data));
+  }
+
+  clearTour() {
+    this.setTour({});
+  }
+
+  clearDestination() {
+    this.setDestination({});
+  }
+
   clear() {
     this.setEnquiry({});
     this.setBooking({});
     this.setFilter({});
+    this.setTour({});
+    this.setDestination({});
   }
 }
