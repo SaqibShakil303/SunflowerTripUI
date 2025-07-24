@@ -7,6 +7,7 @@
         <div class="hero-content">
           <h1 class="tour-title">{{ tour.title }}</h1>
           <div class="tour-meta">
+            <span class="destination" *ngIf="tour.destination_title">{{ tour.destination_title }}</span>
             <span class="duration">{{ tour.duration_days }} Days</span>
             <span class="availability">{{ getAvailabilityText() }}</span>
             <span class="difficulty" *ngIf="tour.difficulty_level">{{ tour.difficulty_level }}</span>
@@ -30,14 +31,14 @@
             <i class="icon-check"></i>
             <span>Customizable Tour</span>
           </div>
-          <!-- <div class="status" *ngIf="tour.is_active != null">
+          <div class="status" *ngIf="tour.is_active != null">
             <i class="icon-check"></i>
             <span>{{ tour.is_active ? 'Active' : 'Inactive' }}</span>
           </div>
           <div class="featured" *ngIf="tour.is_featured">
             <i class="icon-star"></i>
             <span>Featured Tour</span>
-          </div> -->
+          </div>
         </div>
         <div class="booking-card">
           <div class="price-section">
@@ -47,38 +48,21 @@
             <span class="discount" *ngIf="tour.group_discount">Group: {{ formatDiscount(tour.group_discount) }} off</span>
             <span class="advance-booking" *ngIf="tour.advance_booking_days">Book {{ tour.advance_booking_days }} days in advance</span>
           </div>
+          <!-- <div class="booking-details">
+            <div class="detail-item" *ngIf="tour.adults != null">
+              <strong>Adults:</strong> {{ tour.adults }}
+            </div>
+            <div class="detail-item" *ngIf="tour.children != null">
+              <strong>Children:</strong> {{ tour.children }}
+            </div>
+            <div class="detail-item" *ngIf="tour.rooms != null">
+              <strong>Rooms:</strong> {{ tour.rooms }}
+            </div>
+          </div> -->
           <div class="booking-forms">
             <button class="btn btn-outline" (click)="openEnquiryForm()">Enquiry Form</button>
             <button class="btn btn-primary" (click)="openBookingForm()">Book Now</button>
           </div>
-          <div class="booking-details">
-            <!-- <div class="form-group">
-              <label>Date</label>
-              <input type="date" class="form-control date-year" [(ngModel)]="selectedDate" 
-                     [min]="getMinDate()" [max]="getMaxDate()">
-            </div> -->
-            <!-- <div class="form-group">
-              <label>Guests</label>
-              <select class="form-control" [(ngModel)]="selectedGuests">
-                <option value="1">1 Guest</option>
-                <option value="2">2 Guests</option>
-                <option value="3">3 Guests</option>
-                <option value="4">4 Guests</option>
-                <option value="5">5+ Guests</option>
-              </select>
-            </div> -->
-          </div>
-          <!-- <div class="room-selection" *ngIf="tour.room_types && tour.room_types.length > 0">
-            <div class="room-option" *ngFor="let room of tour.room_types">
-              <label>{{ room.name }}</label>
-              <select class="form-control">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </div>
-          </div> -->
           <button class="btn btn-success btn-full" (click)="proceedBooking()">PROCEED BOOKING</button>
           <div class="action-buttons">
             <button class="btn btn-link" (click)="saveToWishlist()">Save To Wish List</button>
@@ -106,15 +90,23 @@
           <p>{{ tour.description || 'No description available' }}</p>
         </div>
         <div class="details-grid">
-          <!-- <div class="detail-item" *ngIf="tour.id">
-            <strong>Tour ID:</strong> {{ tour.id }}
-          </div> --> <!-- Irrelevant: Internal identifier for developers -->
-          <!-- <div class="detail-item" *ngIf="tour.destination_id">
-            <strong>Destination ID:</strong> {{ tour.destination_id }}
-          </div> --> <!-- Irrelevant: Internal identifier for developers -->
-          <!-- <div class="detail-item" *ngIf="tour.slug">
-            <strong>Slug:</strong> {{ tour.slug }}
-          </div> --> <!-- Irrelevant: Used for URL structure, not customer-facing -->
+          <div class="detail-item" *ngIf="tour.category === 'group' && tour.departures?.length">
+            <strong>Departures:</strong>
+            <ul>
+              <li *ngFor="let departure of tour.departures">
+                {{ departure.departure_date | date: 'mediumDate' }} - {{ departure.available_seats }} seats available
+              </li>
+            </ul>
+          </div>
+          <div class="detail-item" *ngIf="tour.category === 'holiday'">
+            <strong>Available From:</strong> {{ tour.available_from | date: 'mediumDate' }}
+          </div>
+          <div class="detail-item" *ngIf="tour.category === 'holiday'">
+            <strong>Available To:</strong> {{ tour.available_to | date: 'mediumDate' }}
+          </div>
+          <div class="detail-item" *ngIf="tour.category === 'holiday' && (tour.min_group_size || tour.max_group_size)">
+            <strong>Group Size:</strong> {{ tour.min_group_size || 1 }} - {{ tour.max_group_size }} Guests
+          </div>
           <div class="detail-item" *ngIf="tour.accommodation_type">
             <strong>Accommodation Type:</strong> {{ tour.accommodation_type }}
             <span class="rating" *ngIf="tour.accommodation_rating">
@@ -240,10 +232,10 @@
               <div class="day-description" [class.open]="openDayIndex === i" [id]="'day-desc-' + i">
                 <p>{{ day.description || 'No description available' }}</p>
                 <div *ngIf="day.activities?.length">
-                  <strong>Activities:</strong> {{ day.activities.join(', ') }}
+                  <strong>Activities:</strong> {{ day.activities?.join(', ') }}
                 </div>
                 <div *ngIf="day.meals_included?.length">
-                  <strong>Meals:</strong> {{ day.meals_included.join(', ') }}
+                  <strong>Meals:</strong> {{ day.meals_included?.join(', ') }}
                 </div>
                 <div *ngIf="day.accommodation">
                   <strong>Accommodation:</strong> {{ day.accommodation }}
@@ -269,7 +261,7 @@
             <img [src]="photo.url" [alt]="photo.caption || 'Tour photo'" (click)="openPhotoModal(photo)">
             <div class="image-info">
               <span *ngIf="photo.caption">{{ photo.caption }}</span>
-              <!-- <span *ngIf="photo.is_primary" class="badge badge-primary">Primary</span> -->
+              <span *ngIf="photo.is_primary" class="badge badge-primary">Primary</span>
             </div>
           </div>
           <div class="photo-item" *ngIf="!tour.photos?.length">
@@ -327,19 +319,16 @@
               <li *ngFor="let item of tour.packing_list">{{ item }}</li>
             </ul>
           </div>
-          <!-- <div class="info-item" *ngIf="tour.created_at">
-            <strong>Created:</strong> {{ tour.created_at | date }}
-          </div> --> <!-- Irrelevant: Internal timestamp for developers -->
-          <!-- <div class="info-item" *ngIf="tour.updated_at">
-            <strong>Last Updated:</strong> {{ tour.updated_at | date }}
-          </div> --> <!-- Irrelevant: Internal timestamp for developers -->
-          <!-- <div class="info-item" *ngIf="tour.meta_title">
-            <strong>Meta Title:</strong> {{ tour.meta_title }}
-          </div> --> <!-- Irrelevant: SEO metadata, not customer-facing -->
-          <!-- <div class="info-item" *ngIf="tour.meta_description">
-            <strong>Meta Description:</strong> {{ tour.meta_description }}
-          </div> --> <!-- Irrelevant: SEO metadata, not customer-facing -->
-          <div class="info-item" *ngIf="!tour.best_time_to_visit && !tour.weather_info && !tour.packing_list?.length && !tour.created_at && !tour.updated_at && !tour.meta_title && !tour.meta_description">
+          <div class="info-item" *ngIf="tour.room_types?.length">
+            <strong>Room Types:</strong>
+            <ul>
+              <li *ngFor="let room of tour.room_types">
+                {{ room.name }} (Max Occupancy: {{ room.max_occupancy }})
+                <span *ngIf="room.description"> - {{ room.description }}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="info-item" *ngIf="!tour.best_time_to_visit && !tour.weather_info && !tour.packing_list?.length && !tour.room_types?.length">
             <p>No additional information available</p>
           </div>
         </div>

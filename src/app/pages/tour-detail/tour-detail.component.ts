@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Tour } from '../../models/tour.model';
+import { Tour, ItineraryDay } from '../../models/tour.model';
 import { TourService } from '../../services/tours/tour.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -105,8 +105,9 @@ export class TourDetailComponent implements OnInit {
     data.activity_types = this.safeParse(data.activity_types);
     data.interests = this.safeParse(data.interests);
     data.packing_list = this.safeParse(data.packing_list);
-    data.guide_languages = this.safeParse(data.guide_languages); // Fixed: Ensure guide_languages is parsed
+    data.guide_languages = this.safeParse(data.guide_languages);
     data.dietary_restrictions_supported = this.safeParse(data.dietary_restrictions_supported);
+    data.departures = Array.isArray(data.departures) ? data.departures : [];
     data.guide_included = data.guide_included === 1;
     data.transportation_included = data.transportation_included === 1;
     data.instant_booking = data.instant_booking === 1;
@@ -114,6 +115,13 @@ export class TourDetailComponent implements OnInit {
     data.is_active = data.is_active === 1;
     data.is_featured = data.is_featured === 1;
     data.is_customizable = data.is_customizable === 1;
+    data.flight_included = data.flight_included === 1;
+    data.itinerary = Array.isArray(data.itinerary) ? data.itinerary.map((day: any) => ({
+      ...day,
+      day: day.day_number || day.day,
+      activities: this.safeParse(day.activities),
+      meals_included: this.safeParse(day.meals_included)
+    })) : [];
     return data as Tour;
   }
 
@@ -148,6 +156,10 @@ export class TourDetailComponent implements OnInit {
 
   getAvailabilityText(): string {
     if (!this.tour) return '';
+    if (this.tour.category === 'group' && this.tour.departures?.length) {
+      const dates = this.tour.departures.map(d => new Date(d.departure_date).toLocaleDateString()).join(', ');
+      return `Departures on ${dates}`;
+    }
     const fromDate = new Date(this.tour.available_from);
     const toDate = new Date(this.tour.available_to);
     return `Available ${fromDate.toLocaleDateString()} - ${toDate.toLocaleDateString()}`;
@@ -155,26 +167,29 @@ export class TourDetailComponent implements OnInit {
 
   getMinDate(): string {
     if (!this.tour) return '';
+    if (this.tour.category === 'group' && this.tour.departures?.length) {
+      const earliestDate = this.tour.departures.reduce((min, d) =>
+        new Date(d.departure_date) < new Date(min.departure_date) ? d : min
+      ).departure_date;
+      return new Date(earliestDate).toISOString().split('T')[0];
+    }
     return new Date(this.tour.available_from).toISOString().split('T')[0];
   }
 
   getMaxDate(): string {
     if (!this.tour) return '';
+    if (this.tour.category === 'group' && this.tour.departures?.length) {
+      const latestDate = this.tour.departures.reduce((max, d) =>
+        new Date(d.departure_date) > new Date(max.departure_date) ? d : max
+      ).departure_date;
+      return new Date(latestDate).toISOString().split('T')[0];
+    }
     return new Date(this.tour.available_to).toISOString().split('T')[0];
   }
 
-  getItineraryDays(): any[] {
+  getItineraryDays(): ItineraryDay[] {
     if (!this.tour?.itinerary) return [];
-
-    if (typeof this.tour.itinerary === 'string') {
-      return this.tour.itinerary.split('\n').map((day, index) => ({
-        day: index + 1,
-        title: `Day ${index + 1}`,
-        description: day.replace(/^Day \d+:\s*/, '')
-      }));
-    }
-
-    return this.tour.itinerary;
+    return Array.isArray(this.tour.itinerary) ? this.tour.itinerary : [];
   }
 
   getStarArray(rating: number): number[] {
