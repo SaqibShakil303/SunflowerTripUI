@@ -4,14 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddTourComponent } from './add-tour/add-tour.component';
 import { EditTourComponent } from './edit-tour/edit-tour.component';
-import { ItineraryDay, RoomType, Tour, TourPhoto, TourReview } from '../../models/tour.model';
+import { Tour, TourPhoto, TourReview, RoomType, ItineraryDay, TourDeparture } from '../../models/tour.model';
 import { TourService } from '../../services/tours/tour.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
 interface TourPayload {
   tour: Tour;
   photos: TourPhoto[];
   reviews: TourReview[];
   room_types: RoomType[];
   itinerary: ItineraryDay[];
+  departures: TourDeparture[];
 }
 
 @Component({
@@ -19,7 +22,7 @@ interface TourPayload {
   standalone: true,
   imports: [CommonModule, FormsModule, MatDialogModule],
   templateUrl: './tours.component.html',
-  styleUrl: './tours.component.scss'
+  styleUrls: ['./tours.component.scss']
 })
 export class ToursComponent implements OnInit {
   // Search and filtering
@@ -45,11 +48,16 @@ export class ToursComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private tourService: TourService // Inject TourService
+    private tourService: TourService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
     this.loadTours();
+  }
+
+  sanitizeMapUrl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   private parseStringArray(value: any): string[] {
@@ -59,7 +67,7 @@ export class ToursComponent implements OnInit {
       return [];
     }
   }
-  // Load tours data from API
+
   private loadTours(): void {
     this.isLoading = true;
     this.tourService.getAllTours().subscribe({
@@ -68,6 +76,8 @@ export class ToursComponent implements OnInit {
           .filter(t => t.title && t.slug)
           .map(tour => ({
             ...tour,
+            available_from: this.formatDate(tour.available_from) || '',
+            available_to: this.formatDate(tour.available_to) || '',
             itinerary: this.parseItinerary(tour.itinerary),
             inclusions: this.parseStringArray(tour.inclusions),
             exclusions: this.parseStringArray(tour.exclusions),
@@ -81,7 +91,17 @@ export class ToursComponent implements OnInit {
             interests: this.parseStringArray(tour.interests),
             packing_list: this.parseStringArray(tour.packing_list),
             photos: tour.photos || [],
-            reviews: tour.reviews || [],
+            reviews: (tour.reviews ?? []).map(review =>({
+              ...review,
+              date: this.formatDate(review.date),
+            })),
+            room_types: tour.room_types || [],
+            // departures: tour.departures || [],
+           departures: (tour.departures ?? []).map(dep => ({
+              departure_date: this.formatDate(dep.departure_date),   
+              available_seats: dep.available_seats
+            })),
+            map_embed_url: tour.map_embed_url || '',
             showDetails: false,
             isDeleting: false
           }));
@@ -96,7 +116,6 @@ export class ToursComponent implements OnInit {
       }
     });
   }
-
 
   private parseItinerary(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     if (Array.isArray(itinerary)) {
@@ -115,24 +134,10 @@ export class ToursComponent implements OnInit {
     }));
   }
 
-//   return itinerary.split(' · ').map((day, index) => ({
-//     day: index + 1,
-//     title: day.split(': ')[0] || `Day ${index + 1}`,
-//     description: day.split(': ')[1] || 'No description',
-//     activities: [],
-//     meals_included: [],
-//     accommodation: ''
-//   }));
-// }
-
-  private formatDate(dateStr: string): string {
-    return new Date(dateStr).toISOString().split('T')[0];
-  }
   getItineraryArray(itinerary: string | ItineraryDay[]): ItineraryDay[] {
     return Array.isArray(itinerary) ? itinerary : [];
   }
 
-  // Search functionality
   onSearch(): void {
     this.currentPage = 1;
     this.applyFiltersAndSort();
@@ -143,7 +148,6 @@ export class ToursComponent implements OnInit {
     this.onSearch();
   }
 
-  // Sorting functionality
   onSort(): void {
     this.currentPage = 1;
     this.applyFiltersAndSort();
@@ -154,31 +158,28 @@ export class ToursComponent implements OnInit {
     this.onSort();
   }
 
-  // Apply filters and sorting
   private applyFiltersAndSort(): void {
-    // Filter tours based on search term
     this.filteredTours = this.tours.filter(tour =>
       (tour.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-      // (tour.location?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
+      (tour.destination_title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
       (tour.category?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
       (tour.description?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false)
     );
 
-    // Sort tours
     this.filteredTours.sort((a, b) => {
       let aValue: any;
       let bValue: any;
 
       switch (this.sortBy) {
         case 'destination':
-          // aValue = a.location || '';
-          // bValue = b.location || '';
+          aValue = a.destination_title || '';
+          bValue = b.destination_title || '';
           break;
-        case 'price':
+        case 'price_per_person':
           aValue = typeof a.price === 'string' ? parseFloat(a.price) : a.price || 0;
           bValue = typeof b.price === 'string' ? parseFloat(b.price) : b.price || 0;
           break;
-        case 'duration':
+        case 'duration_days':
           aValue = a.duration_days || 0;
           bValue = b.duration_days || 0;
           break;
@@ -204,7 +205,6 @@ export class ToursComponent implements OnInit {
     this.updatePagination();
   }
 
-  // Pagination functionality
   private updatePagination(): void {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -267,7 +267,6 @@ export class ToursComponent implements OnInit {
     return this.getStartIndex() + index + 1;
   }
 
-  // Details functionality
   toggleDetails(tour: Tour): void {
     tour.showDetails = !tour.showDetails;
   }
@@ -280,25 +279,35 @@ export class ToursComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Add the tour
-        result.id = Math.max(...this.tours.map(t => t.id)) + 1;
-        this.tours.push(result);
+        this.tours.push({
+          ...result.tour,
+          photos: result.photos || [],
+          reviews: result.reviews || [],
+          room_types: result.room_types || [],
+          itinerary: result.itinerary || [],
+          departures: result.departures || [],
+          showDetails: false,
+          isDeleting: false
+        });
         this.applyFiltersAndSort();
       }
     });
   }
 
-  // Edit functionality
+  private formatDate(dateStr: string): string {
+    return new Date(dateStr).toISOString().split('T')[0];
+  }
+
+
   openEditDialog(tour: Tour): void {
+  
     const payload: TourPayload = {
       tour: {
         id: tour.id || 0,
         destination_id: tour.destination_id || 0,
         destination_title: tour.destination_title || '',
-        // location_ids: tour.location_ids || [],
         title: tour.title || 'Untitled Tour',
         slug: tour.slug || '',
-        // location: tour.location || '',
         description: tour.description || '',
         price: tour.price || '0.00',
         price_per_person: tour.price_per_person || '0.00',
@@ -348,12 +357,13 @@ export class ToursComponent implements OnInit {
         adults: tour.adults || 0,
         children: tour.children || 0,
         rooms: tour.rooms || 1,
-        itinerary: ''
+        itinerary: tour.itinerary || [] // Add itinerary to satisfy Tour interface
       },
       photos: tour.photos || [],
       reviews: tour.reviews || [],
       room_types: tour.room_types || [],
-      itinerary: Array.isArray(tour.itinerary) ? tour.itinerary : []
+      itinerary: Array.isArray(tour.itinerary) ? tour.itinerary : [],
+      departures: tour.departures || []
     };
 
     const dialogRef = this.dialog.open(EditTourComponent, {
@@ -372,6 +382,7 @@ export class ToursComponent implements OnInit {
             reviews: result.reviews || [],
             room_types: result.room_types || [],
             itinerary: result.itinerary || [],
+            departures: result.departures || [],
             showDetails: this.tours[index].showDetails ?? false,
             isDeleting: this.tours[index].isDeleting ?? false
           };
@@ -381,37 +392,35 @@ export class ToursComponent implements OnInit {
     });
   }
 
-  // Delete functionality
   deleteTour(tour: Tour): void {
     this.tourToDelete = tour;
     this.showDeleteModal = true;
   }
 
-confirmDelete(): void {
-  if (this.tourToDelete) {
-    this.tourToDelete.isDeleting = true;
+  confirmDelete(): void {
+    if (this.tourToDelete) {
+      this.tourToDelete.isDeleting = true;
 
-    this.tourService.deleteTour(this.tourToDelete.id).subscribe({
-      next: () => {
-        this.tours = this.tours.filter(t => t.id !== this.tourToDelete!.id);
-        this.applyFiltersAndSort();
+      this.tourService.deleteTour(this.tourToDelete.id).subscribe({
+        next: () => {
+          this.tours = this.tours.filter(t => t.id !== this.tourToDelete!.id);
+          this.applyFiltersAndSort();
 
-        const totalPages = this.getTotalPages();
-        if (this.currentPage > totalPages && totalPages > 0) {
-          this.currentPage = totalPages;
-          this.updatePagination();
+          const totalPages = this.getTotalPages();
+          if (this.currentPage > totalPages && totalPages > 0) {
+            this.currentPage = totalPages;
+            this.updatePagination();
+          }
+
+          this.cancelDelete();
+        },
+        error: (err) => {
+          console.error('Error deleting tour:', err);
+          this.cancelDelete();
         }
-
-        this.cancelDelete();
-      },
-      error: (err) => {
-        console.error('Error deleting tour:', err);
-        this.cancelDelete();
-      }
-    });
+      });
+    }
   }
-}
-
 
   cancelDelete(): void {
     if (this.tourToDelete) {
@@ -421,7 +430,6 @@ confirmDelete(): void {
     this.tourToDelete = null;
   }
 
-  // Refresh functionality
   refreshTours(): void {
     this.isLoading = true;
     this.searchTerm = '';
@@ -429,7 +437,6 @@ confirmDelete(): void {
     this.loadTours();
   }
 
-  // TrackBy function for ngFor performance
   trackByTourId(index: number, tour: Tour): number {
     return tour.id;
   }

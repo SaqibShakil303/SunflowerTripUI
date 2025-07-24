@@ -46,11 +46,13 @@ private formSubscription!: Subscription;
       price_per_person: [0, [Validators.required, Validators.min(0)]],
       price_currency: ['INR', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       image_url: [''],
+      map_embed_url: [''],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       departure_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       arrival_airport: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       available_from: ['', Validators.required],
       available_to: ['', Validators.required],
+       departures: this.fb.array([]),
       max_group_size: [null],
       min_group_size: [null],
       inclusions: [''],
@@ -103,8 +105,33 @@ const savedTourState = this.stateService.tour;
       this.updateAvailableLocations(destinationId);
     });
   }
+
+    // Getter for departures FormArray
+  get departures(): FormArray<FormGroup> {
+    return this.tourForm.get('departures') as FormArray<FormGroup>;
+  }
+
+    // Add departure row to the form
+  addDeparture(): void {
+    const departure = this.fb.group({
+      departure_date: ['', Validators.required],
+      available_seats: [0, [Validators.required, Validators.min(1)]],
+    });
+    this.departures.push(departure);
+  }
+
+  
+  // Remove a departure row
+  removeDeparture(index: number): void {
+    this.departures.removeAt(index);
+  }
   // Restore form state from saved data
   private restoreFormState(savedState: any): void {
+
+     if (savedState.departures && savedState.departures.length > 0) {
+    savedState.departures.forEach(() => this.addDeparture());
+    this.departures.patchValue(savedState.departures);
+  }
     // Patch top-level fields
     this.tourForm.patchValue({
       title: savedState.title || '',
@@ -116,9 +143,10 @@ const savedTourState = this.stateService.tour;
       price_per_person: savedState.price_per_person || 0,
       price_currency: savedState.price_currency || 'INR',
       image_url: savedState.image_url || '',
+      map_embed_url: savedState.map_embed_url || '',
       description: savedState.description || '',
       departure_airport: savedState.departure_airport || '',
-      arrival_airport: savedState.arrival_airportКоллback || '',
+      arrival_airport: savedState.arrival_airport || '',
       available_from: savedState.available_from || '',
       available_to: savedState.available_to || '',
       max_group_size: savedState.max_group_size || null,
@@ -281,6 +309,7 @@ ngOnDestroy(): void {
           price_per_person: formValue.price_per_person.toFixed(2),
           price_currency: formValue.price_currency,
           image_url: formValue.image_url,
+          map_embed_url: formValue.map_embed_url,
           duration_days: formValue.duration_days,
           available_from: formValue.available_from,
           available_to: formValue.available_to,
