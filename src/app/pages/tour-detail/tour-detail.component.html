@@ -7,7 +7,7 @@
         <div class="hero-content">
           <h1 class="tour-title">{{ tour.title }}</h1>
           <div class="tour-meta">
-            <span class="destination" *ngIf="tour.destination_title">{{ tour.destination_title }}</span>
+            <span class="destination" *ngIf="tour.destination_titles">{{ tour.destination_titles }}</span>
             <span class="duration">{{ tour.duration_days }} Days</span>
             <span class="availability">{{ getAvailabilityText() }}</span>
             <span class="difficulty" *ngIf="tour.difficulty_level">{{ tour.difficulty_level }}</span>
@@ -63,7 +63,7 @@
             <button class="btn btn-outline" (click)="openEnquiryForm()">Enquiry Form</button>
             <button class="btn btn-primary" (click)="openBookingForm()">Book Now</button>
           </div>
-          <button class="btn btn-success btn-full" (click)="proceedBooking()">PROCEED BOOKING</button>
+          <!-- <button class="btn btn-success btn-full" (click)="proceedBooking()">PROCEED BOOKING</button> -->
           <div class="action-buttons">
             <button class="btn btn-link" (click)="saveToWishlist()">Save To Wish List</button>
             <button class="btn btn-link" (click)="viewReviews()">Reviews</button>

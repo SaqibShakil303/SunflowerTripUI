@@ -41,7 +41,10 @@ export interface TourDeparture {
 export class Tour {
   id!: number;
   destination_id!: number;
-  destination_title?: string;
+  destination_titles?: string[];
+  location_names?: string[];
+  location_ids?: number[];
+  destination_ids?: number[];
   title!: string;
   slug!: string;
   description!: string;

@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,8 @@ interface TourPayload {
   room_types: RoomType[];
   itinerary: ItineraryDay[];
   departures: TourDeparture[];
+  location_ids: number[];
+  destination_ids: number[];
 }
 
 @Component({
@@ -91,17 +94,20 @@ export class ToursComponent implements OnInit {
             interests: this.parseStringArray(tour.interests),
             packing_list: this.parseStringArray(tour.packing_list),
             photos: tour.photos || [],
-            reviews: (tour.reviews ?? []).map(review =>({
+            reviews: (tour.reviews ?? []).map(review => ({
               ...review,
               date: this.formatDate(review.date),
             })),
             room_types: tour.room_types || [],
-            // departures: tour.departures || [],
-           departures: (tour.departures ?? []).map(dep => ({
-              departure_date: this.formatDate(dep.departure_date),   
+            departures: (tour.departures ?? []).map(dep => ({
+              departure_date: this.formatDate(dep.departure_date),
               available_seats: dep.available_seats
             })),
             map_embed_url: tour.map_embed_url || '',
+            destination_ids: tour.destination_ids || [],
+            destination_titles: tour.destination_titles || [],
+            location_ids: tour.location_ids || [],
+            location_names: tour.location_names || [],
             showDetails: false,
             isDeleting: false
           }));
@@ -159,12 +165,16 @@ export class ToursComponent implements OnInit {
   }
 
   private applyFiltersAndSort(): void {
-    this.filteredTours = this.tours.filter(tour =>
-      (tour.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-      (tour.destination_title?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-      (tour.category?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false) ||
-      (tour.description?.toLowerCase().includes(this.searchTerm.toLowerCase()) || false)
-    );
+    this.filteredTours = this.tours.filter(tour => {
+      const searchLower = this.searchTerm.toLowerCase();
+      return (
+        (tour.title?.toLowerCase().includes(searchLower) || false) ||
+        (tour.destination_titles?.some(title => title.toLowerCase().includes(searchLower)) || false) ||
+        (tour.location_names?.some(name => name.toLowerCase().includes(searchLower)) || false) ||
+        (tour.category?.toLowerCase().includes(searchLower) || false) ||
+        (tour.description?.toLowerCase().includes(searchLower) || false)
+      );
+    });
 
     this.filteredTours.sort((a, b) => {
       let aValue: any;
@@ -172,8 +182,8 @@ export class ToursComponent implements OnInit {
 
       switch (this.sortBy) {
         case 'destination':
-          aValue = a.destination_title || '';
-          bValue = b.destination_title || '';
+          aValue = a.destination_titles?.join(', ') || '';
+          bValue = b.destination_titles?.join(', ') || '';
           break;
         case 'price_per_person':
           aValue = typeof a.price === 'string' ? parseFloat(a.price) : a.price || 0;
@@ -286,6 +296,10 @@ export class ToursComponent implements OnInit {
           room_types: result.room_types || [],
           itinerary: result.itinerary || [],
           departures: result.departures || [],
+          destination_ids: result.destination_ids || [],
+          destination_titles: result.destination_titles || [],
+          location_ids: result.location_ids || [],
+          location_names: result.location_names || [],
           showDetails: false,
           isDeleting: false
         });
@@ -298,14 +312,16 @@ export class ToursComponent implements OnInit {
     return new Date(dateStr).toISOString().split('T')[0];
   }
 
-
   openEditDialog(tour: Tour): void {
-  
     const payload: TourPayload = {
       tour: {
         id: tour.id || 0,
         destination_id: tour.destination_id || 0,
-        destination_title: tour.destination_title || '',
+        // destination_titles: tour.destination_titles || '',
+        destination_ids: tour.destination_ids || [],
+        destination_titles: tour.destination_titles || [],
+        location_ids: tour.location_ids || [],
+        location_names: tour.location_names || [],
         title: tour.title || 'Untitled Tour',
         slug: tour.slug || '',
         description: tour.description || '',
@@ -357,13 +373,15 @@ export class ToursComponent implements OnInit {
         adults: tour.adults || 0,
         children: tour.children || 0,
         rooms: tour.rooms || 1,
-        itinerary: tour.itinerary || [] // Add itinerary to satisfy Tour interface
+        itinerary: tour.itinerary || []
       },
       photos: tour.photos || [],
       reviews: tour.reviews || [],
       room_types: tour.room_types || [],
       itinerary: Array.isArray(tour.itinerary) ? tour.itinerary : [],
-      departures: tour.departures || []
+      departures: tour.departures || [],
+      location_ids: tour.location_ids || [],
+      destination_ids: tour.destination_ids || []
     };
 
     const dialogRef = this.dialog.open(EditTourComponent, {
@@ -383,6 +401,10 @@ export class ToursComponent implements OnInit {
             room_types: result.room_types || [],
             itinerary: result.itinerary || [],
             departures: result.departures || [],
+            destination_ids: result.destination_ids || [],
+            destination_titles: result.destination_titles || [],
+            location_ids: result.location_ids || [],
+            location_names: result.location_names || [],
             showDetails: this.tours[index].showDetails ?? false,
             isDeleting: this.tours[index].isDeleting ?? false
           };
