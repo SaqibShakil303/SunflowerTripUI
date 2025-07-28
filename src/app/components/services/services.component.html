@@ -12,7 +12,7 @@
         <div class="service-content">
           <h3>{{ service.title }}</h3>
           <p>{{ service.description }}</p>
-          <a [routerLink]="service.link" class="btn btn-service ">{{ service.title === 'Custom Itineraries' ? 'Plan Your Trip' : 'Explore Tours' }}</a>
+          <a (click)="navigateTo(service.route, service.queryParams)" class="btn btn-service">{{ service.title === 'Itineraries' ? 'Plan Your Trip' : 'Explore Tours' }}</a>
         </div>
       </div>
     </div>

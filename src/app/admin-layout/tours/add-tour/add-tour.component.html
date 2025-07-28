@@ -32,16 +32,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="destination_id" class="form-label">Destination *</label>
-                            <select id="destination_id" formControlName="destination_id" class="form-control"
-                                [class.error]="isFieldInvalid(tourForm, 'destination_id')">
-                                <option [ngValue]="null">Select Destination</option>
+                            <label for="destination_ids" class="form-label">Destinations *</label>
+                            <select id="destination_ids" formControlName="destination_ids" class="form-control" multiple
+                                [class.error]="isFieldInvalid(tourForm, 'destination_ids')">
                                 <option *ngFor="let destination of destinations" [ngValue]="destination.id">
                                     {{ destination.title }}
                                 </option>
                             </select>
-                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'destination_id')">
-                                {{ getFieldError(tourForm, 'destination_id') }}
+                            <div class="form-help">Hold Ctrl (Windows) or Cmd (Mac) to select multiple destinations</div>
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'destination_ids')">
+                                {{ getFieldError(tourForm, 'destination_ids') }}
                             </div>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                             <input type="text" id="image_url" formControlName="image_url" class="form-control"
                                 placeholder="Enter main image URL">
                         </div>
-                            <div class="form-group">
+                        <div class="form-group">
                             <label for="map_embed_url" class="form-label">Map URL</label>
                             <input type="text" id="map_embed_url" formControlName="map_embed_url" class="form-control"
                                 placeholder="Enter map URL">
@@ -153,82 +153,81 @@
                             </div>
                         </div>
                     </div>
-                    
-<!-- Add the following inside the form section where you want to add the group tour functionality -->
-<div *ngIf="tourForm.get('category')?.value === 'group'" class="form-section">
-  <h4 class="section-title">
-    <i class="fas fa-calendar-day"></i>
-    Group Departure Dates
-  </h4>
-  <button type="button" class="btn btn-sm btn-primary" (click)="addDeparture()">
-    <i class="fas fa-plus"></i> Add Departure
-  </button>
 
-  <div formArrayName="departures">
-    <div *ngFor="let departure of departures.controls; let i = index" [formGroupName]="i" class="form-subsection">
-      <h5>Departure {{ i + 1 }}</h5>
-      <div class="form-row">
-        <div class="form-group">
-          <label [attr.for]="'departure_date-' + i" class="form-label">Departure Date *</label>
-          <input type="date" [attr.id]="'departure_date-' + i" formControlName="departure_date" class="form-control"
-                 [class.error]="isFieldInvalid(departures.at(i), 'departure_date')">
-          <div class="error-message" *ngIf="isFieldInvalid(departures.at(i), 'departure_date')">
-            {{ getFieldError(departures.at(i), 'departure_date') }}
-          </div>
-        </div>
+                    <div *ngIf="tourForm.get('category')?.value === 'group'" class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-calendar-day"></i>
+                            Group Departure Dates
+                        </h4>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="addDeparture()">
+                            <i class="fas fa-plus"></i> Add Departure
+                        </button>
 
-        <div class="form-group">
-          <label [attr.for]="'available_seats-' + i" class="form-label">Available Seats *</label>
-          <input type="number" [attr.id]="'available_seats-' + i" formControlName="available_seats" class="form-control"
-                 [class.error]="isFieldInvalid(departures.at(i), 'available_seats')">
-          <div class="error-message" *ngIf="isFieldInvalid(departures.at(i), 'available_seats')">
-            {{ getFieldError(departures.at(i), 'available_seats') }}
-          </div>
-        </div>
-      </div>
-      <button type="button" class="btn btn-sm btn-danger" (click)="removeDeparture(i)">
-        <i class="fas fa-trash"></i> Remove Departure
-      </button>
-    </div>
-    <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'departures')">
-      At least one departure is required for group tours.
-    </div>
-  </div>
-</div>
+                        <div formArrayName="departures">
+                            <div *ngFor="let departure of departures.controls; let i = index" [formGroupName]="i" class="form-subsection">
+                                <h5>Departure {{ i + 1 }}</h5>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label [attr.for]="'departure_date-' + i" class="form-label">Departure Date *</label>
+                                        <input type="date" [attr.id]="'departure_date-' + i" formControlName="departure_date" class="form-control"
+                                            [class.error]="isFieldInvalid(departures.at(i), 'departure_date')">
+                                        <div class="error-message" *ngIf="isFieldInvalid(departures.at(i), 'departure_date')">
+                                            {{ getFieldError(departures.at(i), 'departure_date') }}
+                                        </div>
+                                    </div>
 
-<div *ngIf="tourForm.get('category')?.value === 'holiday'" class="form-section">
-                    <div class="form-row" >
-                        <div class="form-group">
-                            <label for="available_from" class="form-label">Available From *</label>
-                            <input type="date" id="available_from" formControlName="available_from" class="form-control"
-                                [class.error]="isFieldInvalid(tourForm, 'available_from')">
-                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_from')">
-                                {{ getFieldError(tourForm, 'available_from') }}
+                                    <div class="form-group">
+                                        <label [attr.for]="'available_seats-' + i" class="form-label">Available Seats *</label>
+                                        <input type="number" [attr.id]="'available_seats-' + i" formControlName="available_seats" class="form-control"
+                                            [class.error]="isFieldInvalid(departures.at(i), 'available_seats')">
+                                        <div class="error-message" *ngIf="isFieldInvalid(departures.at(i), 'available_seats')">
+                                            {{ getFieldError(departures.at(i), 'available_seats') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-danger" (click)="removeDeparture(i)">
+                                    <i class="fas fa-trash"></i> Remove Departure
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="available_to" class="form-label">Available To *</label>
-                            <input type="date" id="available_to" formControlName="available_to" class="form-control"
-                                [class.error]="isFieldInvalid(tourForm, 'available_to')">
-                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_to')">
-                                {{ getFieldError(tourForm, 'available_to') }}
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'departures')">
+                                At least one departure is required for group tours.
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="max_group_size" class="form-label">Max Group Size</label>
-                            <input type="number" id="max_group_size" formControlName="max_group_size" class="form-control"
-                                placeholder="e.g., 150">
+                    <div *ngIf="tourForm.get('category')?.value === 'holiday'" class="form-section">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="available_from" class="form-label">Available From *</label>
+                                <input type="date" id="available_from" formControlName="available_from" class="form-control"
+                                    [class.error]="isFieldInvalid(tourForm, 'available_from')">
+                                <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_from')">
+                                    {{ getFieldError(tourForm, 'available_from') }}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="available_to" class="form-label">Available To *</label>
+                                <input type="date" id="available_to" formControlName="available_to" class="form-control"
+                                    [class.error]="isFieldInvalid(tourForm, 'available_to')">
+                                <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_to')">
+                                    {{ getFieldError(tourForm, 'available_to') }}
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="min_group_size" class="form-label">Min Group Size</label>
-                            <input type="number" id="min_group_size" formControlName="min_group_size" class="form-control"
-                                placeholder="e.g., 10">
-                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="max_group_size" class="form-label">Max Group Size</label>
+                                <input type="number" id="max_group_size" formControlName="max_group_size" class="form-control"
+                                    placeholder="e.g., 150">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="min_group_size" class="form-label">Min Group Size</label>
+                                <input type="number" id="min_group_size" formControlName="min_group_size" class="form-control"
+                                    placeholder="e.g., 10">
+                            </div>
                         </div>
                     </div>
 
@@ -709,8 +708,8 @@
         <!-- Modal Footer -->
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" (click)="clearForm()" [disabled]="isSubmitting">
-    Clear Form
-  </button>
+                Clear Form
+            </button>
             <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isSubmitting">
                 Cancel
             </button>

@@ -16,60 +16,60 @@ import { DestinationPayload } from '../destination/destination.service';
 // }
 
 export interface TourPayload {
-  // tour: {
-    title: string;
-    destination_id: number;
-    // location_ids: number[];
-    slug: string;
-    // location: string;
-    // description: string;
-    price_per_person: number;
-    price_currency: string;
-    duration_days: number;
-    available_from: string;
-    available_to: string;
-    category: string;
-    departure_airport?: string;
-    arrival_airport?: string;
-    max_group_size?: number;
-    min_group_size?: number;
-    inclusions?: string[];
-    exclusions?: string[];
-    complementaries?: string[];
-    highlights?: string[];
-    booking_terms?: string;
-    cancellation_policy?: string;
-    meta_title?: string;
-    meta_description?: string;
-    early_bird_discount?: number;
-    group_discount?: number;
-    difficulty_level?: 'Easy' | 'Moderate' | 'Challenging' | 'Extreme';
-    physical_requirements?: string;
-    best_time_to_visit?: string;
-    weather_info?: string;
-    packing_list?: string[];
-    languages_supported?: string[];
-    guide_included?: boolean;
-    guide_languages?: string[];
-    transportation_included?: boolean;
-    transportation_details?: string;
-    meals_included?: string[];
-    dietary_restrictions_supported?: string[];
-    accommodation_type?: string;
-    accommodation_rating?: number;
-    activity_types?: string[];
-    interests?: string[];
-    instant_booking?: boolean;
-    requires_approval?: boolean;
-    advance_booking_days?: number;
-    is_active?: boolean;
-    is_featured?: boolean;
-    is_customizable?: boolean;
-  // };
+  title: string;
+  destination_ids: number[]; // Changed from destination_id
+  location_ids: number[];
+  slug: string;
+  price_per_person: number;
+  price_currency: string;
+  duration_days: number;
+  available_from: string;
+  available_to: string;
+  category: string;
+  departure_airport?: string;
+  arrival_airport?: string;
+  max_group_size?: number;
+  min_group_size?: number;
+  inclusions?: string[];
+  exclusions?: string[];
+  complementaries?: string[];
+  highlights?: string[];
+  booking_terms?: string;
+  cancellation_policy?: string;
+  meta_title?: string;
+  meta_description?: string;
+  early_bird_discount?: number;
+  group_discount?: number;
+  difficulty_level?: 'Easy' | 'Moderate' | 'Challenging' | 'Extreme';
+  physical_requirements?: string;
+  best_time_to_visit?: string;
+  weather_info?: string;
+  packing_list?: string[];
+  languages_supported?: string[];
+  guide_included?: boolean;
+  guide_languages?: string[];
+  transportation_included?: boolean;
+  transportation_details?: string;
+  meals_included?: string[];
+  dietary_restrictions_supported?: string[];
+  accommodation_type?: string;
+  accommodation_rating?: number;
+  activity_types?: string[];
+  interests?: string[];
+  instant_booking?: boolean;
+  requires_approval?: boolean;
+  advance_booking_days?: number;
+  is_active?: boolean;
+  is_featured?: boolean;
+  is_customizable?: boolean;
+  flight_included?: boolean; // Added to match backend
   photos?: TourPhoto[];
   reviews?: TourReview[];
   room_types?: RoomType[];
   itinerary?: ItineraryDay[];
+  adults?: number; // Added to match backend
+  children?: number; // Added to match backend
+  rooms?: number; // Added to match backend
 }
 
 @Injectable({
