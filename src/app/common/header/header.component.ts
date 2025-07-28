@@ -48,10 +48,8 @@ export class HeaderComponent {
     private elementRef: ElementRef, 
     private destSvc: DestinationService,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.destSvc.getDestinationNames().subscribe({
+  ) {
+      this.destSvc.getDestinationNames().subscribe({
       next: (destinations) => {
         const continents = destinations.filter(d => d.parent_id === null);
         const countries = destinations.filter(d => d.parent_id !== null);
@@ -86,6 +84,10 @@ export class HeaderComponent {
       },
       error: err => console.error('Failed to load destinations', err)
     });
+  }
+
+  ngOnInit(): void {
+  
   } 
 
 toggleContinent(destination: Destination) {
