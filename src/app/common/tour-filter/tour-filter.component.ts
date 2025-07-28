@@ -190,7 +190,7 @@ export class TourFilterComponent implements OnInit {
     this.selectedDate = new Date(date);
     setTimeout(() => {
       this.dateOpen = false;
-      this.searchTours();
+      // this.searchTours();
     }, 100);
   }
 
@@ -358,11 +358,11 @@ export class TourFilterComponent implements OnInit {
     // console.log('DEBUG - selectedDestination after change:', this.selectedDestination);
     // this.selectedLocation = null;
     // console.log('DEBUG - selectedLocation reset to null');
-    this.searchTours();
+    // this.searchTours();
   }
 
   onCategoryChange() {
-    this.searchTours();
+    // this.searchTours();
   }
 
   closeAllDropdowns() {

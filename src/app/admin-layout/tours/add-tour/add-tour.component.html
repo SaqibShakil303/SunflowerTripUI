@@ -31,19 +31,15 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="destination_ids" class="form-label">Destinations *</label>
-                            <select id="destination_ids" formControlName="destination_ids" class="form-control" multiple
-                                [class.error]="isFieldInvalid(tourForm, 'destination_ids')">
-                                <option *ngFor="let destination of destinations" [ngValue]="destination.id">
-                                    {{ destination.title }}
-                                </option>
-                            </select>
-                            <div class="form-help">Hold Ctrl (Windows) or Cmd (Mac) to select multiple destinations</div>
-                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'destination_ids')">
-                                {{ getFieldError(tourForm, 'destination_ids') }}
+                              <div class="form-group">
+                            <label for="duration_days" class="form-label">Duration (days) *</label>
+                            <input type="number" id="duration_days" formControlName="duration_days" class="form-control"
+                                [class.error]="isFieldInvalid(tourForm, 'duration_days')" placeholder="Enter duration in days">
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'duration_days')">
+                                {{ getFieldError(tourForm, 'duration_days') }}
                             </div>
                         </div>
+               
                     </div>
 
                     <div class="form-row">
@@ -56,15 +52,21 @@
                             </select>
                             <div class="form-help">Hold Ctrl (Windows) or Cmd (Mac) to select multiple locations</div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="duration_days" class="form-label">Duration (days) *</label>
-                            <input type="number" id="duration_days" formControlName="duration_days" class="form-control"
-                                [class.error]="isFieldInvalid(tourForm, 'duration_days')" placeholder="Enter duration in days">
-                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'duration_days')">
-                                {{ getFieldError(tourForm, 'duration_days') }}
+                        
+         <div class="form-group">
+                            <label for="destination_ids" class="form-label">Destinations *</label>
+                            <select id="destination_ids" formControlName="destination_ids" class="form-control" multiple
+                                [class.error]="isFieldInvalid(tourForm, 'destination_ids')">
+                                <option *ngFor="let destination of destinations" [ngValue]="destination.id">
+                                    {{ destination.title }}
+                                </option>
+                            </select>
+                            <div class="form-help">Hold Ctrl (Windows) or Cmd (Mac) to select multiple destinations</div>
+                            <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'destination_ids')">
+                                {{ getFieldError(tourForm, 'destination_ids') }}
                             </div>
                         </div>
+                  
                     </div>
 
                     <div class="form-row">
@@ -154,6 +156,27 @@
                         </div>
                     </div>
 
+                           <div class="form-row">
+                            <div class="form-group">
+                                <label for="available_from" class="form-label">Available From *</label>
+                                <input type="date" id="available_from" formControlName="available_from" class="form-control"
+                                    [class.error]="isFieldInvalid(tourForm, 'available_from')">
+                                <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_from')">
+                                    {{ getFieldError(tourForm, 'available_from') }}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="available_to" class="form-label">Available To *</label>
+                                <input type="date" id="available_to" formControlName="available_to" class="form-control"
+                                    [class.error]="isFieldInvalid(tourForm, 'available_to')">
+                                <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_to')">
+                                    {{ getFieldError(tourForm, 'available_to') }}
+                                </div>
+                            </div>
+                        </div>
+
+
                     <div *ngIf="tourForm.get('category')?.value === 'group'" class="form-section">
                         <h4 class="section-title">
                             <i class="fas fa-calendar-day"></i>
@@ -195,28 +218,9 @@
                         </div>
                     </div>
 
-                    <div *ngIf="tourForm.get('category')?.value === 'holiday'" class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="available_from" class="form-label">Available From *</label>
-                                <input type="date" id="available_from" formControlName="available_from" class="form-control"
-                                    [class.error]="isFieldInvalid(tourForm, 'available_from')">
-                                <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_from')">
-                                    {{ getFieldError(tourForm, 'available_from') }}
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="available_to" class="form-label">Available To *</label>
-                                <input type="date" id="available_to" formControlName="available_to" class="form-control"
-                                    [class.error]="isFieldInvalid(tourForm, 'available_to')">
-                                <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_to')">
-                                    {{ getFieldError(tourForm, 'available_to') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
+                    <div class="form-section">
+                 
+                        <div class="form-row"  *ngIf="tourForm.get('category')?.value === 'holiday'">
                             <div class="form-group">
                                 <label for="max_group_size" class="form-label">Max Group Size</label>
                                 <input type="number" id="max_group_size" formControlName="max_group_size" class="form-control"
