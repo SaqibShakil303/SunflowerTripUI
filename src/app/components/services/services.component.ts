@@ -1,7 +1,15 @@
 import { Component, AfterViewInit, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import AOS from 'aos';
+
+interface Service {
+  title: string;
+  description: string;
+  image: string;
+  route: string;
+  queryParams?: { category?: string };
+}
 
 @Component({
   selector: 'app-services',
@@ -11,27 +19,33 @@ import AOS from 'aos';
   styleUrls: ['./services.component.scss']
 })
 export class ServicesComponent implements AfterViewInit {
-  services = [
+  services: Service[] = [
     {
-      title: 'Custom Itineraries',
+      title: 'Itineraries',
       description: 'We craft personalized travel plans based on your interests, schedule, and budget, ensuring a journey that’s uniquely yours.',
       image: 'https://images.pexels.com/photos/3467148/pexels-photo-3467148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      link: '/itinerary'
+      route: '/itinerary'
     },
     {
-      title: 'International Group Tours',
+      title: 'International Group Packages',
       description: 'Join our expertly guided group tours to Europe, Asia, UAE, and more, with comprehensive support and vibrant experiences.',
       image: 'https://images.pexels.com/photos/3467150/pexels-photo-3467150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      link: '/destinations'
+      route: '/tours',
+      queryParams: { category: 'group' }
     },
     {
-      title: 'Domestic Packages',
-      description: 'Explore India’s diverse landscapes with curated packages to Sikkim, Darjeeling, Rajasthan, Kerala, and beyond.',
+      title: 'Holiday Packages',
+      description: 'Enjoy curated personal vacations to explore stunning destinations at your own pace, tailored to your preferences.',
       image: 'https://images.pexels.com/photos/3467152/pexels-photo-3467152.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      link: '/destinations'
+      route: '/tours',
+      queryParams: { category: 'holiday' }
     }
   ];
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -41,30 +55,8 @@ export class ServicesComponent implements AfterViewInit {
       });
     }
   }
+
+  navigateTo(route: string, queryParams?: any) {
+    this.router.navigate([route], { queryParams });
+  }
 }
-
-
-  // services = [
-  //   {
-  //     icon: 'fas fa-plane',
-  //     title: 'Travel Planning',
-  //     description: 'Comprehensive itinerary planning tailored to your preferences.'
-  //   },
-  //   {
-  //     icon: 'fas fa-hotel',
-  //     title: 'Accommodation Booking',
-  //     description: 'Handpicked hotels and resorts for a comfortable stay.'
-  //   },
-  //   {
-  //     icon: 'fas fa-map',
-  //     title: 'Guided Tours',
-  //     description: 'Expert-led tours to explore the best of each destination.'
-  //   },
-  //   {
-  //     icon: 'fas fa-passport',
-  //     title: 'Visa Assistance',
-  //     description: 'Hassle-free visa processing and support.'
-  //   }
-  // ];
-
-
