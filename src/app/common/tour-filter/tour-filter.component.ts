@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DestinationService } from '../../services/destination/destination.service';
@@ -16,7 +16,16 @@ import { StatePersistenceService } from '../../services/state-persistence/state-
 })
 export class TourFilterComponent implements OnInit {
   @Output() searchTriggered = new EventEmitter<any>();
-  
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    // Close dropdowns on resize to prevent positioning issues
+    this.closeAllDropdowns();
+  }
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent) {
+    this.closeAllDropdowns();
+  }
+
   // City & Destination
   fromCity: string = 'Kolkata';
   fromCityCountry: string = 'India';
@@ -57,19 +66,19 @@ export class TourFilterComponent implements OnInit {
   }
 
   ngOnInit() {
-     const saved = this.stateSvc.filter;
-  if (saved) {
-    this.durationRange = saved.durationRange || this.durationRange;
-    this.budgetRange = saved.budgetRange || this.budgetRange;
-    this.selectedDate = saved.selectedDate ? new Date(saved.selectedDate) : this.selectedDate;
-    this.selectedCategory = saved.selectedCategory || this.selectedCategory;
-    this.selectedDestination = saved.selectedDestination || this.selectedDestination;
-    // this.selectedLocation = saved.selectedLocation || this.selectedLocation;
-  }
-   this.destSvc.getDestinationNames().subscribe({
+    const saved = this.stateSvc.filter;
+    if (saved) {
+      this.durationRange = saved.durationRange || this.durationRange;
+      this.budgetRange = saved.budgetRange || this.budgetRange;
+      this.selectedDate = saved.selectedDate ? new Date(saved.selectedDate) : this.selectedDate;
+      this.selectedCategory = saved.selectedCategory || this.selectedCategory;
+      this.selectedDestination = saved.selectedDestination || this.selectedDestination;
+      // this.selectedLocation = saved.selectedLocation || this.selectedLocation;
+    }
+    this.destSvc.getDestinationNames().subscribe({
       next: (data) => {
         // this.destinations = data.filter(d => d.parent_id !== null);
-  this.destinations = data;
+        this.destinations = data;
         // console.log('DEBUG - Loaded destinations:', data);
         this.initializeFiltersFromQueryParams();
       },
@@ -87,10 +96,10 @@ export class TourFilterComponent implements OnInit {
   initializeFiltersFromQueryParams() {
     this.route.queryParams.subscribe(params => {
       // console.log('DEBUG - Query params received:', params);
-      
+
       const locationId = params['location'] ? +params['location'] : null;
       const destinationId = params['destination'] ? +params['destination'] : null;
-      
+
       // console.log('DEBUG - Parsed locationId:', locationId);
       // console.log('DEBUG - Parsed destinationId:', destinationId);
       // console.log('DEBUG - Available destinations:', this.destinations);
@@ -146,19 +155,19 @@ export class TourFilterComponent implements OnInit {
     const days: (Date | null)[] = [];
     const year = monthDate.getFullYear();
     const month = monthDate.getMonth();
-    
+
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const startingDayOfWeek = firstDay.getDay();
-    
+
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(null);
     }
-    
+
     for (let day = 1; day <= lastDay.getDate(); day++) {
       days.push(new Date(year, month, day));
     }
-    
+
     return days;
   }
 
@@ -178,7 +187,7 @@ export class TourFilterComponent implements OnInit {
     event.stopPropagation();
     this.closeOtherDropdowns('date');
     this.dateOpen = !this.dateOpen;
-    
+
     if (this.dateOpen) {
       this.generateCalendarDays();
     }
@@ -186,7 +195,7 @@ export class TourFilterComponent implements OnInit {
 
   selectDate(date: Date | null) {
     if (!date || date < this.today) return;
-    
+
     this.selectedDate = new Date(date);
     setTimeout(() => {
       this.dateOpen = false;
@@ -251,12 +260,12 @@ export class TourFilterComponent implements OnInit {
 
     const chips: { label: string; type: string }[] = [];
 
-    if (this.durationRange[0] !== this.defaultDurationRange[0] || 
-        this.durationRange[1] !== this.defaultDurationRange[1]) {
+    if (this.durationRange[0] !== this.defaultDurationRange[0] ||
+      this.durationRange[1] !== this.defaultDurationRange[1]) {
       chips.push({ label: `${this.durationRange[0]}-${this.durationRange[1]} nights`, type: 'duration' });
     }
-    if (this.budgetRange[0] !== this.defaultBudgetRange[0] || 
-        this.budgetRange[1] !== this.defaultBudgetRange[1]) {
+    if (this.budgetRange[0] !== this.defaultBudgetRange[0] ||
+      this.budgetRange[1] !== this.defaultBudgetRange[1]) {
       chips.push({ label: `₹${this.budgetRange[0].toLocaleString()}-₹${this.budgetRange[1].toLocaleString()}`, type: 'budget' });
     }
 
@@ -285,7 +294,7 @@ export class TourFilterComponent implements OnInit {
   searchTours() {
     // Build query parameters object like header component does
     const queryParams: any = {};
-    
+
     // Add destination or location ID (same logic as header)
     // if (this.selectedLocation && typeof this.selectedLocation === 'object' && this.selectedLocation.id) {
     //   queryParams.location = this.selectedLocation.id;
@@ -293,26 +302,26 @@ export class TourFilterComponent implements OnInit {
     if (this.selectedDestination && this.selectedDestination.id) {
       queryParams.destination = this.selectedDestination.id;
     }
-    
+
     // Add other filters
     if (this.selectedCategory) {
       queryParams.category = this.selectedCategory;
     }
-    
+
     // Add budget range if different from default
-    if (this.budgetRange[0] !== this.defaultBudgetRange[0] || 
-        this.budgetRange[1] !== this.defaultBudgetRange[1]) {
+    if (this.budgetRange[0] !== this.defaultBudgetRange[0] ||
+      this.budgetRange[1] !== this.defaultBudgetRange[1]) {
       queryParams.min_price = this.budgetRange[0];
       queryParams.max_price = this.budgetRange[1];
     }
-    
+
     // Add duration range if different from default
-    if (this.durationRange[0] !== this.defaultDurationRange[0] || 
-        this.durationRange[1] !== this.defaultDurationRange[1]) {
+    if (this.durationRange[0] !== this.defaultDurationRange[0] ||
+      this.durationRange[1] !== this.defaultDurationRange[1]) {
       queryParams.min_duration = this.durationRange[0];
       queryParams.max_duration = this.durationRange[1];
     }
-    
+
     // Add date if selected
     if (this.selectedDate) {
       queryParams.available_from = this.selectedDate.toISOString().split('T')[0];
@@ -330,7 +339,7 @@ export class TourFilterComponent implements OnInit {
     // const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object') 
     //   ? this.selectedLocation.id 
     //   : '';
-      
+
     const payload = {
       destination_id: this.selectedDestination?.id || '',
       category: this.selectedCategory || '',
@@ -343,13 +352,13 @@ export class TourFilterComponent implements OnInit {
       // location: locationId
     };
     this.stateSvc.setFilter({
-  durationRange: this.durationRange,
-  budgetRange: this.budgetRange,
-  selectedDate: this.selectedDate,
-  selectedCategory: this.selectedCategory,
-  selectedDestination: this.selectedDestination,
-  // selectedLocation: this.selectedLocation
-});
+      durationRange: this.durationRange,
+      budgetRange: this.budgetRange,
+      selectedDate: this.selectedDate,
+      selectedCategory: this.selectedCategory,
+      selectedDestination: this.selectedDestination,
+      // selectedLocation: this.selectedLocation
+    });
     this.searchTriggered.emit(payload);
   }
 
@@ -371,10 +380,10 @@ export class TourFilterComponent implements OnInit {
   }
 
   formatDate(date: Date): string {
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
     });
   }
 
@@ -401,14 +410,14 @@ export class TourFilterComponent implements OnInit {
     this.fromCity = 'Kolkata';
     this.filterChips = [];
     this.displayedFilters = null;
-    
+
     // Clear URL query parameters and trigger search
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
       replaceUrl: true
     });
-    
+
     this.searchTours();
   }
 }

@@ -1,19 +1,30 @@
-
 @import 'mixins';
 
 :root {
-  --primary-bg: #0a1828; /* Deep navy for elegance */
-  --primary-gradient-start: #0a1828; /* Navy */
-  --primary-gradient-mid: #1a3c4e; /* Teal transition */
-  --primary-gradient-end: #4cd7d0; /* Bright turquoise */
-  --card-bg: rgba(255, 255, 255, 0.1); /* Glassmorphism */
-  --accent-color: #4cd7d0; /* Vibrant turquoise */
-  --text-light: #f5f6f5; /* Off-white for readability */
-  --text-faint: rgba(245, 246, 245, 0.7); /* Subtle text */
-  --blur-bg: rgba(255, 255, 255, 0.05); /* Subtle glass effect */
-  --border-light: rgba(255, 255, 255, 0.2); /* Soft borders */
-  --shadow-dark: rgba(0, 0, 0, 0.3); /* Subtle shadow */
-  --highlight-color: #ffd700; /* Gold for highlights (e.g., ratings, discounts) */
+  --primary-bg: #0a1828;
+  /* Deep navy for elegance */
+  --primary-gradient-start: #0a1828;
+  /* Navy */
+  --primary-gradient-mid: #1a3c4e;
+  /* Teal transition */
+  --primary-gradient-end: #4cd7d0;
+  /* Bright turquoise */
+  --card-bg: rgba(255, 255, 255, 0.1);
+  /* Glassmorphism */
+  --accent-color: #4cd7d0;
+  /* Vibrant turquoise */
+  --text-light: #f5f6f5;
+  /* Off-white for readability */
+  --text-faint: rgba(245, 246, 245, 0.7);
+  /* Subtle text */
+  --blur-bg: rgba(255, 255, 255, 0.05);
+  /* Subtle glass effect */
+  --border-light: rgba(255, 255, 255, 0.2);
+  /* Soft borders */
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  /* Subtle shadow */
+  --highlight-color: #ffd700;
+  /* Gold for highlights (e.g., ratings, discounts) */
 }
 
 .tour-detail {
@@ -23,15 +34,15 @@
   line-height: 1.7;
   min-height: 100vh;
 
-
   .hero-section {
     position: relative;
-    min-height: 80vh;
+    min-height: 100vh;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-      padding-top: 40px;
+    padding-top: 50px;
+    /* Increased from 40px for PC */
 
     .hero-image {
       position: absolute;
@@ -52,7 +63,10 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(10, 24, 40, 0.9), rgba(23, 133, 130, 0.7), rgba(76, 215, 208, 0.5));
+      background: linear-gradient(135deg,
+          rgba(10, 24, 40, 0.9),
+          rgba(23, 133, 130, 0.7),
+          rgba(76, 215, 208, 0.5));
       backdrop-filter: blur(4px);
     }
 
@@ -289,7 +303,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        // padding-top: 1.5rem;
         border-top: 1px solid var(--border-light);
         flex-wrap: wrap;
         gap: 1rem;
@@ -315,47 +328,106 @@
         }
       }
     }
+
+    /* Responsive Styling (from 2nd version, adjusted) */
+    @media (max-width: 768px) {
+      min-height: 100vh;
+      padding-top: 40px;
+      /* Increased from 30px for responsive */
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.5rem;
+      }
+
+      .hero-content {
+        h1.tour-title {
+          font-size: clamp(2rem, 5vw, 3.5rem);
+          margin-bottom: 1rem;
+          text-shadow: 2px 2px 8px var(--shadow-dark);
+        }
+
+        .tour-meta {
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+
+          .destination,
+          .duration,
+          .availability,
+          .difficulty,
+          .category {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+          }
+
+          .destination {
+            margin-right: 0;
+          }
+        }
+
+        .airports,
+        .group-size,
+        .customizable,
+        .status,
+        .featured {
+          gap: 0.75rem;
+          margin-bottom: 0.75rem;
+          font-size: 1rem;
+
+          .airport-info {
+            gap: 0.5rem;
+          }
+
+          .icon-plane,
+          .icon-users,
+          .icon-check,
+          .icon-star {
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
   }
 
   .container {
     max-width: 1280px;
-    margin: 4rem auto;
-    padding: 0 2rem;
+    margin: 2rem auto;
+    padding: 0 1rem;
   }
 
   .detail-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 3rem;
-    border-bottom: 2px solid var(--border-light);
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-light);
 
     .tab-btn {
-      padding: 1rem 2rem;
+      padding: 0.8rem 1.5rem;
       border: none;
       background: var(--blur-bg);
       color: var(--text-faint);
-      border-radius: 1rem 1rem 0 0;
+      border-radius: 0.75rem 0.75rem 0 0;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-weight: 700;
-      font-size: 1.1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
         color: var(--text-light);
-        transform: translateY(-2px);
       }
 
       &.active {
         background: var(--accent-color);
         color: var(--primary-bg);
-        box-shadow: 0 4px 15px rgba(76, 215, 208, 0.3);
-        transform: translateY(-4px);
+        box-shadow: 0 3px 10px rgba(76, 215, 208, 0.3);
       }
 
       &:focus {
-        outline: 3px solid var(--accent-color);
+        outline: 2px solid var(--accent-color);
         outline-offset: 2px;
       }
     }
@@ -365,21 +437,21 @@
     animation: fadeIn 0.6s ease-out both;
 
     h2 {
-      font-size: 2.2rem;
-      margin-bottom: 2rem;
+      font-size: clamp(1.8rem, 4vw, 2rem);
+      margin-bottom: 1.5rem;
       color: var(--accent-color);
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
 
       &::after {
         content: '';
         display: block;
-        width: 6rem;
-        height: 5px;
+        width: 4rem;
+        height: 4px;
         background: linear-gradient(90deg, var(--accent-color), transparent);
-        margin-top: 1rem;
-        border-radius: 3px;
+        margin-top: 0.75rem;
+        border-radius: 2px;
       }
     }
 
@@ -392,150 +464,134 @@
     .reviews-section,
     .info-section {
       background: var(--card-bg);
-      padding: 3rem;
-      border-radius: 1.5rem;
-      margin-bottom: 3rem;
-      backdrop-filter: blur(15px);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
       border: 1px solid var(--border-light);
-      box-shadow: 0 8px 25px var(--shadow-dark);
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: translateY(-5px);
-      }
+      box-shadow: 0 6px 15px var(--shadow-dark);
     }
 
     .overview-section {
       .description {
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
 
         p {
-          font-size: 1.2rem;
-          line-height: 1.8;
+          font-size: 1.1rem;
+          line-height: 1.6;
           color: var(--text-faint);
         }
       }
 
       .details-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
 
         .detail-item {
-          padding: 1.5rem;
+          padding: 1rem;
           background: rgba(255, 255, 255, 0.1);
-          border-radius: 1rem;
+          border-radius: 0.75rem;
           border: 1px solid var(--border-light);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-          &:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px var(--shadow-dark);
-          }
 
           strong {
             display: block;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--text-light);
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
           }
 
           ul {
             list-style-type: disc;
-            margin-left: 1.5rem;
+            margin-left: 1.2rem;
             color: var(--text-faint);
 
             li {
-              font-size: 1rem;
-              line-height: 1.6;
-              margin-bottom: 0.5rem;
+              font-size: 0.95rem;
+              line-height: 1.5;
+              margin-bottom: 0.4rem;
             }
           }
 
           .rating {
             color: var(--highlight-color);
-            margin-left: 0.75rem;
-            font-size: 1.2rem;
+            margin-left: 0.5rem;
+            font-size: 1.1rem;
           }
         }
       }
     }
 
     .inclusions-section {
-      margin-bottom: 4rem;
+      margin-bottom: 2rem;
 
       .tabs-container {
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
       }
 
       .inclusion-tabs {
         display: flex;
-        gap: 1.5rem;
+        gap: 1rem;
         background: var(--blur-bg);
-        padding: 1rem;
-        border-radius: 1rem;
-        backdrop-filter: blur(12px);
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        backdrop-filter: blur(10px);
         border: 1px solid var(--border-light);
 
         .tab-btn {
           background: none;
           border: none;
           color: var(--text-faint);
-          font-weight: 700;
-          padding: 1rem 2rem;
-          border-radius: 0.75rem;
+          font-weight: 600;
+          padding: 0.8rem 1.5rem;
+          border-radius: 0.5rem;
           cursor: pointer;
           transition: all 0.3s ease;
 
           &:hover {
             color: var(--text-light);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
           }
 
           &.active {
             background: var(--accent-color);
             color: var(--primary-bg);
-            box-shadow: 0 4px 12px rgba(76, 215, 208, 0.3);
+            box-shadow: 0 3px 8px rgba(76, 215, 208, 0.3);
           }
         }
       }
 
       .inclusion-content {
         background: rgba(255, 255, 255, 0.1);
-        padding: 2.5rem;
-        border-radius: 1rem;
-        backdrop-filter: blur(12px);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        backdrop-filter: blur(10px);
         border: 1px solid var(--border-light);
 
         .inclusion-list {
           .inclusion-item {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            padding: 1.25rem;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.75rem;
-            transition: transform 0.3s ease;
-
-            &:hover {
-              transform: translateX(5px);
-            }
+            border-radius: 0.5rem;
 
             .icon-check {
               color: #4cd7d0;
-              font-size: 1.5rem;
+              font-size: 1.3rem;
             }
 
             .icon-close {
               color: #ff6b6b;
-              font-size: 1.5rem;
+              font-size: 1.3rem;
             }
 
             span {
-              font-size: 1.1rem;
-              line-height: 1.6;
+              font-size: 1rem;
+              line-height: 1.5;
               color: var(--text-light);
             }
           }
@@ -544,36 +600,31 @@
     }
 
     .highlights-section {
-      margin-bottom: 4rem;
+      margin-bottom: 2rem;
 
       .highlights-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
 
         .highlight-item {
           display: flex;
           align-items: center;
-          gap: 1.5rem;
-          padding: 1.5rem;
+          gap: 1rem;
+          padding: 1rem;
           background: rgba(255, 255, 255, 0.1);
-          border-radius: 0.75rem;
-          backdrop-filter: blur(12px);
+          border-radius: 0.5rem;
+          backdrop-filter: blur(10px);
           border: 1px solid var(--border-light);
-          transition: transform 0.3s ease;
-
-          &:hover {
-            transform: translateX(5px);
-          }
 
           .icon-check {
             color: var(--highlight-color);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
           }
 
           span {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.5;
             color: var(--text-light);
           }
         }
@@ -581,31 +632,26 @@
     }
 
     .policies-section {
-      margin-bottom: 4rem;
+      margin-bottom: 2rem;
 
       .policy-item {
-        padding: 1.5rem;
+        padding: 1rem;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border-light);
-        margin-bottom: 1.5rem;
-        transition: transform 0.3s ease;
-
-        &:hover {
-          transform: translateY(-3px);
-        }
+        margin-bottom: 1rem;
 
         strong {
           display: block;
-          font-weight: 700;
+          font-weight: 600;
           color: var(--text-light);
-          margin-bottom: 0.75rem;
-          font-size: 1.1rem;
+          margin-bottom: 0.5rem;
+          font-size: 1rem;
         }
 
         p {
-          font-size: 1.1rem;
-          line-height: 1.8;
+          font-size: 1rem;
+          line-height: 1.6;
           color: var(--text-faint);
         }
       }
@@ -614,26 +660,21 @@
     .info-section {
       .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
 
         .info-item {
-          padding: 1.5rem;
+          padding: 1rem;
           background: rgba(255, 255, 255, 0.1);
-          border-radius: 0.75rem;
+          border-radius: 0.5rem;
           border: 1px solid var(--border-light);
-          transition: transform 0.3s ease;
-
-          &:hover {
-            transform: translateY(-3px);
-          }
 
           strong {
             display: block;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--text-light);
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
           }
 
           ul {
@@ -641,10 +682,10 @@
             padding: 0;
 
             li {
-              font-size: 1.1rem;
-              line-height: 1.8;
+              font-size: 1rem;
+              line-height: 1.6;
               color: var(--text-faint);
-              padding-left: 2rem;
+              padding-left: 1.5rem;
               position: relative;
 
               &:before {
@@ -652,7 +693,7 @@
                 position: absolute;
                 left: 0;
                 color: var(--accent-color);
-                font-size: 1.2rem;
+                font-size: 1.1rem;
               }
             }
           }
@@ -662,30 +703,19 @@
 
     .photo-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
 
       .photo-item {
-        border-radius: 1rem;
+        border-radius: 0.75rem;
         overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative;
-
-        &:hover {
-          transform: scale(1.05);
-          box-shadow: 0 8px 20px var(--shadow-dark);
-        }
 
         img {
           display: block;
           width: 100%;
           height: auto;
           object-fit: cover;
-          transition: filter 0.3s ease;
-
-          &:hover {
-            filter: brightness(1.1);
-          }
         }
 
         .image-info {
@@ -694,19 +724,18 @@
           left: 0;
           right: 0;
           background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8));
-          padding: 1rem;
-          font-size: 1rem;
+          padding: 0.75rem;
+          font-size: 0.9rem;
           color: var(--text-light);
           text-align: center;
-          transition: opacity 0.3s ease;
 
           .badge-primary {
             background: var(--accent-color);
             color: var(--primary-bg);
-            padding: 0.4rem 0.8rem;
-            border-radius: 0.5rem;
-            margin-left: 0.75rem;
-            font-size: 0.95rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.4rem;
+            margin-left: 0.5rem;
+            font-size: 0.85rem;
             font-weight: 600;
           }
         }
@@ -715,7 +744,7 @@
 
     .timeline {
       position: relative;
-      margin-left: 3rem;
+      margin-left: 2rem;
 
       &::before {
         content: '';
@@ -723,59 +752,47 @@
         left: 0;
         top: 0;
         bottom: 0;
-        width: 6px;
+        width: 5px;
         background: linear-gradient(180deg, var(--accent-color), #20b2aa);
-        border-radius: 3px;
+        border-radius: 2px;
       }
 
       .timeline-item {
         position: relative;
-        padding: 2.5rem 0 2.5rem 4rem;
-        margin-bottom: 2rem;
+        padding: 1.5rem 0 1.5rem 3rem;
+        margin-bottom: 1.5rem;
 
         &::before {
           content: '';
           position: absolute;
-          left: -16px;
-          top: 2.5rem;
-          width: 28px;
-          height: 28px;
+          left: -12px;
+          top: 1.5rem;
+          width: 24px;
+          height: 24px;
           background: var(--accent-color);
-          border: 5px solid var(--primary-bg);
+          border: 4px solid var(--primary-bg);
           border-radius: 50%;
-          transition: transform 0.3s ease;
-
-          &:hover {
-            transform: scale(1.2);
-          }
         }
 
         .day-number {
-          font-weight: 800;
-          font-size: 1.3rem;
+          font-weight: 700;
+          font-size: 1.2rem;
           color: var(--accent-color);
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
           text-shadow: 1px 1px 3px var(--shadow-dark);
         }
 
         .day-content {
           background: rgba(255, 255, 255, 0.1);
-          border-radius: 1rem;
-          padding: 2rem;
-          transition: all 0.3s ease;
+          border-radius: 0.75rem;
+          padding: 1.5rem;
           border: 1px solid var(--border-light);
           cursor: pointer;
-          box-shadow: 0 4px 15px var(--shadow-dark);
-
-          &:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px var(--shadow-dark);
-          }
+          box-shadow: 0 4px 10px var(--shadow-dark);
 
           &:focus {
-            outline: 3px solid var(--accent-color);
-            outline-offset: 4px;
+            outline: 2px solid var(--accent-color);
+            outline-offset: 3px;
           }
 
           .day-header {
@@ -784,17 +801,17 @@
             align-items: center;
 
             h4 {
-              font-size: 1.5rem;
+              font-size: 1.3rem;
               margin: 0;
               color: var(--text-light);
-              font-weight: 700;
+              font-weight: 600;
             }
 
             .toggle-icon {
-              width: 32px;
-              height: 32px;
-              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234cd7d0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat center;
-              transition: transform 0.4s ease;
+              width: 28px;
+              height: 28px;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234cd7d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat center;
+              transition: transform 0.3s ease;
               flex-shrink: 0;
 
               &.open {
@@ -806,21 +823,21 @@
           .day-description {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
             opacity: 0;
             padding: 0;
 
             p {
               margin: 0;
-              font-size: 1.1rem;
-              line-height: 1.8;
+              font-size: 1rem;
+              line-height: 1.6;
               color: var(--text-faint);
             }
 
             &.open {
-              max-height: 1000px;
+              max-height: 800px;
               opacity: 1;
-              padding: 2rem 0;
+              padding: 1.5rem 0;
             }
 
             strong {
@@ -832,21 +849,16 @@
           }
 
           .day-teaser {
-            margin-top: 1rem;
-            font-size: 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
             color: var(--accent-color);
             opacity: 0.9;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
 
             span {
               font-style: italic;
-              transition: opacity 0.3s ease;
-
-              &:hover {
-                opacity: 1;
-              }
             }
           }
         }
@@ -855,44 +867,39 @@
 
     .reviews-section {
       .review-item {
-        padding: 2rem;
+        padding: 1.5rem;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 1rem;
-        margin-bottom: 2rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
         border: 1px solid var(--border-light);
-        transition: transform 0.3s ease;
-
-        &:hover {
-          transform: translateY(-3px);
-        }
 
         .reviewer-info {
           display: flex;
           align-items: center;
-          gap: 1.5rem;
-          margin-bottom: 1rem;
+          gap: 1rem;
+          margin-bottom: 0.75rem;
 
           strong {
-            font-weight: 700;
+            font-weight: 600;
             color: var(--text-light);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
           }
 
           .rating {
             color: var(--highlight-color);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
           }
         }
 
         p {
-          font-size: 1.1rem;
-          line-height: 1.8;
+          font-size: 1rem;
+          line-height: 1.6;
           color: var(--text-faint);
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
         }
 
         small {
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           color: var(--text-faint);
           opacity: 0.8;
         }
@@ -900,19 +907,14 @@
     }
 
     .map-container {
-      margin: 3rem 0;
-      border-radius: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 1rem;
       overflow: hidden;
-      box-shadow: 0 8px 25px var(--shadow-dark);
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: translateY(-5px);
-      }
+      box-shadow: 0 6px 15px var(--shadow-dark);
 
       iframe {
         width: 100%;
-        height: 500px;
+        height: 400px;
         border: none;
         display: block;
       }
@@ -921,24 +923,24 @@
 
   .loading {
     text-align: center;
-    min-height: 60vh;
+    min-height: 50vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
     .spinner {
-      border: 5px solid var(--border-light);
-      border-top: 5px solid var(--accent-color);
+      border: 4px solid var(--border-light);
+      border-top: 4px solid var(--accent-color);
       border-radius: 50%;
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       animation: spin 1s linear infinite;
     }
 
     p {
-      margin-top: 2rem;
-      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
       color: var(--text-light);
       font-weight: 500;
     }
@@ -947,10 +949,10 @@
   .badge-primary {
     background: var(--accent-color);
     color: var(--primary-bg);
-    padding: 0.4rem 0.8rem;
-    border-radius: 0.5rem;
-    margin-left: 0.75rem;
-    font-size: 0.95rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.4rem;
+    margin-left: 0.5rem;
+    font-size: 0.85rem;
     font-weight: 600;
   }
 }
@@ -958,8 +960,9 @@
 @keyframes fadeInUp {
   0% {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -970,6 +973,7 @@
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -979,6 +983,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -986,82 +991,57 @@
 
 @keyframes slideInUp {
   0% {
-    transform: translateY(50px);
+    transform: translateY(30px);
     opacity: 0;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
   }
 }
 
-/* Responsive Design */
-@media (min-width: 1200px) {
+/* Media Queries for Responsiveness */
+@media (min-width: 769px) {
   .hero-section .container {
-    gap: 4rem;
+    flex-direction: row;
+    gap: 3rem;
+    padding: 2rem;
   }
 
   .booking-card {
+    position: sticky;
+    top: 2rem;
+    max-width: 360px;
+    margin-left: auto;
+    padding: 2rem;
+
     &::-webkit-scrollbar {
-      width: 10px;
+      width: 8px;
     }
 
     &::-webkit-scrollbar-track {
       background: var(--border-light);
-      border-radius: 5px;
+      border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
       background: var(--accent-color);
-      border-radius: 5px;
+      border-radius: 4px;
     }
-  }
-}
-
-@media (max-width: 1199px) and (min-width: 769px) {
-  .hero-section .container {
-    grid-template-columns: 1fr 360px;
-    gap: 2.5rem;
-    padding: 2rem;
-  }
-
-  .booking-card {
-    max-width: 360px;
-    padding: 2rem;
-    top: 2.5rem;
-    max-height: calc(100vh - 5rem);
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-section {
-    min-height: 70vh;
-  }
-
-  .hero-section .container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 1.5rem;
-  }
-
-  .booking-card {
-    position: relative;
-    top: 0;
-    max-width: 100%;
-    margin: 2rem auto;
-    padding: 2rem;
   }
 
   .detail-tabs {
     gap: 0.75rem;
 
     .tab-btn {
-      padding: 0.8rem 1.5rem;
+      padding: 0.9rem 1.8rem;
       font-size: 1rem;
     }
   }
 
   .tab-content {
+
     .overview-section,
     .inclusions-section,
     .highlights-section,
@@ -1072,127 +1052,39 @@
     .info-section {
       padding: 2rem;
     }
-
-    .photo-gallery {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-
-    .map-container {
-      iframe {
-        height: 400px;
-      }
-    }
-
-    .timeline {
-      margin-left: 2rem;
-
-      .timeline-item {
-        padding: 2rem 0 2rem 3rem;
-
-        &::before {
-          left: -12px;
-          top: 2rem;
-          width: 24px;
-          height: 24px;
-        }
-      }
-    }
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .hero-section {
     min-height: 60vh;
-  }
-
-  .hero-section .container {
-    gap: 1.5rem;
-    padding: 1rem;
+    padding-top: 20px;
   }
 
   .hero-content {
     .tour-title {
-      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
     }
 
     .tour-meta {
-      gap: 0.75rem;
+      gap: 0.5rem;
 
       .destination,
       .duration,
       .availability,
       .difficulty,
       .category {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-      }
-    }
-
-    .airports,
-    .group-size,
-    .customizable,
-    .status,
-    .featured {
-      font-size: 1rem;
-
-      .icon-plane,
-      .icon-users,
-      .icon-check,
-      .icon-star {
-        font-size: 1.2rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
       }
     }
   }
 
   .booking-card {
-    padding: 1.5rem;
-    max-width: 95%;
+    position: static;
+    max-width: 100%;
     margin: 1.5rem auto;
-
-    .price-section {
-      .price {
-        font-size: clamp(1.8rem, 4.5vw, 2.2rem);
-      }
-
-      .discount,
-      .advance-booking {
-        font-size: 0.9rem;
-      }
-    }
-
-    .booking-forms {
-      flex-direction: column;
-      gap: 1rem;
-
-      .btn {
-        padding: 0.8rem;
-        font-size: 0.95rem;
-        min-height: 46px;
-      }
-    }
-
-    .booking-details {
-      .detail-item {
-        font-size: 0.95rem;
-        padding: 0.6rem;
-      }
-    }
-
-    .btn-success {
-      padding: 0.9rem;
-      font-size: 1rem;
-      min-height: 48px;
-    }
-
-    .action-buttons {
-      flex-direction: column;
-      gap: 0.75rem;
-
-      .btn-link {
-        font-size: 0.9rem;
-        min-height: 42px;
-      }
-    }
+    padding: 1.5rem;
   }
 
   .detail-tabs {
@@ -1200,11 +1092,12 @@
 
     .tab-btn {
       padding: 0.7rem 1.2rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
   }
 
   .tab-content {
+
     .overview-section,
     .inclusions-section,
     .highlights-section,
@@ -1214,59 +1107,31 @@
     .reviews-section,
     .info-section {
       padding: 1.5rem;
-
-      h2 {
-        font-size: 1.8rem;
-      }
     }
 
-    .overview-section {
-      .details-grid {
-        grid-template-columns: 1fr;
-      }
+    .overview-section .details-grid,
+    .highlights-section .highlights-grid,
+    .info-section .info-grid {
+      grid-template-columns: 1fr;
     }
 
-    .inclusions-section {
-      .inclusion-tabs {
-        flex-direction: column;
-        gap: 0.75rem;
+    .inclusions-section .inclusion-tabs {
+      flex-direction: row;
+      gap: 0.5rem;
+      padding: 0.5rem;
 
-        .tab-btn {
-          padding: 0.8rem;
-          font-size: 0.95rem;
-        }
-      }
-
-      .inclusion-content {
-        padding: 1.5rem;
-
-        .inclusion-list {
-          .inclusion-item {
-            padding: 1rem;
-            gap: 1rem;
-
-            span {
-              font-size: 1rem;
-            }
-          }
-        }
-      }
-    }
-
-    .highlights-section {
-      .highlights-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .info-section {
-      .info-grid {
-        grid-template-columns: 1fr;
+      .tab-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
       }
     }
 
     .photo-gallery {
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .map-container iframe {
+      height: 350px;
     }
 
     .timeline {
@@ -1275,73 +1140,95 @@
       .timeline-item {
         padding: 1.5rem 0 1.5rem 2.5rem;
 
+        &::before {
+          left: -10px;
+          top: 1.5rem;
+          width: 20px;
+          height: 20px;
+        }
+
         .day-content {
-          padding: 1.5rem;
+          padding: 1.2rem;
 
           .day-header h4 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
           }
 
           .day-description {
             p {
-              font-size: 1rem;
+              font-size: 0.95rem;
             }
           }
 
           .day-teaser {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
           }
         }
       }
     }
 
-    .map-container {
-      iframe {
-        height: 320px;
+    .reviews-section .review-item {
+      padding: 1.2rem;
+
+      .reviewer-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
       }
-    }
 
-    .reviews-section {
-      .review-item {
-        padding: 1.5rem;
-
-        .reviewer-info {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.75rem;
-        }
-
-        p {
-          font-size: 1rem;
-        }
+      p {
+        font-size: 0.95rem;
       }
     }
   }
 }
 
-@media (max-width: 319px) {
+@media (max-width: 480px) {
   .hero-section {
     min-height: 50vh;
-  }
-
-  .hero-section .container {
-    gap: 1rem;
-    padding: 0.75rem;
+    padding-top: 15px;
   }
 
   .hero-content {
     .tour-title {
-      font-size: clamp(1.6rem, 5vw, 2rem);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+    }
+
+    .tour-meta {
+      gap: 0.4rem;
+
+      .destination,
+      .duration,
+      .availability,
+      .difficulty,
+      .category {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    .airports,
+    .group-size,
+    .customizable,
+    .status,
+    .featured {
+      font-size: 0.9rem;
+
+      .icon-plane,
+      .icon-users,
+      .icon-check,
+      .icon-star {
+        font-size: 1.1rem;
+      }
     }
   }
 
   .booking-card {
     padding: 1.2rem;
-    max-width: 98%;
 
     .price-section {
       .price {
-        font-size: 1.8rem;
+        font-size: clamp(1.6rem, 4vw, 2rem);
       }
 
       .discount,
@@ -1351,23 +1238,35 @@
     }
 
     .booking-forms {
+      flex-direction: column;
       gap: 0.75rem;
 
       .btn {
         padding: 0.7rem;
         font-size: 0.9rem;
-        min-height: 42px;
+        min-height: 40px;
       }
     }
 
-    .btn-success {
-      padding: 0.8rem;
-      font-size: 0.95rem;
-      min-height: 44px;
+    .action-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .btn-link {
+        font-size: 0.85rem;
+        min-height: 38px;
+      }
     }
   }
 
+  .container {
+    margin: 1.5rem auto;
+    padding: 0 0.75rem;
+  }
+
   .detail-tabs {
+    gap: 0.4rem;
+
     .tab-btn {
       padding: 0.6rem 1rem;
       font-size: 0.85rem;
@@ -1375,6 +1274,7 @@
   }
 
   .tab-content {
+
     .overview-section,
     .inclusions-section,
     .highlights-section,
@@ -1384,17 +1284,88 @@
     .reviews-section,
     .info-section {
       padding: 1.2rem;
+
+      h2 {
+        font-size: 1.6rem;
+      }
+    }
+
+    .inclusions-section .inclusion-tabs {
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .tab-btn {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
     }
 
     .photo-gallery {
       grid-template-columns: 1fr;
+    }
+
+    .map-container iframe {
+      height: 300px;
+    }
+
+    .timeline {
+      margin-left: 1rem;
+
+      .timeline-item {
+        padding: 1rem 0 1rem 2rem;
+
+        &::before {
+          left: -8px;
+          top: 1rem;
+          width: 16px;
+          height: 16px;
+        }
+
+        .day-number {
+          font-size: 1.1rem;
+        }
+
+        .day-content {
+          padding: 1rem;
+
+          .day-header h4 {
+            font-size: 1.1rem;
+          }
+
+          .day-description {
+            p {
+              font-size: 0.9rem;
+            }
+          }
+
+          .day-teaser {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .reviews-section .review-item {
+      padding: 1rem;
+
+      .reviewer-info strong {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      small {
+        font-size: 0.85rem;
+      }
     }
   }
 }
 
 @media print {
   .booking-card {
-    position: static !important;
+    position: static;
     box-shadow: none;
     border: 1px solid #ccc;
   }
@@ -1413,7 +1384,7 @@
   }
 
   .tab-content {
-    display: block !important;
+    display: block;
   }
 }
 
@@ -1425,6 +1396,7 @@
   }
 
   .booking-card {
+
     .btn-outline,
     .btn-primary {
       border-width: 3px;
@@ -1450,24 +1422,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .hero-image:hover,
-  .photo-item:hover,
-  .timeline .day-content:hover,
-  .overview-section .details-grid .detail-item:hover,
-  .inclusions-section .inclusion-list .inclusion-item:hover,
-  .highlights-section .highlights-grid .highlight-item:hover,
-  .info-section .info-grid .info-item:hover,
-  .reviews-section .review-item:hover,
-  .map-container:hover {
-    transform: none;
-  }
-
-  .timeline .toggle-icon {
-    transform: none !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }

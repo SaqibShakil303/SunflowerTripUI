@@ -1,5 +1,11 @@
 <app-navbar></app-navbar>
-<section class="tour-detail" *ngIf="tour">
+
+<div *ngIf="loading" class="loading">
+  <div class="spinner"></div>
+  <p>Loading tour details...</p>
+</div>
+
+<section class="tour-detail" *ngIf="!loading && tour">
   <div class="hero-section">
     <img [src]="tour.image_url" alt="{{ tour.title }}" class="hero-image" />
     <div class="hero-overlay">
@@ -31,22 +37,26 @@
             <i class="icon-check"></i>
             <span>Customizable Tour</span>
           </div>
-          <div class="status" *ngIf="tour.is_active != null">
+          <!-- <div class="status" *ngIf="tour.is_active != null">
             <i class="icon-check"></i>
             <span>{{ tour.is_active ? 'Active' : 'Inactive' }}</span>
           </div>
           <div class="featured" *ngIf="tour.is_featured">
             <i class="icon-star"></i>
             <span>Featured Tour</span>
-          </div>
+          </div> -->
         </div>
         <div class="booking-card">
           <div class="price-section">
             <span class="price-label">Price per Person</span>
-            <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price_per_person || tour.price) }}</span>
-            <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{ formatDiscount(tour.early_bird_discount) }} off</span>
-            <span class="discount" *ngIf="tour.group_discount">Group: {{ formatDiscount(tour.group_discount) }} off</span>
-            <span class="advance-booking" *ngIf="tour.advance_booking_days">Book {{ tour.advance_booking_days }} days in advance</span>
+            <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price_per_person || tour.price)
+              }}</span>
+            <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{
+              formatDiscount(tour.early_bird_discount) }} off</span>
+            <span class="discount" *ngIf="tour.group_discount">Group: {{ formatDiscount(tour.group_discount) }}
+              off</span>
+            <span class="advance-booking" *ngIf="tour.advance_booking_days">Book {{ tour.advance_booking_days }} days in
+              advance</span>
           </div>
           <!-- <div class="booking-details">
             <div class="detail-item" *ngIf="tour.adults != null">
@@ -66,7 +76,7 @@
           <!-- <button class="btn btn-success btn-full" (click)="proceedBooking()">PROCEED BOOKING</button> -->
           <div class="action-buttons">
             <button class="btn btn-link" (click)="saveToWishlist()">Save To Wish List</button>
-            <button class="btn btn-link" (click)="viewReviews()">Reviews</button>
+            <!-- <button class="btn btn-link" (click)="viewReviews()">Reviews</button> -->
           </div>
         </div>
       </div>
@@ -75,12 +85,16 @@
 
   <div class="container">
     <div class="detail-tabs">
-      <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">Details</button>
-      <button class="tab-btn" [class.active]="activeTab === 'itinerary'" (click)="setActiveTab('itinerary')">Itinerary</button>
+      <button class="tab-btn" [class.active]="activeTab === 'overview'"
+        (click)="setActiveTab('overview')">Details</button>
+      <button class="tab-btn" [class.active]="activeTab === 'itinerary'"
+        (click)="setActiveTab('itinerary')">Itinerary</button>
       <button class="tab-btn" [class.active]="activeTab === 'map'" (click)="setActiveTab('map')">Map</button>
       <button class="tab-btn" [class.active]="activeTab === 'photos'" (click)="setActiveTab('photos')">Photos</button>
-      <button class="tab-btn" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">Reviews</button>
-      <button class="tab-btn" [class.active]="activeTab === 'info'" (click)="setActiveTab('info')">Additional Info</button>
+      <button class="tab-btn" [class.active]="activeTab === 'reviews'"
+        (click)="setActiveTab('reviews')">Reviews</button>
+      <button class="tab-btn" [class.active]="activeTab === 'info'" (click)="setActiveTab('info')">Additional
+        Info</button>
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'overview'">
@@ -118,7 +132,8 @@
             <span *ngIf="tour.guide_languages?.length"> (Languages: {{ tour.guide_languages?.join(', ') }})</span>
           </div>
           <div class="detail-item" *ngIf="tour.transportation_included != null">
-            <strong>Transportation:</strong> {{ tour.transportation_included ? tour.transportation_details || 'Included' : 'Not Included' }}
+            <strong>Transportation:</strong> {{ tour.transportation_included ? tour.transportation_details || 'Included'
+            : 'Not Included' }}
           </div>
           <div class="detail-item" *ngIf="tour.activity_types?.length">
             <strong>Activities:</strong> {{ tour.activity_types?.join(', ') }}
@@ -153,9 +168,12 @@
       <div class="inclusions-section">
         <div class="tabs-container">
           <div class="inclusion-tabs">
-            <button class="tab-btn" [class.active]="inclusionTab === 'inclusions'" (click)="inclusionTab = 'inclusions'">Inclusions</button>
-            <button class="tab-btn" [class.active]="inclusionTab === 'exclusions'" (click)="inclusionTab = 'exclusions'">Exclusions</button>
-            <button class="tab-btn" [class.active]="inclusionTab === 'complementaries'" (click)="inclusionTab = 'complementaries'">Complementaries</button>
+            <button class="tab-btn" [class.active]="inclusionTab === 'inclusions'"
+              (click)="inclusionTab = 'inclusions'">Inclusions</button>
+            <button class="tab-btn" [class.active]="inclusionTab === 'exclusions'"
+              (click)="inclusionTab = 'exclusions'">Exclusions</button>
+            <button class="tab-btn" [class.active]="inclusionTab === 'complementaries'"
+              (click)="inclusionTab = 'complementaries'">Complementaries</button>
           </div>
         </div>
         <div class="inclusion-content">
@@ -222,7 +240,8 @@
       <div class="itinerary-section">
         <h2>ITINERARY</h2>
         <div class="timeline">
-          <div class="timeline-item" *ngFor="let day of getItineraryDays(); let i = index" [attr.aria-expanded]="openDayIndex === i" [attr.aria-controls]="'day-desc-' + i">
+          <div class="timeline-item" *ngFor="let day of getItineraryDays(); let i = index"
+            [attr.aria-expanded]="openDayIndex === i" [attr.aria-controls]="'day-desc-' + i">
             <div class="day-number">Day {{ day.day || i + 1 }}</div>
             <div class="day-content" (click)="toggleDay(i)" role="button" tabindex="0" (keydown)="onKeydown($event, i)">
               <div class="day-header">
@@ -275,7 +294,8 @@
       <div class="map-section">
         <h2>MAP</h2>
         <div class="map-container" *ngIf="tour.map_embed_url">
-          <iframe [src]="sanitizer.bypassSecurityTrustResourceUrl(tour.map_embed_url)" width="100%" height="400" frameborder="0" allowfullscreen>
+          <iframe [src]="sanitizer.bypassSecurityTrustResourceUrl(tour.map_embed_url)" width="100%" height="400"
+            frameborder="0" allowfullscreen>
           </iframe>
         </div>
         <div *ngIf="!tour.map_embed_url">
@@ -328,7 +348,8 @@
               </li>
             </ul>
           </div>
-          <div class="info-item" *ngIf="!tour.best_time_to_visit && !tour.weather_info && !tour.packing_list?.length && !tour.room_types?.length">
+          <div class="info-item"
+            *ngIf="!tour.best_time_to_visit && !tour.weather_info && !tour.packing_list?.length && !tour.room_types?.length">
             <p>No additional information available</p>
           </div>
         </div>
@@ -337,12 +358,8 @@
   </div>
 </section>
 
-<div *ngIf="loading" class="loading">
-  <div class="spinner"></div>
-  <p>Loading tour details...</p>
-</div>
-
-<app-booking-modal [isOpen]="isModalOpen" [formType]="modalFormType" [tour]="tour" (close)="closeModal()" (onSubmitEnquiry)="handleEnquirySubmit($event)" (onSubmitBooking)="handleBookingSubmit($event)"></app-booking-modal>
+<app-booking-modal [isOpen]="isModalOpen" [formType]="modalFormType" [tour]="tour" (close)="closeModal()"
+  (onSubmitEnquiry)="handleEnquirySubmit($event)" (onSubmitBooking)="handleBookingSubmit($event)"></app-booking-modal>
 
 <app-chat-widget></app-chat-widget>
 <app-footer></app-footer>

@@ -6,13 +6,9 @@
         <label class="filter-label">
           <i class="icon-location"></i>
           From City
-        </label>  
+        </label>
         <div class="input-group">
-          <input 
-            [(ngModel)]="fromCity" 
-            placeholder="Enter departure city" 
-            class="filter-input"
-          />
+          <input [(ngModel)]="fromCity" placeholder="Enter departure city" class="filter-input" />
           <small class="location-hint" *ngIf="fromCityCountry">{{ fromCityCountry }}</small>
         </div>
       </div>
@@ -24,11 +20,7 @@
           Destination
         </label>
         <div class="select-group">
-          <select 
-            [(ngModel)]="selectedDestination" 
-            (change)="onDestinationChange()"
-            class="filter-select"
-          >
+          <select [(ngModel)]="selectedDestination" (change)="onDestinationChange()" class="filter-select">
             <option [ngValue]="null">Choose destination</option>
             <option *ngFor="let dest of destinations" [ngValue]="dest">{{ dest.title }}</option>
           </select>
@@ -50,10 +42,7 @@
           Select Category
         </label>
         <div class="select-group">
-          <select 
-            [(ngModel)]="selectedCategory" 
-            class="filter-select"
-          >
+          <select [(ngModel)]="selectedCategory" class="filter-select">
             <option [ngValue]="null">Choose Category</option>
             <option *ngFor="let cat of categories" [ngValue]="cat">{{ cat }}</option>
           </select>
@@ -91,15 +80,10 @@
                 <div *ngFor="let day of ['Su','Mo','Tu','We','Th','Fr','Sa']" class="weekday">{{ day }}</div>
               </div>
               <div class="days">
-                <div 
-                  *ngFor="let date of getCalendarDays(month)"
-                  class="day-box"
-                  [class.empty]="!date"
+                <div *ngFor="let date of getCalendarDays(month)" class="day-box" [class.empty]="!date"
                   [class.disabled]="date && date < today"
                   [class.selected]="selectedDate?.toDateString() === date?.toDateString()"
-                  [class.today]="date?.toDateString() === today.toDateString()"
-                  (click)="date && selectDate(date)"
-                >
+                  [class.today]="date?.toDateString() === today.toDateString()" (click)="date && selectDate(date)">
                   <span *ngIf="date">{{ date.getDate() }}</span>
                 </div>
               </div>
@@ -118,7 +102,7 @@
         <div class="filter-selector" (click)="toggleDropdown($event)">
           <div class="filter-display">
             <span class="filter-summary" *ngIf="hasActiveFilters(); else noFilters">
-              ₹{{ budgetRange[0] | number }} - ₹{{ budgetRange[1] | number }} • 
+              ₹{{ budgetRange[0] | number }} - ₹{{ budgetRange[1] | number }} •
               {{ durationRange[0] }}-{{ durationRange[1] }} nights
             </span>
             <ng-template #noFilters>
@@ -142,45 +126,20 @@
             <div class="filter-group">
               <label class="range-label">Duration ({{ durationRange[0] }} - {{ durationRange[1] }} nights)</label>
               <div class="range-inputs">
-                <input 
-                  type="range" 
-                  [(ngModel)]="durationRange[0]" 
-                  min="2" 
-                  max="15" 
-                  class="range-slider"
-                  (change)="validateDurationRange()"
-                />
-                <input 
-                  type="range" 
-                  [(ngModel)]="durationRange[1]" 
-                  min="2" 
-                  max="15" 
-                  class="range-slider"
-                  (change)="validateDurationRange()"
-                />
+                <input type="range" [(ngModel)]="durationRange[0]" min="2" max="15" class="range-slider"
+                  (change)="validateDurationRange()" />
+                <input type="range" [(ngModel)]="durationRange[1]" min="2" max="15" class="range-slider"
+                  (change)="validateDurationRange()" />
               </div>
             </div>
             <div class="filter-group">
-              <label class="range-label">Budget per person (₹{{ budgetRange[0] | number }} - ₹{{ budgetRange[1] | number }})</label>
+              <label class="range-label">Budget per person (₹{{ budgetRange[0] | number }} - ₹{{ budgetRange[1] | number
+                }})</label>
               <div class="range-inputs">
-                <input 
-                  type="range" 
-                  [(ngModel)]="budgetRange[0]" 
-                  min="10000" 
-                  max="500000" 
-                  step="5000" 
-                  class="range-slider"
-                  (change)="validateBudgetRange()"
-                />
-                <input 
-                  type="range" 
-                  [(ngModel)]="budgetRange[1]" 
-                  min="10000" 
-                  max="500000" 
-                  step="5000" 
-                  class="range-slider"
-                  (change)="validateBudgetRange()"
-                />
+                <input type="range" [(ngModel)]="budgetRange[0]" min="10000" max="500000" step="5000"
+                  class="range-slider" (change)="validateBudgetRange()" />
+                <input type="range" [(ngModel)]="budgetRange[1]" min="10000" max="500000" step="5000"
+                  class="range-slider" (change)="validateBudgetRange()" />
               </div>
             </div>
           </div>
