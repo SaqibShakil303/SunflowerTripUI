@@ -21,10 +21,6 @@ import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.co
 @Component({
   selector: 'app-contact',
   standalone: true,
-  //  providers: [
-  //       HttpClientModule,   
-  //   // provideHttpClient(),   // ← makes HttpClient injectable in this subtree
-  // ],
   imports: [CommonModule, ReactiveFormsModule, FooterComponent, NavbarComponent, ChatWidgetComponent],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss'],
@@ -75,27 +71,29 @@ export class ContactComponent implements OnInit {
       required: 'Subject is required',
       minlength: 'Subject must be at least 5 characters long'
     },
-    message: {
-      required: 'Message is required',
-      minlength: 'Message must be at least 10 characters long'
-    }
+    // Commented out message validation messages as message is now non-mandatory
+    // message: {
+    //   required: 'Message is required',
+    //   minlength: 'Message must be at least 10 characters long'
+    // }
   };
+
   constructor(
     private formBuilder: FormBuilder,
     private contactService: ContactService,
-  ) {}
+  ) { }
+
   ngOnInit(): void {
     this.initializeForm();
   }
 
-
   private initializeForm(): void {
-   this.contactForm = this.formBuilder.group({
-      name: ['', [ Validators.required, Validators.minLength(2), Validators.pattern('^[a-zA-Z ]*$') ]],
-      email: ['', [ Validators.required, Validators.email ]],
-      phone: ['', [ Validators.pattern('^[0-9]*$'), Validators.minLength(9), Validators.maxLength(15) ]],
-      subject: ['', [ Validators.required, Validators.minLength(5) ]],
-      message: ['', [/*, Validators.minLength(10)*/ ]],
+    this.contactForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^[a-zA-Z ]*$')]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.pattern('^[0-9]*$'), Validators.minLength(9), Validators.maxLength(15)]],
+      subject: ['', [Validators.required, Validators.minLength(5)]],
+      message: [''] // Removed Validators.required and Validators.minLength for message
     });
   }
 
@@ -111,7 +109,6 @@ export class ContactComponent implements OnInit {
       const errors = Object.keys(control.errors);
       if (errors.length > 0) {
         const firstError = errors[0];
-        // Type assertion to fix the error
         return (this.validationMessages as { [key: string]: { [key: string]: string } })[fieldName][firstError];
       }
     }
@@ -128,7 +125,7 @@ export class ContactComponent implements OnInit {
     if (this.contactForm.valid) {
       this.isLoading = true;
       const contact_ID = this.contactService.generateRandomContactID();
-      
+
       // Create contact model
       const formData = new ContactModel();
       formData.id = contact_ID;
@@ -136,7 +133,7 @@ export class ContactComponent implements OnInit {
       formData.phone_number = this.contactForm.value.phone?.trim();
       formData.email = this.contactForm.value.email.trim().toLowerCase();
       formData.subject = this.contactForm.value.subject.trim();
-      formData.message = this.contactForm.value.message.trim();
+      formData.message = this.contactForm.value.message?.trim() || ''; // Handle empty message
 
       // Submit only if required fields are present after trimming
       if (this.validateFormData(formData)) {
@@ -156,9 +153,8 @@ export class ContactComponent implements OnInit {
       formData.first_name &&
       formData.email &&
       formData.subject &&
-      formData.message &&
-      formData.first_name.length >= 2 &&
-      formData.message.length >= 10
+      formData.first_name.length >= 2
+      // Removed message length validation as it's now non-mandatory
     );
   }
 
@@ -207,6 +203,7 @@ export class ContactComponent implements OnInit {
     });
     faq.isOpen = !faq.isOpen;
   }
+
   faqs = [
     {
       question: 'Can I customize my travel package?',

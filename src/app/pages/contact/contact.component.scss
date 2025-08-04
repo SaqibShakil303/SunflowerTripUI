@@ -138,14 +138,17 @@
         color: #fff;
         font-size: 1rem;
         transition: outline 0.3s;
-       
+
         &:focus {
           outline: 2px solid #ffd700;
         }
       }
- input::placeholder,textarea::placeholder {
-          color: rgba(255, 255, 255, 0.5);
-        }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
       .error {
         display: block;
         margin-top: 0.5rem;
@@ -228,25 +231,29 @@
       }
     }
   }
-  
+
 }
 
 @media (max-width: 1024px) {
+
   .section.contact .contact-info,
   .section.contact .contact-form {
     flex: 1 1 100%;
     max-width: 100%;
     box-sizing: border-box;
   }
+
   .section.contact .faq-section {
     padding: 1.5rem 1rem;
   }
+
   .section.contact .form-group label,
   .section.contact .form-control,
   .section.contact .faq-question,
   .section.contact .faq-answer {
     font-size: 0.95rem;
   }
+
   .section.contact .info-list li {
     flex-direction: column;
     align-items: flex-start;
@@ -258,10 +265,12 @@
   .section.contact .section-title h2 {
     font-size: 2rem;
   }
+
   .section.contact .contact-container {
     flex-direction: column;
     gap: 1.5rem;
   }
+
   .section.contact .contact-info,
   .section.contact .contact-form {
     width: 100%;
@@ -269,21 +278,26 @@
     padding: 1.5rem 1rem;
     box-sizing: border-box;
   }
+
   .section.contact .form-control {
     font-size: 0.95rem;
     padding: 0.6rem 0.9rem;
   }
+
   .section.contact .btn-primary {
     width: 100%;
     font-size: 1rem;
     padding: 0.75rem;
   }
+
   .section.contact .faq-item {
     padding: 1rem;
   }
+
   .section.contact .faq-question {
     font-size: 1rem;
   }
+
   .section.contact .info-list li {
     flex-direction: column;
     align-items: flex-start;
@@ -295,39 +309,48 @@
   .section.contact .section-title h2 {
     font-size: 1.6rem;
   }
+
   .section.contact .section-title p {
     font-size: 0.9rem;
   }
+
   .section.contact .contact-info,
   .section.contact .contact-form {
     padding: 1.25rem 0.75rem;
   }
+
   .section.contact .form-control {
     font-size: 0.9rem;
     padding: 0.6rem;
   }
+
   .section.contact .form-group label {
     font-size: 0.9rem;
   }
+
   .section.contact .btn-primary {
     font-size: 0.95rem;
     padding: 0.6rem 1.5rem;
   }
+
   .section.contact .faq-question,
   .section.contact .faq-answer {
     font-size: 0.9rem;
   }
+
   .section.contact .info-list li span,
   .section.contact .info-list li a {
     font-size: 0.9rem;
     display: block;
     word-break: break-word;
   }
+
   .section.contact .info-list li {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
   }
+
   .section.contact .social-links a {
     font-size: 1.2rem;
   }
@@ -337,28 +360,34 @@
   .section.contact .section-title h2 {
     font-size: 1.4rem;
   }
+
   .section.contact .form-control,
   .section.contact .faq-question,
   .section.contact .faq-answer {
     font-size: 0.85rem;
   }
+
   .section.contact .btn-primary {
     font-size: 0.9rem;
     padding: 0.5rem 1.25rem;
   }
+
   .section.contact .info-list li i {
     font-size: 1.2rem;
   }
+
   .section.contact .contact-info,
   .section.contact .contact-form {
     padding: 1rem;
   }
+
   .section.contact .info-list li span,
   .section.contact .info-list li a {
     font-size: 0.85rem;
     display: block;
     word-break: break-word;
   }
+
   .section.contact .info-list li {
     flex-direction: column;
     align-items: flex-start;

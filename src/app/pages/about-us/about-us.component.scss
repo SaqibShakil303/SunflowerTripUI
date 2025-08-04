@@ -5,7 +5,7 @@
 // About Us Page Styles
 .about-us {
   overflow: hidden;
-  background: url('/assets/images/luxury/luxury-bg.jpg') no-repeat center center;
+  background: var(--primary-bg); /* Using deep navy for elegance */
   background-size: cover;
 
   // Hero Banner
@@ -18,7 +18,7 @@
     background-position: center;
     display: flex;
     align-items: center;
-    color: white;
+    color: var(--text-light); /* Off-white for readability */
     margin-bottom: 4rem;
 
     .overlay {
@@ -39,8 +39,8 @@
       font-size: 3.5rem;
       font-weight: 700;
       margin-bottom: 1rem;
-      color: whitesmoke;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      color: var(--text-light); /* Off-white for readability */
+      text-shadow: 2px 2px 4px var(--shadow-dark);
 
       @media (max-width: 768px) {
         font-size: 2.5rem;
@@ -50,36 +50,42 @@
     .tagline {
       font-size: 1.5rem;
       max-width: 600px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      text-shadow: 1px 1px 3px var(--shadow-dark);
+      color: var(--text-faint); /* Subtle text color */
 
       @media (max-width: 768px) {
         font-size: 1.2rem;
       }
     }
   }
- // Background sections
- .about-values {
-  background-image: url('/assets/hero/midground.webp');
-  background-size: cover;
-  background-position: center;
-  padding: 4rem 2rem;
-  border-radius: 20px;
-}
 
-.safety-section {
-  background-image: url('/assets/images/safety.jpg');
-  background-size: cover;
-  background-position: center;
-  padding: 4rem 2rem;
-  border-radius: 20px;
-}
+  // Background sections
+  .about-values {
+    background: var(--card-bg); /* Glassmorphism effect */
+    background-size: cover;
+    background-position: center;
+    padding: 4rem 2rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-light); /* Soft border */
+  }
+
+  .safety-section {
+    background: var(--card-bg); /* Glassmorphism effect */
+    background-size: cover;
+    background-position: center;
+    padding: 4rem 2rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-light); /* Soft border */
+  }
 
   // Content Sections
   .content-section {
     margin-bottom: 6rem;
 
-    .about-card{
-      color: white;
+    .about-card {
+      color: var(--text-light); /* Off-white for readability */
+      background: var(--card-bg); /* Glassmorphism effect */
+      border: 1px solid var(--border-light); /* Soft border */
     }
   }
 
@@ -92,7 +98,7 @@
       font-size: 0.9rem;
       font-weight: 600;
       text-transform: uppercase;
-      color:  var(--primary-color);
+      color: var(--accent-color); /* Vibrant turquoise */
       margin-bottom: 0.5rem;
       letter-spacing: 2px;
     }
@@ -102,7 +108,7 @@
       margin: 0;
       position: relative;
       display: inline-block;
-      // color:grey;
+      color: var(--text-light); /* Off-white for readability */
 
       &:after {
         content: '';
@@ -112,7 +118,7 @@
         transform: translateX(-50%);
         width: 60px;
         height: 3px;
-        background:  var(--primary-color);
+        background: var(--accent-color); /* Vibrant turquoise */
       }
 
       @media (max-width: 768px) {
@@ -123,17 +129,17 @@
 
   // Glass Card Effect
   .glass-card {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08); /* Restored original glass effect */
     backdrop-filter: blur(10px);
     border-radius: 15px;
     padding: 2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px var(--shadow-dark);
+    border: 1px solid var(--border-light);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 12px 40px var(--shadow-dark);
     }
   }
 
@@ -171,11 +177,10 @@
 
     .story-text {
       p {
-        color:white;
         margin-bottom: 1.5rem;
         line-height: 1.7;
         font-size: 1.05rem;
-        color:  var(--text-light);;
+        color: var(--text-light); /* Off-white for readability */
       }
     }
 
@@ -195,13 +200,13 @@
           display: block;
           font-size: 2.5rem;
           font-weight: 700;
-          color:  var(--primary-color);
+          color: var(--highlight-color); /* Gold for highlights */
           margin-bottom: 0.3rem;
         }
 
         .stat-label {
           font-size: 0.9rem;
-          color:  var(--text-gray);;
+          color: var(--text-faint); /* Subtle text */
           text-transform: uppercase;
           letter-spacing: 1px;
         }
@@ -232,23 +237,24 @@
         justify-content: center;
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, rgba( var(--primary-color), 0.2), rgba( var(--primary-color), 0.4));
+        background: linear-gradient(135deg, rgba(var(--accent-color), 0.2), rgba(var(--accent-color), 0.4));
         border-radius: 50%;
         margin-bottom: 1.5rem;
 
         i {
           font-size: 2rem;
-          color:  var(--primary-color);
+          color: var(--accent-color); /* Vibrant turquoise */
         }
       }
 
       h3 {
         margin-bottom: 1rem;
         font-size: 1.5rem;
+        color: var(--text-light); /* Off-white for readability */
       }
 
       p {
-        color:  var(--text-light);;
+        color: var(--text-light); /* Off-white for readability */
         line-height: 1.7;
       }
     }
@@ -290,17 +296,18 @@
         h3 {
           margin-bottom: 0.3rem;
           font-size: 1.4rem;
+          color: var(--text-light); /* Off-white for readability */
         }
 
         .position {
-          color:  yellow;
+          color: var(--highlight-color); /* Gold for highlights */
           font-weight: 500;
           margin-bottom: 1rem;
         }
 
         .bio {
           font-size: 0.95rem;
-          color:  var(--text-light);;
+          color: var(--text-light); /* Off-white for readability */
           margin-bottom: 1.5rem;
           line-height: 1.6;
         }
@@ -317,13 +324,13 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: rgba( var(--primary-color), 0.1);
-            color:  var(--primary-color);
+            background: rgba(var(--accent-color), 0.1);
+            color: var(--accent-color); /* Vibrant turquoise */
             transition: all 0.3s ease;
 
             &:hover {
-              background:  var(--primary-color);
-              color: white;
+              background: var(--accent-color); /* Vibrant turquoise */
+              color: var(--text-light); /* Off-white for readability */
             }
           }
         }
@@ -332,11 +339,11 @@
 
     .swiper-button-next,
     .swiper-button-prev {
-      color:  var(--primary-color);
+      color: var(--accent-color); /* Vibrant turquoise */
     }
 
     .swiper-pagination-bullet-active {
-      background:  var(--primary-color);
+      background: var(--accent-color); /* Vibrant turquoise */
     }
   }
 
@@ -367,23 +374,24 @@
         justify-content: center;
         width: 70px;
         height: 70px;
-        background: linear-gradient(135deg, rgba( var(--primary-color), 0.2), rgba( var(--primary-color), 0.4));
+        background: linear-gradient(135deg, rgba(var(--accent-color), 0.2), rgba(var(--accent-color), 0.4));
         border-radius: 50%;
         margin-bottom: 1.5rem;
 
         i {
           font-size: 1.8rem;
-          color:  var(--primary-color);
+          color: var(--accent-color); /* Vibrant turquoise */
         }
       }
 
       h3 {
         margin-bottom: 0.8rem;
         font-size: 1.3rem;
+        color: var(--text-light); /* Off-white for readability */
       }
 
       p {
-        color:  var(--text-light);;
+        color: var(--text-light); /* Off-white for readability */
       }
     }
   }
@@ -395,17 +403,17 @@
     .btn-primary {
       display: inline-block;
       padding: 1rem 2.5rem;
-      background:  var(--primary-color);
-      color: white;
+      background: var(--accent-color); /* Vibrant turquoise */
+      color: var(--text-light); /* Off-white for readability */
       border-radius: 50px;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
-      border: 2px solid  var(--primary-color);
+      border: 2px solid var(--accent-color); /* Vibrant turquoise */
 
       &:hover {
         background: transparent;
-        color:  var(--primary-color);
+        color: var(--accent-color); /* Vibrant turquoise */
       }
     }
   }
@@ -423,12 +431,12 @@
 
 // Swiper override styles
 .swiper-pagination-bullet {
-  background: rgba( var(--primary-color), 0.5);
+  background: rgba(var(--accent-color), 0.5); /* Vibrant turquoise with opacity */
   opacity: 1;
 }
 
 .swiper-pagination-bullet-active {
-  background:  var(--primary-color);
+  background: var(--accent-color); /* Vibrant turquoise */
 }
 
 .swiper-button-next,

@@ -18,31 +18,45 @@
           </li>
           <li>
             <i class="fas fa-phone-alt"></i>
-            <a href="tel:+918981663005">+91 8981663005</a><br/>
+            <a href="tel:+918981663005">+91 8981663005</a><br />
             <a href="tel:+913335474551">+91 33 3547 4551</a>
           </li>
           <li>
             <i class="fas fa-envelope"></i>
-            
-            <a href="mailto:info@thesunflowertrip.com">info&#64;thesunflowertrip.com</a><br/>
-            <a href="mailto:bookings@thesunflowertrip.com">bookings&#64;thesunflowertrip.com</a>
+            <a href="mailto:info@thesunflowertrip.com"
+              >info&#64;thesunflowertrip.com</a
+            ><br />
+            <a href="mailto:bookings@thesunflowertrip.com"
+              >bookings&#64;thesunflowertrip.com</a
+            >
           </li>
           <li>
             <i class="fas fa-clock"></i>
-            <span>Mon–Fri: 10:00 AM - 6:00 PM & Sat: 10:00 AM - 2:00 PM<br />Sunday: Closed</span>
+            <span
+              >Mon–Fri: 10:00 AM - 6:00 PM & Sat: 10:00 AM - 2:00 PM<br />Sunday:
+              Closed</span
+            >
           </li>
         </ul>
 
         <div class="social-links">
-          <a href="https://facebook.com/sunflowertrip" target="_blank"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://instagram.com/tripsunflower" target="_blank"><i class="fab fa-instagram"></i></a>
-          <a href="https://wa.me/918981663005" target="_blank"><i class="fab fa-whatsapp"></i></a>
-          <a href="https://youtube.com/sunflowertrip" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="https://facebook.com/sunflowertrip" target="_blank"
+            ><i class="fab fa-facebook-f"></i
+          ></a>
+          <a href="https://instagram.com/tripsunflower" target="_blank"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a href="https://wa.me/918981663005" target="_blank"
+            ><i class="fab fa-whatsapp"></i
+          ></a>
+          <a href="https://youtube.com/sunflowertrip" target="_blank"
+            ><i class="fab fa-youtube"></i
+          ></a>
         </div>
       </div>
 
       <!-- Contact Form -->
-       <div class="contact-form" [@fadeInUp]>
+      <div class="contact-form" [@fadeInUp]>
         <!-- Success/Error Messages -->
         <div class="success-message" *ngIf="successMessage">
           {{ successMessage }}
@@ -51,9 +65,13 @@
           {{ errorMessage }}
         </div>
 
-        <form *ngIf="contactForm" [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+        <form
+          *ngIf="contactForm"
+          [formGroup]="contactForm"
+          (ngSubmit)="onSubmit()"
+          novalidate
+        >
           <div [@fadeInStagger]>
-
             <div class="form-group">
               <label for="name">Full Name</label>
               <input
@@ -64,7 +82,7 @@
                 placeholder="Your Name"
               />
               <span class="error" *ngIf="isFieldInvalid('name')">
-                {{ getErrorMessage('name') }}
+                {{ getErrorMessage("name") }}
               </span>
             </div>
 
@@ -78,7 +96,7 @@
                 placeholder="Your Email"
               />
               <span class="error" *ngIf="isFieldInvalid('email')">
-                {{ getErrorMessage('email') }}
+                {{ getErrorMessage("email") }}
               </span>
             </div>
 
@@ -92,7 +110,7 @@
                 placeholder="Your Phone"
               />
               <span class="error" *ngIf="isFieldInvalid('phone')">
-                {{ getErrorMessage('phone') }}
+                {{ getErrorMessage("phone") }}
               </span>
             </div>
 
@@ -106,7 +124,7 @@
                 placeholder="Subject"
               />
               <span class="error" *ngIf="isFieldInvalid('subject')">
-                {{ getErrorMessage('subject') }}
+                {{ getErrorMessage("subject") }}
               </span>
             </div>
 
@@ -118,20 +136,16 @@
                 class="form-control"
                 placeholder="Your Message"
               ></textarea>
-              <span class="error" *ngIf="isFieldInvalid('message')">
-                {{ getErrorMessage('message') }}
-              </span>
+              <!-- Commented out error message for message field as it's now non-mandatory -->
+              <!-- <span class="error" *ngIf="isFieldInvalid('message')">
+                {{ getErrorMessage("message") }}
+              </span> -->
             </div>
 
-            <button
-              type="submit"
-              class="btn-primary"
-              [disabled]="isLoading"
-            >
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
               <ng-container *ngIf="!isLoading">Send Message</ng-container>
               <ng-container *ngIf="isLoading">Sending...</ng-container>
             </button>
-
           </div>
         </form>
       </div>
@@ -140,13 +154,17 @@
     <!-- FAQ Section -->
     <div class="glass-card faq-section" [@fadeInStagger]>
       <h2>Frequently Asked Questions</h2>
-      <div class="faq-item" *ngFor="let faq of faqs" (click)="toggleFaq(faq)" [class.active]="faq.isOpen" >
+      <div
+        class="faq-item"
+        *ngFor="let faq of faqs"
+        (click)="toggleFaq(faq)"
+        [class.active]="faq.isOpen"
+      >
         <div [@fadeInStagger]>
-
           <div class="faq-question">{{ faq.question }}</div>
           <div class="faq-answer" *ngIf="faq.isOpen">{{ faq.answer }}</div>
         </div>
-        </div>
+      </div>
     </div>
   </div>
 </section>
