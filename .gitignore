@@ -5,10 +5,10 @@
 /tmp
 /out-tsc
 /bazel-out
-/src/environments
-src\environments\environments.dev.ts
-src\environments\environments.prod.ts
-src\environments\environments.ts
+# /src/environments
+# src\environments\environments.dev.ts
+# src\environments\environments.prod.ts
+# src\environments\environments.ts
 # Node
 /node_modules
 npm-debug.log
