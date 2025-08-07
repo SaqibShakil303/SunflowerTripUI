@@ -59,11 +59,25 @@
   z-index: 2;
   padding: 20px 0 50px;
   overflow: visible;
+  
+  // Ensure all slides have equal height
+  .swiper-wrapper {
+    align-items: stretch;
+  }
+  
+  .swiper-slide {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .testimonial {
   padding: 10px 15px;
   transition: transform 0.4s var(--bezier-smooth);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   
   &:hover {
     transform: translateY(-10px);
@@ -79,6 +93,12 @@
   position: relative;
   overflow: hidden;
   transition: all 0.4s var(--bezier-smooth);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  // Set minimum height for consistent card sizes
+  min-height: 280px;
 
   &::before, &::after {
     font-family: serif;
@@ -110,6 +130,14 @@
     line-height: 1.7;
     position: relative;
     z-index: 2;
+    flex: 1; // This makes the quote take up available space
+    display: flex;
+    align-items: flex-start; // Align text to top
+  }
+  
+  // Client section will be pushed to bottom
+  .client {
+    margin-top: auto;
   }
   
   &:hover {
@@ -138,6 +166,7 @@
     border: 3px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    flex-shrink: 0; // Prevent image from shrinking
 
     img {
       width: 100%;
@@ -232,6 +261,11 @@
       }
     }
   }
+  
+  // Ensure equal height for all swiper slides
+  .swiper-slide {
+    height: auto !important;
+  }
 }
 
 /* Animation keyframes */
@@ -254,5 +288,25 @@
 @for $i from 1 through 6 {
   .testimonial-slider .testimonial:nth-child(#{$i}) {
     animation-delay: 0.1s * $i;
+  }
+}
+
+/* Responsive adjustments for card heights */
+@media (max-width: 768px) {
+  .testimonial-content {
+    min-height: 320px; // Slightly taller for mobile due to narrower cards
+    padding: 25px;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimonial-content {
+    min-height: 300px;
+    padding: 20px;
+    
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
   }
 }

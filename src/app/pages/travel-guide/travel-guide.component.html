@@ -21,24 +21,30 @@
       <div class="section-title">
         <h2>Popular Destinations</h2>
       </div>
-      <div class="destinations-grid">
-        <div class="destination-card" *ngFor="let destination of featuredDestinations">
+      <div class="loader" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading destinations...</p>
+      </div>
+      <div class="destinations-grid" *ngIf="!loading">
+        <div class="destination-card" *ngFor="let destination of displayedDestinations">
           <div class="destination-img">
-            <img [src]="destination.image" [alt]="destination.name">
-            <div class="destination-tag">{{ destination.tag }}</div>
+            <img [src]="destination.image_url" [alt]="destination.title">
           </div>
           <div class="destination-content">
-            <h3>{{ destination.name }}</h3>
+            <h3>{{ destination.title }}</h3>
             <p>{{ destination.description }}</p>
             <div class="destination-meta">
-              <div class="destination-rating">
-                <span>★★★★★</span> {{ destination.rating }}
+              <div class="destination-info">
+                <span>Best Time: {{ destination.best_time_to_visit }}</span>
               </div>
-              <div>{{ destination.duration }}</div>
+              <div>{{ destination.weather }}</div>
             </div>
             <a href="javascript:void(0)" class="view-btn" (click)="exploreDestination(destination)">Explore Destination</a>
           </div>
         </div>
+      </div>
+      <div class="show-more" *ngIf="!loading && displayedDestinations.length < featuredDestinations.length">
+        <button class="show-more-btn" (click)="showMoreDestinations()">Show More</button>
       </div>
     </section>
 
@@ -79,7 +85,7 @@
     <section class="cta-section">
       <div class="cta-content">
         <h2>Ready for Your Next Adventure?</h2>
-        <p>Let our travel experts help you plan the perfect getaway tailored to your preferences and budget. Enjoy exclusive deals and personalized service.</p>
+        <p>Let our travel experts help you planarpal the perfect getaway tailored to your preferences and budget. Enjoy exclusive deals and personalized service.</p>
         <a href="javascript:void(0)" class="cta-btn" (click)="planTrip()">Plan Your Trip Now</a>
       </div>
     </section>
@@ -102,6 +108,6 @@
       </div>
     </div>
   </div>
-<app-chat-widget></app-chat-widget>
+  <app-chat-widget></app-chat-widget>
   <app-footer></app-footer>
 </section>

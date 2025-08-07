@@ -31,6 +31,8 @@ import { TourDetailComponent } from './pages/tour-detail/tour-detail.component';
 // import { CustomPlannerComponent } from './pages/custom-planner/custom-planner.component';
 import { CompanyPortfolioComponent } from './pages/company-portfolio/company-portfolio.component';
 import { GroupBrochureComponent } from './pages/group-brochure/group-brochure.component';
+import { ServiceComponent } from './pages/services/services.component';
+import { TestimonialComponent } from './pages/testimonials/testimonials.component';
 
 
 export const routes: Routes = [
@@ -136,5 +138,13 @@ export const routes: Routes = [
   {
     path:'group-brochure',
     component: GroupBrochureComponent
+  }, 
+  {
+    path:'services', 
+    component: ServiceComponent
+  }, 
+  {
+    path:'testimonials',
+    component: TestimonialComponent
   }
 ];

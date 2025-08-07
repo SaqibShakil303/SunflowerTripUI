@@ -1,5 +1,3 @@
-// travel-guide.component.scss
-
 // Base Styles
 .travel-guide {
   color: #fff;
@@ -11,6 +9,35 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 0;
+}
+
+// Loader
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #FF9D00; // Primary color
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    color: #fff;
+    font-size: 1.2rem;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 // Hero Section
@@ -34,13 +61,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5); // Original overlay
 }
 
 .hero-content {
   position: relative;
   z-index: 10;
-  margin-top:7.5em;
+  margin-top: 7.5em;
   max-width: 800px;
   padding: 0 1rem;
 
@@ -78,7 +105,7 @@
   }
 
   .search-btn {
-    background: #FF9D00;
+    background: #FF9D00; // Primary color
     border: none;
     color: white;
     padding: 0 1.5rem;
@@ -87,7 +114,7 @@
     transition: background 0.3s ease;
 
     &:hover {
-      background: #e68d00;
+      background: #FFB347; // Secondary color
     }
   }
 }
@@ -95,7 +122,7 @@
 // Featured Destinations
 .featured-destinations {
   padding: 4rem 0;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05); // Original background
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -118,7 +145,7 @@
       display: block;
       width: 80px;
       height: 4px;
-      background: #FF9D00;
+      background: #FF9D00; // Primary color
       margin: 0.5rem auto 0;
       border-radius: 2px;
     }
@@ -127,7 +154,7 @@
 
 .destinations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr); // 3 items per row
   gap: 2rem;
   padding: 0 1rem;
 }
@@ -162,18 +189,6 @@
     transform: scale(1.1);
   }
 
-  .destination-tag {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #FF9D00;
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
   .destination-content {
     padding: 1.5rem;
 
@@ -197,12 +212,12 @@
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.7);
 
-    .destination-rating {
+    .destination-info {
       display: flex;
       align-items: center;
 
       span {
-        color: #FF9D00;
+        color: #FF9D00; // Primary color
         margin-right: 3px;
       }
     }
@@ -210,7 +225,7 @@
 
   .view-btn {
     display: inline-block;
-    background: linear-gradient(90deg, #FF9D00, #FFB347);
+    background: linear-gradient(90deg, #FF9D00, #FFB347); // Primary to Secondary
     color: white;
     padding: 0.6rem 1.2rem;
     border-radius: 25px;
@@ -221,9 +236,31 @@
     text-align: center;
 
     &:hover {
-      background: linear-gradient(90deg, #FFB347, #FF9D00);
+      background: linear-gradient(90deg, #FFB347, #FF9D00); // Secondary to Primary
       box-shadow: 0 5px 15px rgba(255, 157, 0, 0.4);
       transform: translateY(-2px);
+    }
+  }
+}
+
+.show-more {
+  text-align: center;
+  margin-top: 2rem;
+
+  .show-more-btn {
+    background: #FF9D00; // Primary color
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #FFB347; // Secondary color
+      box-shadow: 0 5px 15px rgba(255, 179, 71, 0.4);
+      transform: translateY(-3px);
     }
   }
 }
@@ -242,7 +279,7 @@
 
 // Travel Tips
 .travel-tips {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05); // Original background
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -260,7 +297,7 @@
       display: block;
       width: 60px;
       height: 3px;
-      background: #FF9D00;
+      background: #FF9D00; // Primary color
       margin-top: 0.5rem;
       border-radius: 2px;
     }
@@ -318,14 +355,14 @@
       }
 
       .read-more {
-        color: #FF9D00;
+        color: #FF9D00; // Primary color
         text-decoration: none;
         font-size: 0.9rem;
         font-weight: 600;
         transition: color 0.3s ease;
 
         &:hover {
-          color: #FFB347;
+          color: #FFB347; // Secondary color
         }
       }
     }
@@ -334,7 +371,7 @@
 
 // FAQs
 .faqs {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05); // Original background
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -352,7 +389,7 @@
       display: block;
       width: 60px;
       height: 3px;
-      background: #FF9D00;
+      background: #FF9D00; // Primary color
       margin-top: 0.5rem;
       border-radius: 2px;
     }
@@ -403,7 +440,7 @@
 .cta-section {
   text-align: center;
   padding: 4rem 0;
-  background: linear-gradient(135deg, rgba(255, 157, 0, 0.2), rgba(255, 179, 71, 0.2));
+  background: linear-gradient(135deg, rgba(255, 157, 0, 0.2), rgba(255, 179, 71, 0.2)); // Original gradient
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -426,7 +463,7 @@
 
     .cta-btn {
       display: inline-block;
-      background: #FF9D00;
+      background: #FF9D00; // Primary color
       color: white;
       padding: 1rem 2rem;
       border-radius: 50px;
@@ -436,8 +473,8 @@
       box-shadow: 0 5px 15px rgba(255, 157, 0, 0.3);
 
       &:hover {
-        background: #FFB347;
-        box-shadow: 0 8px 20px rgba(255, 157, 0, 0.4);
+        background: #FFB347; // Secondary color
+        box-shadow: 0 8px 20px rgba(255, 179, 71, 0.4);
         transform: translateY(-3px);
       }
     }
@@ -471,7 +508,7 @@
       cursor: pointer;
 
       &:hover {
-        background: #FF9D00;
+        background: #FF9D00; // Primary color
         transform: translateY(-3px);
       }
     }
@@ -480,7 +517,7 @@
 
 // Newsletter
 .newsletter {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05); // Original background
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -518,7 +555,7 @@
     }
 
     .newsletter-btn {
-      background: #FF9D00;
+      background: #FF9D00; // Primary color
       border: none;
       color: white;
       padding: 0 1.5rem;
@@ -527,13 +564,19 @@
       transition: background 0.3s ease;
 
       &:hover {
-        background: #FFB347;
+        background: #FFB347; // Secondary color
       }
     }
   }
 }
 
 // Responsive Styles
+@media (max-width: 992px) {
+  .destinations-grid {
+    grid-template-columns: repeat(2, 1fr); // 2 items per row on medium screens
+  }
+}
+
 @media (max-width: 768px) {
   .hero-content {
     h1 {
@@ -546,7 +589,7 @@
   }
   
   .destinations-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .travel-content {
@@ -575,7 +618,7 @@
   }
   
   .destinations-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; // 1 item per row on small screens
   }
   
   .search-bar {
