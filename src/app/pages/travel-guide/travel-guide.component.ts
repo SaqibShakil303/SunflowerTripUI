@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from "../../common/navbar/navbar.component";
-import { AboutComponent } from "../../components/about/about.component";
 import { FooterComponent } from "../../common/footer/footer.component";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.component";
+import { Observable } from 'rxjs';
+import { Destination } from '../../models/destination.model';
+import { DestinationService } from '../../services/destination/destination.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-travel-guide',
@@ -13,70 +16,16 @@ import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.co
   templateUrl: './travel-guide.component.html',
   styleUrl: './travel-guide.component.scss'
 })
-export class TravelGuideComponent {
-  featuredDestinations = [
-    {
-      id: 1,
-      name: 'Bali, Indonesia',
-      description: 'Tropical paradise with stunning beaches, vibrant culture, and spiritual retreats.',
-      image: 'assets/images/destinations/bali.webp',
-      tag: 'Popular',
-      rating: 4.8,
-      duration: '7-10 days'
-    },
-    {
-      id: 2,
-      name: 'Maldives',
-      description: 'Crystal clear waters, overwater villas, and pristine white sand beaches.',
-      image: 'assets/images/destinations/maldives.webp',
-      tag: 'Luxury',
-      rating: 4.9,
-      duration: '5-7 days'
-    },
-    {
-      id: 3,
-      name: 'Switzerland',
-      description: 'Alpine scenery, charming villages, and world-class skiing adventures.',
-      image: 'assets/images/destinations/switzerland.webp',
-      tag: 'Family',
-      rating: 4.7,
-      duration: '7-14 days'
-    },
-    {
-      id: 4,
-      name: 'Thailand',
-      description: 'Vibrant street life, ancient temples, and beautiful tropical islands.',
-      image: 'assets/images/destinations/thailand.webp',
-      tag: 'Budget',
-      rating: 4.6,
-      duration: '10-15 days'
-    },
-    {
-      id: 5,
-      name: 'Japan',
-      description: 'Ancient traditions, futuristic cities, and stunning natural landscapes.',
-      image: 'assets/images/destinations/japan.webp',
-      tag: 'Culture',
-      rating: 4.8,
-      duration: '10-14 days'
-    },
-    {
-      id: 6,
-      name: 'Egypt',
-      description: 'Ancient pyramids, majestic temples, and Nile River cruises.',
-      image: 'assets/images/destinations/egypt.webp',
-      tag: 'Historic',
-      rating: 4.7,
-      duration: '7-12 days'
-    }
-  ];
-
+export class TravelGuideComponent implements OnInit {
+  featuredDestinations: Destination[] = [];
+  filteredDestinations: Destination[] = [];
+  displayedDestinations: Destination[] = [];
   travelTips = [
     {
       id: 1,
       title: 'How to Pack Light for 2-Week Trips',
       summary: 'Learn the art of efficient packing with these pro tips that will save space and stress...',
-      image: 'assets/images/tips/packing.webp',
+      image: 'https://images.pexels.com/photos/1057637/pexels-photo-1057637.jpeg?auto=compress&cs=tinysrgb&w=500',
       date: 'May 5, 2025',
       readTime: '5 min read',
       url: '/travel-tips/packing-light'
@@ -85,7 +34,7 @@ export class TravelGuideComponent {
       id: 2,
       title: 'Visa-free Countries for Indian Travelers',
       summary: 'Discover beautiful destinations where Indian passport holders can travel without visa hassles...',
-      image: 'assets/images/tips/visa-free.webp',
+      image: 'https://images.pexels.com/photos/208701/pexels-photo-208701.jpeg?auto=compress&cs=tinysrgb&w=500',
       date: 'April 28, 2025',
       readTime: '7 min read',
       url: '/travel-tips/visa-free-countries'
@@ -94,7 +43,7 @@ export class TravelGuideComponent {
       id: 3,
       title: 'Budget Travel Guide for Southeast Asia',
       summary: 'Explore the beauty of Southeast Asia without breaking the bank with these practical tips...',
-      image: 'assets/images/tips/budget-travel.webp',
+      image: 'https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg?auto=compress&cs=tinysrgb&w=500',
       date: 'April 15, 2025',
       readTime: '8 min read',
       url: '/travel-tips/budget-southeast-asia'
@@ -103,7 +52,7 @@ export class TravelGuideComponent {
       id: 4,
       title: 'Travel Photography Tips for Beginners',
       summary: 'Capture stunning vacation memories with these simple photography techniques...',
-      image: 'assets/images/tips/photography.webp',
+      image: 'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg?auto=compress&cs=tinysrgb&w=500',
       date: 'April 8, 2025',
       readTime: '6 min read',
       url: '/travel-tips/photography-basics'
@@ -146,36 +95,100 @@ export class TravelGuideComponent {
 
   searchQuery: string = '';
   emailSubscribe: string = '';
+  loading: boolean = true;
+  initialDestinations: number = 6;
+  incrementDestinations: number = 3;
+  currentPage: number = 1;
 
-  constructor() { }
+  constructor(private destinationService: DestinationService, private router: Router) { }
 
   ngOnInit(): void {
-    // Initialize any components or fetch data if needed
+    this.loadDestinations();
+  }
+
+  loadDestinations(): void {
+    this.loading = true;
+    this.destinationService.getDestinations().subscribe({
+      next: (destinations: Destination[]) => {
+        this.featuredDestinations = destinations;
+        this.filteredDestinations = destinations;
+        this.updateDisplayedDestinations();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching destinations:', error);
+        alert('Failed to load destinations. Please try again later.');
+        this.loading = false;
+      }
+    });
+  }
+
+  updateDisplayedDestinations(): void {
+    const endIndex = this.initialDestinations + (this.currentPage - 1) * this.incrementDestinations;
+    this.displayedDestinations = this.filteredDestinations.slice(0, endIndex);
+  }
+
+  searchDestinations(): void {
+    this.performSearch();
+  }
+
+  onSearchInput(): void {
+    // Optional: Add debounce for real-time search
+    // For now, just perform search on input
+    this.performSearch();
+  }
+
+  private performSearch(): void {
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase().trim();
+      this.filteredDestinations = this.featuredDestinations.filter(destination =>
+        destination.title.toLowerCase().includes(query) ||
+        destination.description.toLowerCase().includes(query) ||
+        (destination.best_time_to_visit && destination.best_time_to_visit.toLowerCase().includes(query)) ||
+        (destination.weather && destination.weather.toLowerCase().includes(query))
+      );
+    } else {
+      this.filteredDestinations = [...this.featuredDestinations]; // Create a copy
+    }
+    this.currentPage = 1; // Reset pagination
+    this.updateDisplayedDestinations();
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.filteredDestinations = [...this.featuredDestinations];
+    this.currentPage = 1;
+    this.updateDisplayedDestinations();
+  }
+
+  getSearchResultsText(): string {
+    const resultsCount = this.filteredDestinations.length;
+    if (resultsCount === 0) {
+      return `No results found for "${this.searchQuery}"`;
+    } else if (resultsCount === 1) {
+      return `Found 1 destination matching "${this.searchQuery}"`;
+    } else {
+      return `Found ${resultsCount} destinations matching "${this.searchQuery}"`;
+    }
+  }
+
+  showMoreDestinations(): void {
+    this.currentPage++;
+    this.updateDisplayedDestinations();
   }
 
   toggleFaq(faq: any): void {
-    // Close all other FAQs
     this.faqs.forEach(item => {
       if (item !== faq) {
         item.isOpen = false;
       }
     });
-    
-    // Toggle the selected FAQ
     faq.isOpen = !faq.isOpen;
-  }
-
-  searchDestinations(): void {
-    console.log('Searching for:', this.searchQuery);
-    // Implement search functionality
-    // This would typically call a service to fetch filtered results
   }
 
   subscribeNewsletter(): void {
     if (this.validateEmail(this.emailSubscribe)) {
       console.log('Subscribing email:', this.emailSubscribe);
-      // Implement newsletter subscription
-      // This would typically call a service to handle the subscription
       this.emailSubscribe = '';
       alert('Thank you for subscribing to our newsletter!');
     } else {
@@ -189,26 +202,21 @@ export class TravelGuideComponent {
   }
 
   exploreDestination(destination: any): void {
-    console.log('Exploring destination:', destination.name);
-    // Navigate to the destination detail page
-    // This would typically use the Router to navigate
+    this.router.navigate(['destination', destination.title]);
   }
 
   readArticle(article: any): void {
     console.log('Reading article:', article.title);
     // Navigate to the article detail page
-    // This would typically use the Router to navigate
   }
 
   searchByTag(tag: string): void {
-    console.log('Searching by tag:', tag);
     this.searchQuery = tag;
-    this.searchDestinations();
+    this.performSearch();
   }
 
   planTrip(): void {
     console.log('Planning a trip');
     // Navigate to the trip planning page
-    // This would typically use the Router to navigate
   }
 }
