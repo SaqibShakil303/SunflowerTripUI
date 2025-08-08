@@ -11,7 +11,7 @@ import { BookingModalComponent } from "../../components/booking-modal/booking-mo
 import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { BookingsService } from '../../services/bookings/bookings.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { DOCUMENT } from '@angular/common';
 @Component({
   selector: 'app-tour-detail',
   standalone: true,
@@ -51,8 +51,34 @@ export class TourDetailComponent implements OnInit {
     private meta: Meta,
     private title: Title,
     private snackBar: MatSnackBar,
+      @Inject(DOCUMENT) private doc: Document    
   ) { }
 
+  
+private setCanonical(url: string) {                 // ✅ add
+  let link = this.doc.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
+  if (!link) {
+    link = this.doc.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    this.doc.head.appendChild(link);
+  }
+  link.setAttribute('href', url);
+}
+
+private short(text?: string, n = 155): string {     // ✅ add
+  if (!text) return '';
+  return text.replace(/<[^>]+>/g, '').slice(0, n).trim();
+}
+
+private setJsonLd(data: object) {                   // ✅ add
+  // remove any previous JSON-LD
+  this.doc.querySelectorAll('script.seo-jsonld').forEach(s => s.remove());
+  const s = this.doc.createElement('script');
+  s.type = 'application/ld+json';
+  s.classList.add('seo-jsonld');
+  s.text = JSON.stringify(data);
+  this.doc.head.appendChild(s);
+}
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
 
@@ -70,12 +96,53 @@ export class TourDetailComponent implements OnInit {
         this.selectedRooms = tour.rooms || 1;
         this.loading = false;
 
-        this.title.setTitle(tour.meta_title || tour.title);
-        this.meta.updateTag({ name: 'description', content: tour.meta_description || tour.description });
-        this.meta.updateTag({ name: 'og:title', content: tour.meta_title || tour.title });
-        this.meta.updateTag({ name: 'og:description', content: tour.meta_description || tour.description });
-        this.meta.updateTag({ name: 'og:image', content: tour.image_url });
-        this.meta.updateTag({ name: 'og:url', content: `https://sunflowertrip.in/tours/${tour.slug}` });
+           const url = `https://thesunflowertrip.com/tours/${tour.slug}`;
+      const title = tour.meta_title || tour.title;
+      const desc  = this.short(tour.meta_description || tour.description);
+      const image = tour.image_url || 'https://thesunflowertrip.com/assets/og-default.jpg';
+
+      // ✅ Title + basic description
+      this.title.setTitle(`${title} | SunflowerTrip`);
+      this.meta.updateTag({ name: 'description', content: desc });
+
+      // ✅ Open Graph
+      this.meta.updateTag({ property: 'og:type', content: 'product' });
+      this.meta.updateTag({ property: 'og:title', content: title });
+      this.meta.updateTag({ property: 'og:description', content: desc });
+      this.meta.updateTag({ property: 'og:image', content: image });
+      this.meta.updateTag({ property: 'og:url', content: url });
+
+      // ✅ Twitter
+      this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+      this.meta.updateTag({ name: 'twitter:title', content: title });
+      this.meta.updateTag({ name: 'twitter:description', content: desc });
+      this.meta.updateTag({ name: 'twitter:image', content: image });
+
+      // ✅ Canonical
+      this.setCanonical(url);
+
+      // ✅ JSON-LD (Product with AggregateOffer-ish data)
+      this.setJsonLd({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": title,
+        "image": [image],
+        "description": desc,
+        "brand": { "@type": "Brand", "name": "SunflowerTrip" },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "INR",
+          "price": String(tour.price || 0),
+          "url": url,
+          "availability": "https://schema.org/InStock"
+        }
+      });
+        // this.title.setTitle(tour.meta_title || tour.title);
+        // this.meta.updateTag({ name: 'description', content: tour.meta_description || tour.description });
+        // this.meta.updateTag({ name: 'og:title', content: tour.meta_title || tour.title });
+        // this.meta.updateTag({ name: 'og:description', content: tour.meta_description || tour.description });
+        // this.meta.updateTag({ name: 'og:image', content: tour.image_url });
+        // this.meta.updateTag({ name: 'og:url', content: `https://thesunflowertrip.com/tours/${tour.slug}` });
       },
       error: () => {
         this.tour = null;
