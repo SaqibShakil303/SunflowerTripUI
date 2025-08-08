@@ -161,6 +161,10 @@
   }
 }
 
+.logo-text {
+  font-family: 'FV Almelo', sans-serif !important;
+}
+
 @media (max-width: 768px) {
   .footer-grid {
     grid-template-columns: 1fr;
