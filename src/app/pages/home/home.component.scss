@@ -53,7 +53,7 @@
 .hero-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 2rem;
 }
 
@@ -69,7 +69,7 @@
 
 /* Typography */
 h1 {
-  font-family: "Cinzel Decorative", cursive;
+  // font-family: "Cinzel Decorative", cursive;
   font-weight: 50;
   font-size: 120px;
   line-height: 170px;
@@ -90,7 +90,7 @@ h1._active {
 }
 
 h2 {
-  font-family: "Cinzel Decorative", cursive;
+  // font-family: "Cinzel Decorative", cursive;
   font-weight: normal;
   font-size: 120px;
   line-height: 100%;
@@ -111,7 +111,8 @@ h2._active {
 }
 
 .main-title {
-  margin-top: 70px;
+  font-family: "Forum", cursive;
+  // margin-top: 70px;
   align-items: left;
   margin-right: 30px;
   display: flex;
