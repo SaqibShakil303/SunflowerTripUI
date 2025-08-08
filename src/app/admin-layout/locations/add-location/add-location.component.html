@@ -33,16 +33,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="destinationId" class="form-label">Destination *</label>
-                            <select id="destinationId" formControlName="destinationId" class="form-control"
-                                [class.error]="isFieldInvalid('destinationId')">
-                                <option value="" disabled selected>Select a destination</option>
-                                <option *ngFor="let dest of destinations" [value]="dest.id">
+                            <label for="destination_ids" class="form-label">Destinations *</label>
+                            <select id="destination_ids" formControlName="destination_ids" class="form-control" multiple
+                                [class.error]="isFieldInvalid('destination_ids')">
+                                <option *ngFor="let dest of destinations" [ngValue]="dest.id">
                                     {{ dest.title }}
                                 </option>
                             </select>
-                            <div class="error-message" *ngIf="isFieldInvalid('destinationId')">
-                                {{ getFieldError('destinationId') }}
+                            <div class="form-help">Hold Ctrl (Windows) or Cmd (Mac) to select multiple destinations</div>
+                            <div class="error-message" *ngIf="isFieldInvalid('destination_ids')">
+                                {{ getFieldError('destination_ids') }}
                             </div>
                         </div>
                     </div>

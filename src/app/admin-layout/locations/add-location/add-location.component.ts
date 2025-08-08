@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Destination } from '../../../models/destination.model';
 import { LocationModel } from '../../../models/location.model';
 import { DestinationService } from '../../../services/destination/destination.service';
@@ -10,7 +11,7 @@ import { LocationService } from '../../../services/location/location.service';
 @Component({
   selector: 'app-add-location',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './add-location.component.html',
   styleUrls: ['./add-location.component.scss']
 })
@@ -26,6 +27,7 @@ export class AddLocationComponent implements OnInit {
     private dialogRef: MatDialogRef<AddLocationComponent>,
     private locationService: LocationService,
     private destinationService: DestinationService,
+    private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
   ) {
     this.locationForm = this.createForm();
@@ -39,7 +41,11 @@ export class AddLocationComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error fetching destinations:', error);
+        this.snackBar.open('Failed to load destinations', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+        this.cdr.detectChanges();
       }
     });
   }
@@ -47,7 +53,7 @@ export class AddLocationComponent implements OnInit {
   private createForm(): FormGroup {
     return this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      destinationId: ['', [Validators.required]],
+      destination_ids: [[], [Validators.required, Validators.minLength(1)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       imageFile: [null],
       imageUrl: ['', [Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]],
@@ -142,6 +148,9 @@ export class AddLocationComponent implements OnInit {
       if (field.errors['required']) {
         return `${this.getFieldLabel(fieldName)} is required`;
       }
+      if (field.errors['minlength'] && fieldName === 'destination_ids') {
+        return `${this.getFieldLabel(fieldName)} must have at least ${field.errors['minlength'].requiredLength} selection(s)`;
+      }
       if (field.errors['minlength']) {
         return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['minlength'].requiredLength} characters`;
       }
@@ -168,7 +177,7 @@ export class AddLocationComponent implements OnInit {
   private getFieldLabel(fieldName: string): string {
     const labels: { [key: string]: string } = {
       'name': 'Location name',
-      'destinationId': 'Destination',
+      'destination_ids': 'Destinations',
       'description': 'Description',
       'imageFile': 'Image',
       'imageUrl': 'Image URL',
@@ -184,7 +193,7 @@ export class AddLocationComponent implements OnInit {
 
       const formValue = this.locationForm.value;
       const locationData: Partial<LocationModel> = {
-        destination_id: formValue.destinationId,
+        destination_ids: formValue.destination_ids,
         name: formValue.name,
         description: formValue.description,
         iframe_360: formValue.iframe360,
@@ -193,20 +202,30 @@ export class AddLocationComponent implements OnInit {
 
       this.locationService.addLocation(locationData).subscribe({
         next: (insertId) => {
+          this.snackBar.open('Location added successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
           this.isSubmitting = false;
           this.dialogRef.close({ ...locationData, id: insertId });
           this.cdr.detectChanges();
         },
         error: (error) => {
           this.isSubmitting = false;
-          console.error('Error adding location:', error);
-          alert('Failed to add location. Please try again.');
+          this.snackBar.open('Failed to add location: ' + (error.error?.message || 'Unknown error'), 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
           this.cdr.detectChanges();
         }
       });
     } else {
       Object.keys(this.locationForm.controls).forEach(key => {
         this.locationForm.get(key)?.markAsTouched();
+      });
+      this.snackBar.open('Please fill all required fields correctly', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
       });
       this.cdr.detectChanges();
     }
