@@ -383,6 +383,10 @@ export class AddTourComponent implements OnInit {
           activities: day.activities ? day.activities.split('\n').filter((item: string) => item.trim()) : [],
           meals_included: day.meals_included ? day.meals_included.split('\n').filter((item: string) => item.trim()) : [],
           accommodation: day.accommodation || null
+        })),
+          departures: formValue.departures.map((departure: any) => ({
+          departure_date: departure.departure_date,
+          available_seats: departure.available_seats
         }))
       };
 
