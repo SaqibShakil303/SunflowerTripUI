@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { Destination } from '../../../models/destination.model';
+import { DestinationNav } from '../../../services/destination/destination.service';
 import { LocationModel } from '../../../models/location.model';
 import { DestinationService } from '../../../services/destination/destination.service';
 import { LocationService } from '../../../services/location/location.service';
@@ -19,7 +19,7 @@ export class EditLocationComponent implements OnInit {
   isSubmitting: boolean = false;
   imagePreview: string | null = null;
   imageInputType: 'file' | 'url' = 'url'; // Default to URL since existing image is likely a URL
-  destinations: Destination[] = [];
+  destinations: DestinationNav[] = [];
   isLoadingDestinations: boolean = true; // Loading state for destinations
 
   constructor(
@@ -36,7 +36,7 @@ export class EditLocationComponent implements OnInit {
   ngOnInit(): void {
     // Fetch destinations for dropdown
     this.isLoadingDestinations = true;
-    this.destinationService.getDestinationNames().subscribe({
+    this.destinationService.getNamesAndLocations().subscribe({
       next: (destinations) => {
         this.destinations = destinations;
         this.isLoadingDestinations = false;
@@ -57,7 +57,7 @@ export class EditLocationComponent implements OnInit {
     return this.fb.group({
       id: [null, [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      destinationId: ['', [Validators.required]],
+      destination_ids: [[], [Validators.required]], // Changed to array for multiple destinations
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       imageFile: [null],
       imageUrl: ['', [Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]],
@@ -66,11 +66,16 @@ export class EditLocationComponent implements OnInit {
   }
 
   private populateForm(): void {
-    const { id, name, destination_id, description, image_url, iframe_360 } = this.data;
+    const { id, name, destination_ids, description, image_url, iframe_360 } = this.data;
+    // Ensure destination_ids is an array, convert single ID to array if necessary
+    const validDestinationIds = Array.isArray(destination_ids)
+      ? destination_ids.filter(id => id != null && this.destinations.some(dest => dest.id === id))
+      : destination_ids != null ? [destination_ids] : [];
+
     this.locationForm.patchValue({
       id,
       name,
-      destinationId: destination_id,
+      destination_ids: validDestinationIds,
       description,
       iframe360: iframe_360
     });
@@ -230,7 +235,7 @@ export class EditLocationComponent implements OnInit {
     const labels: { [key: string]: string } = {
       id: 'ID',
       name: 'Location name',
-      destinationId: 'Destination',
+      destination_ids: 'Destinations',
       description: 'Description',
       imageFile: 'Image',
       imageUrl: 'Image URL',
@@ -247,12 +252,21 @@ export class EditLocationComponent implements OnInit {
       const formValue = this.locationForm.value;
       const locationData: Partial<LocationModel> = {
         id: formValue.id,
-        destination_id: formValue.destinationId,
+        destination_ids: formValue.destination_ids, // Changed to array
         name: formValue.name,
         description: formValue.description,
         iframe_360: formValue.iframe360,
         image_url: this.imageInputType === 'url' ? formValue.imageUrl || this.data.image_url : formValue.imageFile || this.data.image_url
       };
+
+      // Validate destination_ids before submission
+      const destinationIds = formValue.destination_ids || [];
+      if (!destinationIds.every((id: number) => this.destinations.some(dest => dest.id === id))) {
+        this.isSubmitting = false;
+        alert('Selected destinations are invalid');
+        this.cdr.detectChanges();
+        return;
+      }
 
       this.locationService.updateLocation(locationData).subscribe({
         next: (updatedLocation) => {

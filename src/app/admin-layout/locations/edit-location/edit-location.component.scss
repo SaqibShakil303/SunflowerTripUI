@@ -136,6 +136,11 @@ $font-heading: 'Playfair Display', serif;
             &::after {
               content: " *";
               color: $danger-red;
+              display: none;
+            }
+
+            &.required::after {
+              display: inline;
             }
           }
 
