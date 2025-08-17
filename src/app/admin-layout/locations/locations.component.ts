@@ -57,9 +57,7 @@ export class LocationsComponent implements OnInit {
     this.isLoading = true;
     forkJoin([
       this.locationService.getAllLocations().pipe(
-
         tap((locations) => {
-console.log(locations);
           this.validateImageUrls(locations);
         }),
         catchError((error) => {
@@ -74,11 +72,27 @@ console.log(locations);
         })
       )
     ]).subscribe(([locations, destinations]) => {
-      this.locations = locations;
       this.destinations = destinations;
+      // Map locations to ensure destination_titles is always an array
+      this.locations = locations.map(location => ({
+        ...location,
+        destination_titles: this.getDestinationTitles(location.destination_id),
+        image_url: location.image_url || this.fallbackImage,
+        showDetails: false,
+        isDeleting: false
+      }));
       this.isLoading = false;
       this.applyFilters();
     });
+  }
+
+  // Get destination titles based on destination_id
+  private getDestinationTitles(destinationId?: number): string[] {
+    if (!destinationId) {
+      return [];
+    }
+    const destination = this.destinations.find(dest => dest.id === destinationId);
+    return destination ? [destination.title] : [];
   }
 
   // Validate image URLs and log issues
@@ -88,7 +102,6 @@ console.log(locations);
         console.warn(`Image URL missing for location: ${location.name || 'ID ' + location.id}`);
         location.image_url = this.fallbackImage;
       } else {
-        // Log URLs for debugging
         console.log(`Image URL for ${location.name}: ${location.image_url}`);
       }
     });
@@ -259,11 +272,9 @@ console.log(locations);
     const dialogRef = this.dialog.open(EditLocationComponent, {
       width: '600px',
       data: {
-
-         ...location ,
-                  destination_titles: location.destination_titles || [],
-         destination_ids: location.destination_id || [],
-        
+        ...location,
+        destination_titles: location.destination_titles || [],
+        destination_ids: location.destination_id ? [location.destination_id] : []
       }
     });
 
@@ -271,7 +282,12 @@ console.log(locations);
       if (result) {
         const index = this.locations.findIndex(d => d.id === result.id);
         if (index !== -1) {
-          this.locations[index] = result;
+          this.locations[index] = {
+            ...result,
+            destination_titles: this.getDestinationTitles(result.destination_id),
+            showDetails: this.locations[index].showDetails ?? false,
+            isDeleting: this.locations[index].isDeleting ?? false
+          };
           this.applyFilters();
         }
       }

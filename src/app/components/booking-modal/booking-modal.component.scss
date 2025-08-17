@@ -141,6 +141,70 @@
   }
 }
 
+.terms-section {
+  margin-top: 1rem;
+  width: 100%;
+
+  h3 {
+    font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+    color: #fff;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+.terms-container {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 1rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #4cd7d0;
+    border-radius: 3px;
+  }
+}
+
+.terms-text {
+  white-space: pre-wrap;
+  font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4cd7d0;
+    cursor: pointer;
+  }
+
+  label {
+    font-size: clamp(0.85rem, 3vw, 0.95rem);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+
 .form-actions {
   display: flex;
   justify-content: space-between;
@@ -228,6 +292,34 @@
     }
   }
 
+  .terms-section {
+    h3 {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+    }
+  }
+
+  .terms-container {
+    max-height: 150px;
+    padding: 0.75rem;
+  }
+
+  .terms-text {
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+  }
+
+  .checkbox-group {
+    gap: 0.5rem;
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    label {
+      font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    }
+  }
+
   .form-actions {
     flex-direction: column;
     gap: 0.75rem;
@@ -278,6 +370,33 @@
     gap: 0.5rem;
   }
 
+  .terms-section {
+    h3 {
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .terms-container {
+    max-height: 120px;
+    padding: 0.5rem;
+  }
+
+  .terms-text {
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    line-height: 1.4;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+
+    label {
+      font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+    }
+  }
+
   .form-actions {
     gap: 0.5rem;
 
@@ -305,6 +424,21 @@
       font-size: 0.8rem;
       min-height: 34px;
     }
+  }
+
+  .terms-section {
+    h3 {
+      font-size: 1rem;
+    }
+  }
+
+  .terms-container {
+    max-height: 100px;
+    padding: 0.5rem;
+  }
+
+  .terms-text {
+    font-size: 0.7rem;
   }
 
   .form-actions {

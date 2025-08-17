@@ -226,9 +226,25 @@
             required
           />
         </div>
+        <div class="terms-section">
+          <h3>Terms and Conditions</h3>
+          <div class="terms-container">
+            <div class="terms-text">{{ termsContent }}</div>
+          </div>
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="agree-terms"
+              [(ngModel)]="agreeTerms"
+              name="agreeTerms"
+              required
+            />
+            <label for="agree-terms">I have read and agree to the terms and conditions</label>
+          </div>
+        </div>
         <div class="form-actions">
           <button type="button" class="btn btn-outline" (click)="closeModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" >Submit booking</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!bookingForm.valid || !agreeTerms">Submit booking</button>
         </div>
       </form>
     </div>
