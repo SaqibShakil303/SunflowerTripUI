@@ -74,6 +74,10 @@ export class TourPackageComponent implements OnInit {
       this.handleSearch(filters);
     });
   }
+  formatPrice(price: string | number): string {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    return numPrice.toLocaleString('en-IN');
+  }
 
   handleSearch(filters: any) {
     this.loading = true;

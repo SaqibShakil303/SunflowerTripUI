@@ -57,7 +57,9 @@ export class LocationsComponent implements OnInit {
     this.isLoading = true;
     forkJoin([
       this.locationService.getAllLocations().pipe(
+
         tap((locations) => {
+console.log(locations);
           this.validateImageUrls(locations);
         }),
         catchError((error) => {
@@ -256,7 +258,13 @@ export class LocationsComponent implements OnInit {
   openEditDialog(location: LocationModel): void {
     const dialogRef = this.dialog.open(EditLocationComponent, {
       width: '600px',
-      data: { ...location }
+      data: {
+
+         ...location ,
+                  destination_titles: location.destination_titles || [],
+         destination_ids: location.destination_id || [],
+        
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

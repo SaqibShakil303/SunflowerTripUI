@@ -24,7 +24,7 @@
         <p class="tour-description">{{ tour.description | slice:0:100 }}...</p>
         <div class="tour-meta">
           <span>{{ tour.duration_days }} Days</span>
-          <span>₹{{ tour.price }}</span>
+          <span>₹{{ formatPrice(tour.price)}}</span>
         </div>
         <button class="btn-detail" (click)="goToTourDetail(tour.slug)">View Tour</button>
       </div>

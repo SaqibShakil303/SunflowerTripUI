@@ -230,13 +230,16 @@ $font-heading: 'Playfair Display', serif;
                                 }
                             }
 
-                            &.col-destination {
-                                .destination-text {
-                                    font-size: 1rem;
-                                    color: $peacock-blue;
-                                    font-weight: 500;
-                                }
+                        &.col-destination {
+                            .destination-text {
+                                font-size: 0.9rem;
+                                color: $dark-brown;
+                                font-weight: 400;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
                             }
+                        }
 
                             &.col-name {
                                 .location-cell {

@@ -10,4 +10,5 @@ export class LocationModel {
     // Additional fields for UI state management
     showDetails?: boolean;
     isDeleting?: boolean;
+destination_titles!: string[];
 }
