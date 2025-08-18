@@ -2,15 +2,17 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DestinationNav } from '../../../services/destination/destination.service';
 import { LocationModel } from '../../../models/location.model';
 import { DestinationService } from '../../../services/destination/destination.service';
 import { LocationService } from '../../../services/location/location.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-location',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './edit-location.component.html',
   styleUrls: ['./edit-location.component.scss']
 })
@@ -18,15 +20,16 @@ export class EditLocationComponent implements OnInit {
   locationForm: FormGroup;
   isSubmitting: boolean = false;
   imagePreview: string | null = null;
-  imageInputType: 'file' | 'url' = 'url'; // Default to URL since existing image is likely a URL
+  imageInputType: 'file' | 'url' = 'url';
   destinations: DestinationNav[] = [];
-  isLoadingDestinations: boolean = true; // Loading state for destinations
+  isLoadingDestinations: boolean = true;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditLocationComponent>,
     private locationService: LocationService,
     private destinationService: DestinationService,
+    private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: LocationModel
   ) {
@@ -34,11 +37,9 @@ export class EditLocationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Fetch destinations for dropdown
-    this.isLoadingDestinations = true;
-    this.destinationService.getNamesAndLocations().subscribe({
-      next: (destinations) => {
-        this.destinations = destinations;
+    this.loadDestinations().subscribe({
+      next: () => {
+        console.log('Destinations loaded:', this.destinations);
         this.isLoadingDestinations = false;
         this.populateForm();
         this.cdr.detectChanges();
@@ -47,6 +48,10 @@ export class EditLocationComponent implements OnInit {
         console.error('Error fetching destinations:', error);
         this.isLoadingDestinations = false;
         this.destinations = [];
+        this.snackBar.open('Failed to load destinations', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
         this.populateForm();
         this.cdr.detectChanges();
       }
@@ -57,7 +62,7 @@ export class EditLocationComponent implements OnInit {
     return this.fb.group({
       id: [null, [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      destination_ids: [[], [Validators.required]], // Changed to array for multiple destinations
+      destination_ids: [[], [Validators.required]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       imageFile: [null],
       imageUrl: ['', [Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]],
@@ -65,12 +70,41 @@ export class EditLocationComponent implements OnInit {
     });
   }
 
+  private loadDestinations() {
+    return this.destinationService.getNamesAndLocations().pipe(
+      tap((destinations: DestinationNav[]) => {
+        this.destinations = destinations;
+      })
+    );
+  }
+
   private populateForm(): void {
-    const { id, name, destination_ids, description, image_url, iframe_360 } = this.data;
-    // Ensure destination_ids is an array, convert single ID to array if necessary
-    const validDestinationIds = Array.isArray(destination_ids)
-      ? destination_ids.filter(id => id != null && this.destinations.some(dest => dest.id === id))
-      : destination_ids != null ? [destination_ids] : [];
+    const { id, name, destination_ids, destination_titles, description, image_url, iframe_360 } = this.data;
+
+    // Parse comma-separated destination_ids into an array of numbers
+    const parsedDestinationIds = typeof destination_ids === 'string' && destination_ids
+      ? destination_ids.split(',').map((id:any) => parseInt(id.trim(), 10)).filter((id:any) => !isNaN(id))
+      : Array.isArray(destination_ids)
+        ? destination_ids.filter(id => id != null)
+        : [];
+
+    // Parse comma-separated destination_titles and map to destination_ids
+    const parsedDestinationTitles = typeof destination_titles === 'string' && destination_titles
+      ? destination_titles.split(',').map(title => title.trim()).filter(title => title)
+      : Array.isArray(destination_titles)
+        ? destination_titles
+        : [];
+
+    // Map destination_titles to destination_ids using available destinations
+    const validDestinationIds = parsedDestinationIds.length
+      ? parsedDestinationIds.filter((id:any) => this.destinations.some(dest => dest.id === id))
+      : parsedDestinationTitles
+        .map(title => this.destinations.find(dest => dest.title.toLowerCase() === title.toLowerCase())?.id)
+        .filter((id): id is number => id != null);
+
+    console.log('Parsed destination_ids:', parsedDestinationIds);
+    console.log('Parsed destination_titles:', parsedDestinationTitles);
+    console.log('Valid destination_ids to set:', validDestinationIds);
 
     this.locationForm.patchValue({
       id,
@@ -82,7 +116,7 @@ export class EditLocationComponent implements OnInit {
 
     // Set image preview and input type
     if (image_url) {
-      this.imagePreview = image_url; // Base64 or URL
+      this.imagePreview = image_url;
       this.imageInputType = image_url.startsWith('data:image/') ? 'file' : 'url';
       if (this.imageInputType === 'file') {
         this.locationForm.get('imageFile')?.setValue(image_url);
@@ -101,14 +135,12 @@ export class EditLocationComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Toggle image input type
   setImageInputType(type: 'file' | 'url'): void {
     this.imageInputType = type;
     if (type === 'file') {
       this.locationForm.get('imageFile')?.setValidators([]);
       this.locationForm.get('imageUrl')?.clearValidators();
-      this.locationForm.get('imageUrl')?.setValue(''); // Clear URL field
-      // Only update imagePreview if no file is selected
+      this.locationForm.get('imageUrl')?.setValue('');
       if (!this.locationForm.get('imageFile')?.value && this.data.image_url && this.data.image_url.startsWith('data:image/')) {
         this.imagePreview = this.data.image_url;
         this.locationForm.get('imageFile')?.setValue(this.data.image_url);
@@ -118,8 +150,7 @@ export class EditLocationComponent implements OnInit {
     } else {
       this.locationForm.get('imageUrl')?.setValidators([Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]);
       this.locationForm.get('imageFile')?.clearValidators();
-      this.locationForm.get('imageFile')?.setValue(null); // Clear file field
-      // Only update imagePreview if no URL is provided
+      this.locationForm.get('imageFile')?.setValue(null);
       if (!this.locationForm.get('imageUrl')?.value && this.data.image_url && !this.data.image_url.startsWith('data:image/')) {
         this.imagePreview = this.data.image_url;
         this.locationForm.get('imageUrl')?.setValue(this.data.image_url);
@@ -130,7 +161,6 @@ export class EditLocationComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Handle file input
   onImageFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const imageFileControl = this.locationForm.get('imageFile');
@@ -144,6 +174,10 @@ export class EditLocationComponent implements OnInit {
         imageFileControl?.setErrors({ invalidType: true });
         this.imagePreview = null;
         imageUrlControl?.setValue('');
+        this.snackBar.open('Please select a valid image (PNG, JPG, JPEG, or WEBP)', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
         this.cdr.detectChanges();
         return;
       }
@@ -151,31 +185,33 @@ export class EditLocationComponent implements OnInit {
       imageFileControl?.setErrors(null);
       imageFileControl?.markAsDirty();
       imageFileControl?.markAsTouched();
-      imageUrlControl?.setValue(''); // Clear URL field when file is selected
+      imageUrlControl?.setValue('');
 
-      // Generate preview and save as base64
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
-        imageFileControl?.setValue(reader.result); // Save base64 string
+        imageFileControl?.setValue(reader.result);
         this.cdr.detectChanges();
       };
       reader.onerror = () => {
         imageFileControl?.setErrors({ readError: true });
         this.imagePreview = null;
         imageUrlControl?.setValue('');
+        this.snackBar.open('Error reading the image file', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
         this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
     } else {
       imageFileControl?.setValue(null);
       imageUrlControl?.setValue('');
-      this.imagePreview = null; // Clear preview if no file is selected
+      this.imagePreview = null;
       this.cdr.detectChanges();
     }
   }
 
-  // Handle URL input changes
   onImageUrlChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const imageUrlControl = this.locationForm.get('imageUrl');
@@ -185,8 +221,8 @@ export class EditLocationComponent implements OnInit {
       imageUrlControl?.setValue(value);
       imageUrlControl?.markAsDirty();
       imageUrlControl?.markAsTouched();
-      this.imagePreview = value; // Update preview to new URL
-      this.locationForm.get('imageFile')?.setValue(null); // Clear file field
+      this.imagePreview = value;
+      this.locationForm.get('imageFile')?.setValue(null);
     } else {
       imageUrlControl?.setValue('');
       this.imagePreview = this.data.image_url && !this.data.image_url.startsWith('data:image/') ? this.data.image_url : null;
@@ -195,7 +231,6 @@ export class EditLocationComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Form validation helpers
   isFieldInvalid(fieldName: string): boolean {
     const field = this.locationForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
@@ -215,13 +250,13 @@ export class EditLocationComponent implements OnInit {
         return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['maxlength'].requiredLength} characters`;
       }
       if (field.errors['invalidType']) {
-        return 'Please select a valid image (PNG, JPG, JPEG or WEBP)';
+        return 'Please select a valid image (PNG, JPG, JPEG, or WEBP)';
       }
       if (field.errors['readError']) {
         return 'Error reading the image file';
       }
       if (field.errors['pattern'] && fieldName === 'imageUrl') {
-        return 'Please enter a valid image URL (PNG, JPG, JPEG or WEBP)';
+        return 'Please enter a valid image URL (PNG, JPG, JPEG, or WEBP)';
       }
       if (field.errors['pattern'] && fieldName === 'iframe360') {
         return 'Please enter a valid URL starting with http:// or https://';
@@ -244,7 +279,6 @@ export class EditLocationComponent implements OnInit {
     return labels[fieldName] || fieldName;
   }
 
-  // Form submission
   onSubmit(): void {
     if (this.locationForm.valid && (this.imageInputType === 'file' ? !this.locationForm.get('imageFile')?.invalid : !this.locationForm.get('imageUrl')?.invalid)) {
       this.isSubmitting = true;
@@ -252,7 +286,7 @@ export class EditLocationComponent implements OnInit {
       const formValue = this.locationForm.value;
       const locationData: Partial<LocationModel> = {
         id: formValue.id,
-        destination_ids: formValue.destination_ids, // Changed to array
+        destination_ids: formValue.destination_ids, // Send as array
         name: formValue.name,
         description: formValue.description,
         iframe_360: formValue.iframe360,
@@ -263,27 +297,49 @@ export class EditLocationComponent implements OnInit {
       const destinationIds = formValue.destination_ids || [];
       if (!destinationIds.every((id: number) => this.destinations.some(dest => dest.id === id))) {
         this.isSubmitting = false;
-        alert('Selected destinations are invalid');
+        this.snackBar.open('Selected destinations are invalid', 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
         this.cdr.detectChanges();
         return;
       }
 
       this.locationService.updateLocation(locationData).subscribe({
         next: (updatedLocation) => {
+          // Include destination_titles in the response
+          const destinationTitles = formValue.destination_ids
+            .map((id: number) => this.destinations.find(dest => dest.id === id)?.title)
+            .filter((title:any): title is string => !!title);
+          this.snackBar.open('Location updated successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
           this.isSubmitting = false;
-          this.dialogRef.close(updatedLocation);
+          this.dialogRef.close({
+            ...updatedLocation,
+            destination_titles: destinationTitles.join(',') // Return as comma-separated for compatibility
+          });
           this.cdr.detectChanges();
         },
         error: (error) => {
           this.isSubmitting = false;
           console.error('Error updating location:', error);
-          alert('Failed to update location. Please try again.');
+          const errorMessage = error.error?.message || error.message || 'Unknown server error';
+          this.snackBar.open(`Failed to update location: ${errorMessage}`, 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
           this.cdr.detectChanges();
         }
       });
     } else {
       Object.keys(this.locationForm.controls).forEach(key => {
         this.locationForm.get(key)?.markAsTouched();
+      });
+      this.snackBar.open('Please fill all required fields correctly', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
       });
       this.cdr.detectChanges();
     }
@@ -293,7 +349,6 @@ export class EditLocationComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  // Reset image inputs to original state
   private resetImageInputs(): void {
     if (this.data.image_url) {
       this.imagePreview = this.data.image_url;

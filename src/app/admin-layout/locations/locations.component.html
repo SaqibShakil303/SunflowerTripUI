@@ -63,7 +63,7 @@
                                 <span class="serial-number">{{ getSerialNumber(i) }}</span>
                             </td>
                             <td class="col-destination" data-label="Destinations">
-                                <span class="destination-text">{{ location.destination_titles.length ? location.destination_titles.join(', ') : 'N/A' }}</span>
+                                <span class="destination-text">{{ location.destination_titles?.length ? location.destination_titles: 'N/A' }}</span>
                             </td>
                             <td class="col-name">
                                 <div class="location-cell">

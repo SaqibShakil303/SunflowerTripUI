@@ -28,7 +28,7 @@ interface NavGroup {
 })
 export class NavbarComponent implements OnInit {
   isScrolled = false;
-  isMobileNavVisible = true;
+  isMobileNavVisible = false;
   isLoggedIn: boolean = false;
   navGroups: NavGroup[] = [
     {

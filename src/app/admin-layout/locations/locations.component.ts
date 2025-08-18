@@ -58,6 +58,7 @@ export class LocationsComponent implements OnInit {
     forkJoin([
       this.locationService.getAllLocations().pipe(
         tap((locations) => {
+          console.log(locations);
           this.validateImageUrls(locations);
         }),
         catchError((error) => {
@@ -76,7 +77,8 @@ export class LocationsComponent implements OnInit {
       // Map locations to ensure destination_titles is always an array
       this.locations = locations.map(location => ({
         ...location,
-        destination_titles: this.getDestinationTitles(location.destination_id),
+        destination_ids:location.destination_ids,
+        destination_titles: location.destination_titles,
         image_url: location.image_url || this.fallbackImage,
         showDetails: false,
         isDeleting: false
@@ -102,7 +104,7 @@ export class LocationsComponent implements OnInit {
         console.warn(`Image URL missing for location: ${location.name || 'ID ' + location.id}`);
         location.image_url = this.fallbackImage;
       } else {
-        console.log(`Image URL for ${location.name}: ${location.image_url}`);
+        // console.log(`Image URL for ${location.name}: ${location.image_url}`);
       }
     });
   }
@@ -273,8 +275,8 @@ export class LocationsComponent implements OnInit {
       width: '600px',
       data: {
         ...location,
-        destination_titles: location.destination_titles || [],
-        destination_ids: location.destination_id ? [location.destination_id] : []
+        destination_titles: location.destination_titles ,
+        destination_ids: location.destination_ids
       }
     });
 

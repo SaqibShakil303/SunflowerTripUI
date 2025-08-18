@@ -1,7 +1,7 @@
 export class LocationModel {
     id?: number;
     destination_id?: number;
-    destination_ids?: number[];
+    destination_ids?: string | number[];
     name?: string;
     description?: string;
     image_url?: string;
@@ -10,5 +10,5 @@ export class LocationModel {
     // Additional fields for UI state management
     showDetails?: boolean;
     isDeleting?: boolean;
-destination_titles!: string[];
+destination_titles?: string | string[];
 }

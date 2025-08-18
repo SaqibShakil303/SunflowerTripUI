@@ -38,12 +38,25 @@
     position: relative;
     min-height: 100vh;
     overflow: hidden;
-    display: flex;
+    display: grid;
     align-items: center;
     justify-content: center;
-    padding-top: 50px;
-    /* Increased from 40px for PC */
+      /* Increased from 40px for PC */
+// .hero-wrap {
+//     display: grid;
+//     grid-template-columns: minmax(0, 1fr) 400px;
+//     gap: 3rem;
+//     max-width: 1280px;
+//     margin: 0 auto;
+//     padding: 3rem;
+//   }
 
+.hero-wrap{
+  display: flex;
+   margin-top: 70px;
+    padding: 1.5rem;
+}
+   .hero-content { grid-area: content; }
     .hero-image {
       position: absolute;
       inset: 0;
@@ -69,16 +82,23 @@
           rgba(76, 215, 208, 0.5));
       backdrop-filter: blur(4px);
     }
-
-    .container {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 3rem;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 3rem;
-    }
+ .booking-card {
+    grid-area: card;
+    position: sticky;
+    top: 3rem;
+    max-width: 400px;
+    margin-left: auto;
+    width: 100%;
+  }
+    // .container {
+    //   position: relative;
+    //   display: grid;
+    //   grid-template-columns: 1fr 400px;
+    //   gap: 3rem;
+    //   max-width: 1280px;
+    //   margin: 0 auto;
+    //   padding: 3rem;
+    // }
 
     .hero-content {
       h1.tour-title {
@@ -331,7 +351,7 @@
 
     /* Responsive Styling (from 2nd version, adjusted) */
     @media (max-width: 768px) {
-      min-height: 100vh;
+      min-height: 120vh;
       padding-top: 40px;
       /* Increased from 30px for responsive */
 
@@ -341,9 +361,17 @@
         gap: 2rem;
         padding: 1.5rem;
       }
+      .hero-wrap{
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+      }
 
       .hero-content {
         h1.tour-title {
+          margin-top: 35px;
+          margin-left: 10px;
+          margin-right: 10px;
           font-size: clamp(2rem, 5vw, 3.5rem);
           margin-bottom: 1rem;
           text-shadow: 2px 2px 8px var(--shadow-dark);
