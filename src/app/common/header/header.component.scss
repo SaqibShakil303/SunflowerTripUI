@@ -8,11 +8,20 @@ $border-radius: 12px;
 $transition: 0.4s ease;
 $glass-bg: rgba(255, 255, 255, 0.65);
 $glass-blur: blur(20px);
-
+@import 'mixins';
 // Breakpoints
 $mobile: 480px;
 $tablet: 768px;
 $desktop: 1024px;
+
+:host {
+ position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: transparent;   // higher than any other content
+}
 
 @mixin glassmorphism {
   background: $glass-bg;
@@ -490,13 +499,14 @@ app-navbar {
 
 // Mobile Menu
 .mobile-menu {
+    @include glass-card(0.15, 20px, 0.3);
   display: none;
   position: fixed;
   top: 0;
   right: 0;
   width: 300px;
   height: 100vh;
-  z-index: 1000;
+  z-index: 1100;
   background: $glass-bg;
   @include glassmorphism;
   transform: translateX(100%);

@@ -1,6 +1,6 @@
 import { bootstrapApplication }               from '@angular/platform-browser';
 import { importProvidersFrom }               from '@angular/core';
-import { provideRouter }                     from '@angular/router';
+import { provideRouter,withInMemoryScrolling  }                     from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideAnimations }                 from '@angular/platform-browser/animations';
 import { HttpClientModule }                  from '@angular/common/http';
@@ -19,7 +19,15 @@ export function tokenGetter() {
 bootstrapApplication(AppComponent, {
   providers: [
     // 1) your router
-    provideRouter(routes),
+    provideRouter(routes,
+       withInMemoryScrolling({
+        // 'top' = always go to [0,0] on every forward navigation
+        // use 'enabled' if you want back/forward to restore previous position
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled',      // supports #fragment scrolling
+        // scrollOffset: [0, 0],            // tweak if you have a fixed header
+      })
+    ),
 
     // 2) HTTP + interceptor wiring
     provideHttpClient(withInterceptorsFromDi()),

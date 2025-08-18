@@ -18,7 +18,14 @@
     display: block !important;
   }
 }
-
+app-header{
+ position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: transparent;  
+}
 /* Header styles */
 .header {
   background-repeat: no-repeat;
@@ -250,6 +257,6 @@ h2._active {
 .tour-filter-section {
   position: relative;
   top: 0;
-  z-index: 1000;
+  // z-index: 999;
   padding: 1rem 0;
 }
