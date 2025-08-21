@@ -15,7 +15,7 @@ import { AboutUsComponent } from './pages/about-us/about-us.component';
 // import { CareersComponent } from './pages/careers/careers.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { LoginComponent } from './auth/login/login.component';
-
+import { FlightResultsComponent } from './pages/flight-results/flight-results.component';
 import { DashboardComponent } from './admin-layout/dashboard/dashboard.component';
 import { RoleGuard } from './guards/role.guard';
 import { TourPackageComponent } from './pages/tour-package/tour-package.component';
