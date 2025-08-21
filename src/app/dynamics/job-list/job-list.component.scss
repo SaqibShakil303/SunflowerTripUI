@@ -1,15 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Forum:wght@400&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+// Color Palette Variables (aligned with careers page)
+$saffron: #F4A460;
+$turmeric-yellow: #E9B44C;
+$peacock-blue: #005F73;
+$marigold-orange: #FF8500;
+$warm-white: #FDF6E3;
+$warm-gray: #8B7355;
+$dark-brown: #3E2723;
+$danger-red: #DC3545;
+$success-green: #28A745;
+$info-blue: #17A2B8;
+
+// Font Variables
+$font-body: 'Forum', serif;
+$font-heading: 'Playfair Display', serif;
+
 .job-listings {
-  .container ul {
-    list-style: none;
-    padding: 0;
-    li {
-      padding: 1rem;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0, 95, 115, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  margin: 1.5rem auto;
+  box-shadow: 0 6px 24px rgba(0, 95, 115, 0.08);
+  border: 1px solid rgba(244, 164, 96, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-family: $font-body;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 36px rgba(0, 95, 115, 0.15);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  h2 {
+    font-family: $font-heading;
+    font-size: 2rem;
+    font-weight: 600;
+    color: $peacock-blue;
+    margin-bottom: 1.5rem;
+  }
+
+  .accent-text {
+    color: $saffron;
+  }
+
+  .loading-container {
+    text-align: center;
+    padding: 2rem;
+    color: $dark-brown;
+
+    .loading-icon {
+      font-size: 2rem;
+      color: $saffron;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: $dark-brown;
+    }
+  }
+
+  .error-message {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba($danger-red, 0.1);
+    border-radius: 8px;
+    color: $danger-red;
+    font-size: 0.95rem;
+
+    i {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .no-jobs {
+    text-align: center;
+    padding: 2rem;
+    color: $warm-gray;
+
+    .no-jobs-icon {
+      font-size: 3rem;
+      color: lighten($warm-gray, 20%);
+      margin-bottom: 0.75rem;
+    }
+
+    h3 {
+      font-family: $font-heading;
+      font-size: 1.5rem;
+      color: $peacock-blue;
+      margin: 0 0 0.75rem 0;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: $dark-brown;
+    }
+  }
+
+  .jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .job-card {
+    background: rgba(0, 95, 115, 0.15);
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 6px 20px rgba(244, 164, 96, 0.2);
+    }
+
+    .job-title {
+      font-family: $font-heading;
+      font-size: 1.3rem;
+      color: $peacock-blue;
+      margin: 0 0 0.75rem 0;
+    }
+
+    .job-details {
+      margin-bottom: 1rem;
+
+      p {
+        font-size: 0.9rem;
+        color: $dark-brown;
+        margin: 0.4rem 0;
+        line-height: 1.5;
+
+        .detail-label {
+          font-weight: 500;
+          color: $warm-gray;
+        }
+      }
+    }
+
+    .job-apply-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, $saffron, $turmeric-yellow);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 25px;
+      font-family: $font-body;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: none;
       cursor: pointer;
-      transition: background 0.3s;
-      &:hover { background: rgba(255,255,255,0.1); }
-      h3 { margin: 0; color: #00e6d0; }
-      p { margin: 0.5rem 0 0; color: #ccc; }
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &:hover {
+        background: linear-gradient(135deg, $turmeric-yellow, $saffron);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(244, 164, 96, 0.3);
+      }
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .job-listings {
+    .jobs-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .job-listings {
+    padding: 1.5rem;
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    .jobs-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .job-listings {
+    margin: 1rem auto;
+    padding: 1.25rem;
+
+    .container {
+      padding: 0 1rem;
+    }
+
+    .job-card {
+      padding: 1.25rem;
+
+      .job-title {
+        font-size: 1.2rem;
+      }
+
+      .job-details p {
+        font-size: 0.85rem;
+      }
+
+      .job-apply-btn {
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .no-jobs {
+      .no-jobs-icon {
+        font-size: 2.5rem;
+      }
+
+      h3 {
+        font-size: 1.3rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .job-listings {
+    padding: 1rem;
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    .job-card {
+      padding: 1rem;
+
+      .job-title {
+        font-size: 1.1rem;
+      }
+
+      .job-details p {
+        font-size: 0.8rem;
+      }
+    }
+
+    .loading-container,
+    .error-message {
+      padding: 1rem;
+
+      p {
+        font-size: 0.9rem;
+      }
     }
   }
 }

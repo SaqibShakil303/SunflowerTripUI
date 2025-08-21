@@ -12,7 +12,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { MapComponent } from './components/map/map.component';
 import { TravelGuideComponent } from './pages/travel-guide/travel-guide.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
-import { CareersComponent } from './pages/careers/careers.component';
+// import { CareersComponent } from './pages/careers/careers.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { LoginComponent } from './auth/login/login.component';
 
@@ -33,7 +33,7 @@ import { CompanyPortfolioComponent } from './pages/company-portfolio/company-por
 import { GroupBrochureComponent } from './pages/group-brochure/group-brochure.component';
 import { ServiceComponent } from './pages/services/services.component';
 import { TestimonialComponent } from './pages/testimonials/testimonials.component';
-import { FlightResultsComponent } from './pages/flight-results/flight-results.component';
+import { CareersComponent } from './pages/careers/careers.component';
 
 
 export const routes: Routes = [
