@@ -9,6 +9,7 @@ import { BookingsComponent } from './bookings/bookings.component';
 import { TripLeadsComponent } from './trip-leads/trip-leads.component';
 import { EnquiryDetailsComponent } from './enquiry-details/enquiry-details.component';
 import { ContactsComponent } from './contacts/contacts.component';
+import { JobsComponent } from './jobs/jobs.component';
 
 // import { DestinationFormComponent } from './destination-management/destination-form/destination-form.component';
 
@@ -34,6 +35,7 @@ const routes: Routes = [
       { path: 'tours', loadChildren: () => import('./tours/tours.module').then(m => m.ToursModule) },
       { path: 'enquiry-details', component: EnquiryDetailsComponent },
       { path: 'trip-leads', component: TripLeadsComponent },
+      { path: 'jobs', loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule) },
     ]
   },
   //   {

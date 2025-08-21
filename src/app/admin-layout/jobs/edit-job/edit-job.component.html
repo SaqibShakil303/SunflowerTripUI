@@ -1,0 +1,250 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="fas fa-edit"></i>
+        Edit Job
+      </h3>
+      <button class="btn btn-secondary modal-close" (click)="onCancel()" type="button" aria-label="Close modal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-form">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Basic Information
+          </h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="title" class="form-label">Job Title *</label>
+              <input
+                type="text"
+                id="title"
+                formControlName="title"
+                class="form-control"
+                [class.error]="isFieldInvalid('title')"
+                placeholder="Enter job title"
+                aria-required="true"
+                aria-describedby="title-error"
+              />
+              <div class="error-message" id="title-error" *ngIf="isFieldInvalid('title')">
+                {{ getFieldError('title') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="department" class="form-label">Department</label>
+              <input
+                type="text"
+                id="department"
+                formControlName="department"
+                class="form-control"
+                [class.error]="isFieldInvalid('department')"
+                placeholder="Enter job department"
+                aria-describedby="department-error"
+              />
+              <div class="error-message" id="department-error" *ngIf="isFieldInvalid('department')">
+                {{ getFieldError('department') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="location" class="form-label">Location</label>
+              <input
+                type="text"
+                id="location"
+                formControlName="location"
+                class="form-control"
+                [class.error]="isFieldInvalid('location')"
+                placeholder="Enter job location"
+                aria-describedby="location-error"
+              />
+              <div class="error-message" id="location-error" *ngIf="isFieldInvalid('location')">
+                {{ getFieldError('location') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="type" class="form-label">Job Type *</label>
+              <select
+                id="type"
+                formControlName="type"
+                class="form-control"
+                [class.error]="isFieldInvalid('type')"
+                aria-required="true"
+                aria-describedby="type-error"
+              >
+                <option value="" disabled>Select job type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Internship">Internship</option>
+                <option value="Contract">Contract</option>
+              </select>
+              <div class="error-message" id="type-error" *ngIf="isFieldInvalid('type')">
+                {{ getFieldError('type') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="status" class="form-label">Status *</label>
+              <select
+                id="status"
+                formControlName="status"
+                class="form-control"
+                [class.error]="isFieldInvalid('status')"
+                aria-required="true"
+                aria-describedby="status-error"
+              >
+                <option value="" disabled>Select status</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="Draft">Draft</option>
+              </select>
+              <div class="error-message" id="status-error" *ngIf="isFieldInvalid('status')">
+                {{ getFieldError('status') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="application_deadline" class="form-label">Application Deadline</label>
+              <input
+                type="date"
+                id="application_deadline"
+                formControlName="application_deadline"
+                class="form-control"
+                [class.error]="isFieldInvalid('application_deadline')"
+                aria-describedby="application_deadline-error"
+              />
+              <div class="error-message" id="application_deadline-error" *ngIf="isFieldInvalid('application_deadline')">
+                {{ getFieldError('application_deadline') }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-file-alt"></i>
+            Job Details
+          </h4>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description *</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-control form-textarea"
+              [class.error]="isFieldInvalid('description')"
+              placeholder="Describe the job..."
+              rows="4"
+              aria-required="true"
+              aria-describedby="description-error description-help"
+            ></textarea>
+            <div class="form-help" id="description-help">
+              {{ jobForm.get('description')?.value?.length || 0 }}/1000 characters
+            </div>
+            <div class="error-message" id="description-error" *ngIf="isFieldInvalid('description')">
+              {{ getFieldError('description') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="requirements" class="form-label">Requirements</label>
+            <textarea
+              id="requirements"
+              formControlName="requirements"
+              class="form-control form-textarea"
+              [class.error]="isFieldInvalid('requirements')"
+              placeholder="List job requirements..."
+              rows="4"
+              aria-describedby="requirements-error requirements-help"
+            ></textarea>
+            <div class="form-help" id="requirements-help">
+              {{ jobForm.get('requirements')?.value?.length || 0 }}/1000 characters
+            </div>
+            <div class="error-message" id="requirements-error" *ngIf="isFieldInvalid('requirements')">
+              {{ getFieldError('requirements') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="responsibilities" class="form-label">Responsibilities</label>
+            <textarea
+              id="responsibilities"
+              formControlName="responsibilities"
+              class="form-control form-textarea"
+              [class.error]="isFieldInvalid('responsibilities')"
+              placeholder="List job responsibilities..."
+              rows="4"
+              aria-describedby="responsibilities-error responsibilities-help"
+            ></textarea>
+            <div class="form-help" id="responsibilities-help">
+              {{ jobForm.get('responsibilities')?.value?.length || 0 }}/1000 characters
+            </div>
+            <div class="error-message" id="responsibilities-error" *ngIf="isFieldInvalid('responsibilities')">
+              {{ getFieldError('responsibilities') }}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="salary_range" class="form-label">Salary Range</label>
+              <input
+                type="text"
+                id="salary_range"
+                formControlName="salary_range"
+                class="form-control"
+                [class.error]="isFieldInvalid('salary_range')"
+                placeholder="e.g., ₹20,000 - ₹50,000"
+                aria-describedby="salary_range-error"
+              />
+              <div class="error-message" id="salary_range-error" *ngIf="isFieldInvalid('salary_range')">
+                {{ getFieldError('salary_range') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="experience_required" class="form-label">Experience Required</label>
+              <input
+                type="text"
+                id="experience_required"
+                formControlName="experience_required"
+                class="form-control"
+                [class.error]="isFieldInvalid('experience_required')"
+                placeholder="e.g., 2-3 years"
+                aria-describedby="experience_required-error"
+              />
+              <div class="error-message" id="experience_required-error" *ngIf="isFieldInvalid('experience_required')">
+                {{ getFieldError('experience_required') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isSubmitting" aria-label="Cancel">
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="isSubmitting" aria-label="Save changes">
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+        {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>

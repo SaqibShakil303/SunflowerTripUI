@@ -1,0 +1,95 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Apply for {{ data.job.title }}</h2>
+      <button class="modal-close" (click)="onClose()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input
+            id="name"
+            formControlName="name"
+            type="text"
+            placeholder="Enter your full name"
+            class="form-control"
+            [ngClass]="{'is-invalid': formErrors['name']}"
+          />
+          <div *ngIf="formErrors['name']" class="invalid-feedback">{{ formErrors['name'] }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span class="required">*</span></label>
+          <input
+            id="email"
+            formControlName="email"
+            type="email"
+            placeholder="Enter your email"
+            class="form-control"
+            [ngClass]="{'is-invalid': formErrors['email']}"
+          />
+          <div *ngIf="formErrors['email']" class="invalid-feedback">{{ formErrors['email'] }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input
+            id="phone"
+            formControlName="phone"
+            type="tel"
+            placeholder="Enter your phone number"
+            class="form-control"
+            [ngClass]="{'is-invalid': formErrors['phone']}"
+          />
+          <div *ngIf="formErrors['phone']" class="invalid-feedback">{{ formErrors['phone'] }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="resume_url">Resume URL</label>
+          <input
+            id="resume_url"
+            formControlName="resume_url"
+            type="url"
+            placeholder="Enter resume URL (e.g., Google Drive link)"
+            class="form-control"
+            [ngClass]="{'is-invalid': formErrors['resume_url']}"
+          />
+          <div *ngIf="formErrors['resume_url']" class="invalid-feedback">{{ formErrors['resume_url'] }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="cover_letter">Cover Letter</label>
+          <textarea
+            id="cover_letter"
+            formControlName="cover_letter"
+            placeholder="Enter your cover letter"
+            class="form-control"
+            rows="5"
+            [ngClass]="{'is-invalid': formErrors['cover_letter']}"
+          ></textarea>
+          <div *ngIf="formErrors['cover_letter']" class="invalid-feedback">{{ formErrors['cover_letter'] }}</div>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ errorMessage }}</p>
+        </div>
+
+        <div *ngIf="successMessage" class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <p>{{ successMessage }}</p>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn submit-btn" [disabled]="applicationForm.invalid || isSubmitting">
+            {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
+          </button>
+          <button type="button" class="btn cancel-btn" (click)="onClose()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
