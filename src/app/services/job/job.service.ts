@@ -1,62 +1,64 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Job } from '../../models/job.model';
+import { catchError, Observable, of, throwError } from 'rxjs';
+import { ApplicationModel, JobModel } from '../../models/job.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environments.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JobService {
- getJobs(): Observable<Job[]> {
-    // TODO: replace with real HTTP call
-    return of([
-      {
-        id: '1',
-        title: 'Travel Consultant',
-        location: 'Kolkata',
-        experience: '1-3 years',
-        category: 'customer',
-        type: 'Full-time',
-        department: 'Customer Service',
+  private apiUrl = environment.apiDomain + '/jobs';
+  private applicationUrl = environment.apiDomain + '/applications';
 
-        responsibilities: [
-          'Handle travel bookings and customer queries',
-          'Coordinate with vendors and partners',
-          'Prepare travel itineraries'
-        ],
-        skills: ['Communication', 'Attention to detail', 'Problem-solving']
-      },
-       { id: '2',
-        title: 'Software Engineer',
-        location: 'Kolkata',
-        experience: '0-3 years',
-            category: 'product',
-            type: 'Full-time',
-        department: 'Engineering',
-        responsibilities: [
-          'Handle all the full stack development',
-          'Work with the team to design and develop new features',
-          'Write clean, maintainable code',
-          'Participate in code reviews and team meetings'
-        ],
-        skills: ['JavaScript', 'Angular', 'Node.js', 'HTML', 'CSS', 'SQL','Express.js', 'MongoDB', 'REST APIs', 'Git', 'deployment', 'CI/CD', 'Agile/Scrum', 'Problem-solving', 'Teamwork', 'Communication'],
-      },
-      {
-        id: '3',
-        title: 'Regional Operations Coordinator',
-        department: 'Operations',
-        location: 'Bangkok, Thailand',
-        type: 'Full-time',
-        description: 'Coordinate local tour providers and ensure smooth operations for all our Southeast Asia experiences.',
-        responsibilities: [
-          'Experience in travel operations or hospitality',
-          'Strong organizational and problem-solving skills',
-          'Fluent in English and Thai'
-        ],
-        category: 'operations',
-        experience: '2-4 years',
-        skills: ['Organization', 'Problem-solving', 'English', 'Thai']
-      },
-      // more jobs...
-    ]);
+  constructor(private http: HttpClient) { }
+
+  getAllJobs(): Observable<JobModel[]> {
+    return this.http.get<JobModel[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getJobById(id: number): Observable<JobModel> {
+    return this.http.get<JobModel>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addJob(data: Partial<JobModel>): Observable<JobModel> {
+    return this.http.post<JobModel>(this.apiUrl, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateJob(data: Partial<JobModel>): Observable<JobModel> {
+    return this.http.put<JobModel>(`${this.apiUrl}/${data.id}`, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteJob(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  submitApplication(data: Partial<ApplicationModel>): Observable<ApplicationModel> {
+    return this.http.post<ApplicationModel>(this.applicationUrl, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Client-side Error: ${error.error.message}`;
+    } else {
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      if (error.error?.error) {
+        errorMessage = error.error.error;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
   }
 }

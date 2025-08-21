@@ -1,0 +1,837 @@
+@import url('https://fonts.googleapis.com/css2?family=Forum:wght@400&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+// Color Palette Variables
+$saffron: #F4A460;
+$turmeric-yellow: #E9B44C;
+$peacock-blue: #005F73;
+$marigold-orange: #FF8500;
+$warm-white: #FDF6E3;
+$warm-gray: #8B7355;
+$dark-brown: #3E2723;
+$danger-red: #DC3545;
+$success-green: #28A745;
+$info-blue: #17A2B8;
+
+// Font Variables
+$font-body: 'Forum', serif;
+$font-heading: 'Playfair Display', serif;
+
+// Component Styles
+.jobs-container {
+  padding: 1.5rem;
+  background-color: $warm-white;
+  min-height: 100vh;
+  font-family: $font-body;
+
+  .page-header {
+    margin-bottom: 1.5rem;
+
+    .page-title {
+      font-family: $font-heading;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: $peacock-blue;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: 0.5px;
+    }
+
+    .page-description {
+      font-size: 1rem;
+      color: $warm-gray;
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+
+  .error-message {
+    background: rgba($danger-red, 0.1);
+    color: $danger-red;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .controls-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .search-bar {
+      position: relative;
+      flex: 1;
+      max-width: 350px;
+      min-width: 200px;
+
+      .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $warm-gray;
+        font-size: 0.9rem;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 0.7rem 1rem 0.7rem 2.25rem;
+        border: 2px solid #E0E0E0;
+        border-radius: 6px;
+        font-family: $font-body;
+        font-size: 0.95rem;
+        background: white;
+        transition: all 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: $saffron;
+          box-shadow: 0 0 0 3px rgba(244, 164, 96, 0.1);
+        }
+
+        &::placeholder {
+          color: $warm-gray;
+        }
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+  }
+
+  .table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 95, 115, 0.08);
+    overflow: hidden;
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: linear-gradient(135deg, $peacock-blue 0%, darken($peacock-blue, 5%) 100%);
+      color: white;
+
+      .table-title {
+        font-family: $font-heading;
+        font-size: 1.4rem;
+        font-weight: 500;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: white;
+
+        i {
+          font-size: 1.2rem;
+          color: $turmeric-yellow;
+        }
+      }
+
+      .table-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .sort-select {
+          padding: 0.5rem 0.75rem;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 5px;
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          font-family: $font-body;
+          font-size: 0.9rem;
+
+          &:focus {
+            outline: none;
+            border-color: $saffron;
+          }
+
+          option {
+            background: $peacock-blue;
+            color: white;
+          }
+        }
+      }
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+
+      .jobs-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+
+        thead {
+          background: lighten($peacock-blue, 50%);
+
+          th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-family: $font-heading;
+            font-weight: 500;
+            color: darken($peacock-blue, 15%);
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid $saffron;
+
+            &.col-serial {
+              width: 60px;
+            }
+
+            &.col-title {
+              width: 25%;
+            }
+
+            &.col-department {
+              width: 20%;
+            }
+
+            &.col-location {
+              width: 15%;
+            }
+
+            &.col-type {
+              width: 15%;
+            }
+
+            &.col-status {
+              width: 10%;
+            }
+
+            &.col-actions {
+              width: 15%;
+            }
+          }
+        }
+
+        tbody {
+          .job-row {
+            transition: all 0.3s ease;
+
+            &:nth-child(even) {
+              background: rgba(244, 164, 96, 0.03);
+            }
+
+            &:hover {
+              background: rgba(244, 164, 96, 0.08);
+              transform: translateX(1px);
+            }
+
+            &.deleting {
+              opacity: 0.7;
+              background: rgba(220, 53, 69, 0.08);
+            }
+
+            td {
+              padding: 1rem 1.25rem;
+              border-bottom: 1px solid #E8ECEF;
+              vertical-align: middle;
+              font-size: 0.95rem;
+
+              &.col-serial {
+                .serial-number {
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 28px;
+                  height: 28px;
+                  background: linear-gradient(135deg, $saffron, $turmeric-yellow);
+                  color: white;
+                  border-radius: 50%;
+                  font-weight: 500;
+                  font-size: 0.85rem;
+                }
+              }
+
+              &.col-title {
+                .job-cell {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.75rem;
+
+                  .expand-icon {
+                    background: none;
+                    border: none;
+                    padding: 0.3rem;
+                    color: $peacock-blue;
+                    cursor: pointer;
+                    border-radius: 4px;
+
+                    &:hover {
+                      background: rgba(244, 164, 96, 0.15);
+                    }
+
+                    i {
+                      font-size: 0.9rem;
+                    }
+                  }
+
+                  .job-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                    overflow: hidden;
+
+                    .job-title {
+                      font-size: 1rem;
+                      color: $dark-brown;
+                      font-weight: 500;
+                      white-space: normal;
+                      word-wrap: break-word;
+                    }
+                  }
+                }
+              }
+
+              &.col-department {
+                .department-text {
+                  font-size: 0.95rem;
+                  color: $dark-brown;
+                  white-space: normal;
+                  word-wrap: break-word;
+                  max-width: 100%;
+                }
+              }
+
+              &.col-location {
+                .location-text {
+                  font-size: 0.95rem;
+                  color: $dark-brown;
+                  white-space: normal;
+                  word-wrap: break-word;
+                  max-width: 100%;
+                }
+              }
+
+              &.col-type {
+                .type-text {
+                  font-size: 0.95rem;
+                  color: $dark-brown;
+                  white-space: nowrap;
+                }
+              }
+
+              &.col-status {
+                .status-text {
+                  font-size: 0.95rem;
+                  font-weight: 500;
+                  text-align: center;
+
+                  &.status-open {
+                    color: $success-green;
+                  }
+
+                  &.status-draft {
+                    color: $dark-brown;
+                  }
+
+                  &.status-closed {
+                    color: $danger-red;
+                  }
+                }
+              }
+
+              &.col-actions {
+                .actions-wrapper {
+                  display: flex;
+                  gap: 0.5rem;
+                  justify-content: center;
+                  flex-wrap: wrap;
+
+                  .edit-btn,
+                  .delete-btn {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.85rem;
+                    min-width: 60px;
+
+                    .btn-text {
+                      display: inline;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .details-row {
+            background: rgba(244, 164, 96, 0.02);
+
+            td {
+              padding: 0;
+              border-bottom: 2px solid $saffron;
+            }
+
+            .details-content {
+              padding: 1rem 1.25rem;
+
+              .details-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1rem;
+
+                .detail-item {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.25rem;
+
+                  .detail-label {
+                    font-size: 0.85rem;
+                    color: $dark-brown;
+                    font-weight: 500;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4px;
+                  }
+
+                  .detail-value {
+                    font-size: 0.95rem;
+                    color: $dark-brown;
+                    font-weight: 400;
+                    white-space: normal;
+                    word-wrap: break-word;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .no-jobs {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: $warm-gray;
+
+      .no-jobs-icon {
+        font-size: 3.5rem;
+        color: lighten($warm-gray, 25%);
+        margin-bottom: 0.75rem;
+      }
+
+      h3 {
+        font-family: $font-heading;
+        font-size: 1.6rem;
+        color: $peacock-blue;
+        margin: 0 0 0.75rem 0;
+      }
+
+      p {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        line-height: 1.5;
+        color: $dark-brown;
+      }
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: rgba(244, 164, 96, 0.03);
+      border-top: 1px solid #E8ECEF;
+
+      .pagination-info {
+        font-size: 0.9rem;
+        color: $dark-brown;
+      }
+
+      .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .page-numbers {
+          display: flex;
+          gap: 0.25rem;
+          margin: 0 0.75rem;
+
+          .page-btn {
+            min-width: 32px;
+            height: 32px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+
+            &.active {
+              background: $saffron;
+              color: white;
+              border-color: $saffron;
+            }
+          }
+        }
+
+        .pagination-btn {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+      }
+    }
+  }
+}
+
+// Button Styles
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.btn-primary {
+    background: linear-gradient(135deg, $saffron, $turmeric-yellow);
+    color: white;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(244, 164, 96, 0.2);
+    }
+  }
+
+  &.btn-secondary {
+    background: #6C757D;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: darken(#6C757D, 8%);
+    }
+  }
+
+  &.btn-danger {
+    background: $danger-red;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: darken($danger-red, 8%);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.btn-refresh {
+    background: $info-blue;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: darken($info-blue, 8%);
+    }
+  }
+
+  &.btn-sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+
+  .modal-content {
+    background: white;
+    border-radius: 10px;
+    min-width: 350px;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow: auto;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #E8ECEF;
+
+      h3 {
+        font-family: $font-heading;
+        font-size: 1.4rem;
+        color: $peacock-blue;
+        margin: 0;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.1rem;
+        color: $warm-gray;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 4px;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.08);
+        }
+      }
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      text-align: center;
+
+      .warning-icon {
+        font-size: 2.5rem;
+        color: $marigold-orange;
+        margin-bottom: 0.75rem;
+      }
+
+      p {
+        font-size: 1rem;
+        color: $dark-brown;
+        margin: 0.4rem 0;
+        line-height: 1.5;
+      }
+
+      strong {
+        color: $peacock-blue;
+        font-size: 1.1rem;
+      }
+
+      .warning-text {
+        color: $danger-red;
+        font-weight: 500;
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid #E8ECEF;
+      background: rgba(244, 164, 96, 0.03);
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .jobs-container {
+    .table-container {
+      .table-wrapper {
+        .jobs-table {
+          thead th {
+            &.col-title {
+              width: 20%;
+            }
+
+            &.col-department {
+              width: 18%;
+            }
+
+            &.col-location {
+              width: 15%;
+            }
+
+            &.col-type {
+              width: 12%;
+            }
+
+            &.col-status {
+              width: 10%;
+            }
+
+            &.col-actions {
+              width: 15%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .jobs-container {
+    padding: 1rem;
+
+    .page-header {
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .page-description {
+        font-size: 0.9rem;
+      }
+    }
+
+    .controls-section {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+
+      .search-bar {
+        max-width: none;
+        margin-bottom: 0.75rem;
+      }
+
+      .action-buttons {
+        justify-content: center;
+        gap: 0.5rem;
+      }
+    }
+
+    .table-container {
+      .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+
+        .table-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+
+      .table-wrapper {
+        .jobs-table {
+          thead th {
+            &.col-title {
+              width: 30%;
+            }
+
+            &.col-department {
+              width: 25%;
+            }
+
+            &.col-location {
+              width: 20%;
+            }
+
+            &.col-type {
+              width: 15%;
+            }
+
+            &.col-status {
+              width: 15%;
+            }
+
+            &.col-actions {
+              width: 25%;
+            }
+          }
+
+          tbody {
+            .job-row {
+              td {
+                padding: 0.75rem 1rem;
+
+                &.col-title {
+                  .job-cell {
+                    .job-info {
+                      .job-title {
+                        font-size: 0.9rem;
+                      }
+                    }
+                  }
+                }
+
+                &.col-actions {
+                  .actions-wrapper {
+                    flex-direction: row;
+                    gap: 0.5rem;
+
+                    .edit-btn,
+                    .delete-btn {
+                      padding: 0.4rem 0.75rem;
+
+                      .btn-text {
+                        font-size: 0.8rem;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            .details-row {
+              .details-content {
+                padding: 0.75rem 1rem;
+
+                .details-grid {
+                  grid-template-columns: 1fr;
+                  gap: 0.75rem;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .pagination-container {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+
+        .pagination-controls {
+          .page-numbers {
+            margin: 0;
+            gap: 0.2rem;
+
+            .page-btn {
+              min-width: 28px;
+              height: 28px;
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .modal-overlay {
+    .modal-content {
+      min-width: 90%;
+      margin: 0.75rem;
+
+      .modal-header {
+        padding: 1rem 1.25rem;
+      }
+
+      .modal-body {
+        padding: 1.25rem;
+      }
+
+      .modal-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem 1.25rem;
+      }
+    }
+  }
+}

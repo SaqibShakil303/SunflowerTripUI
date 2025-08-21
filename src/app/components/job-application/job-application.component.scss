@@ -1,0 +1,304 @@
+@import url('https://fonts.googleapis.com/css2?family=Forum:wght@400&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+// Color Palette Variables (aligned with careers page)
+$saffron: #F4A460;
+$turmeric-yellow: #E9B44C;
+$peacock-blue: #005F73;
+$marigold-orange: #FF8500;
+$warm-white: #FDF6E3;
+$warm-gray: #8B7355;
+$dark-brown: #3E2723;
+$danger-red: #DC3545;
+$success-green: #28A745;
+$info-blue: #17A2B8;
+
+// Font Variables
+$font-body: 'Forum', serif;
+$font-heading: 'Playfair Display', serif;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  font-family: $font-body;
+}
+
+.modal-content {
+  background: rgba(0, 95, 115, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  min-width: 350px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 24px rgba(0, 95, 115, 0.15);
+  border: 1px solid rgba(244, 164, 96, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(244, 164, 96, 0.2);
+  background: rgba(0, 95, 115, 0.15);
+
+  .modal-title {
+    font-family: $font-heading;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: $peacock-blue;
+    margin: 0;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: $warm-gray;
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: rgba(244, 164, 96, 0.1);
+    }
+
+    i {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+
+  .form-group {
+    margin-bottom: 1.25rem;
+
+    label {
+      font-family: $font-heading;
+      font-size: 1rem;
+      color: $peacock-blue;
+      margin-bottom: 0.5rem;
+      display: block;
+
+      .required {
+        color: $danger-red;
+      }
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(244, 164, 96, 0.3);
+      border-radius: 8px;
+      font-family: $font-body;
+      font-size: 0.95rem;
+      color: $dark-brown;
+      background: rgba(253, 246, 227, 0.1);
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $saffron;
+        box-shadow: 0 0 5px rgba(244, 164, 96, 0.3);
+      }
+
+      &.is-invalid {
+        border-color: $danger-red;
+      }
+    }
+
+    .invalid-feedback {
+      font-size: 0.85rem;
+      color: $danger-red;
+      margin-top: 0.25rem;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+  }
+
+  .error-message {
+    text-align: center;
+    padding: 1rem;
+    background: rgba($danger-red, 0.1);
+    border-radius: 8px;
+    color: $danger-red;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+
+    i {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .success-message {
+    text-align: center;
+    padding: 1rem;
+    background: rgba($success-green, 0.1);
+    border-radius: 8px;
+    color: $success-green;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+
+    i {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+
+    .submit-btn,
+    .cancel-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1.75rem;
+      border-radius: 25px;
+      font-family: $font-body;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, $saffron, $turmeric-yellow);
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(135deg, $turmeric-yellow, $saffron);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(244, 164, 96, 0.3);
+      }
+
+      &:disabled {
+        background: linear-gradient(135deg, #ccc, #aaa);
+        cursor: not-allowed;
+      }
+    }
+
+    .cancel-btn {
+      background: linear-gradient(135deg, $warm-gray, darken($warm-gray, 10%));
+      color: white;
+
+      &:hover {
+        background: linear-gradient(135deg, darken($warm-gray, 10%), $warm-gray);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(139, 115, 85, 0.3);
+      }
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-content {
+    min-width: 90%;
+    max-width: 95%;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: 1rem 1.25rem;
+
+    .modal-title {
+      font-size: 1.6rem;
+    }
+
+    .modal-close {
+      font-size: 1rem;
+    }
+  }
+
+  .modal-body {
+    padding: 1.25rem;
+
+    .form-group {
+      label {
+        font-size: 0.95rem;
+      }
+
+      .form-control {
+        font-size: 0.9rem;
+        padding: 0.65rem;
+      }
+
+      .invalid-feedback {
+        font-size: 0.8rem;
+      }
+    }
+
+    .form-actions {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .submit-btn,
+      .cancel-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    min-width: 95%;
+  }
+
+  .modal-header {
+    padding: 0.75rem 1rem;
+
+    .modal-title {
+      font-size: 1.4rem;
+    }
+  }
+
+  .modal-body {
+    padding: 1rem;
+
+    .form-group {
+      label {
+        font-size: 0.9rem;
+      }
+
+      .form-control {
+        font-size: 0.85rem;
+      }
+    }
+
+    .form-actions {
+      .submit-btn,
+      .cancel-btn {
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}

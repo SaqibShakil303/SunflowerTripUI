@@ -1,7 +1,13 @@
-<div class="admin-layout" [ngClass]="{'sidebar-collapsed': isSidebarCollapsed}">
+<div
+  class="admin-layout"
+  [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }"
+>
   <!-- Toggle Button -->
   <button class="sidebar-toggle" (click)="toggleSidebar()">
-    <i class="fas" [ngClass]="isSidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+    <i
+      class="fas"
+      [ngClass]="isSidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"
+    ></i>
   </button>
 
   <!-- Sidebar -->
@@ -13,65 +19,112 @@
     <nav class="sidebar-nav">
       <ul class="nav-list">
         <li class="nav-item">
-          <a routerLink="/admin/users" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/users"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-users"></i>
             <span class="nav-text">Users</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/bookings" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/bookings"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-calendar-check"></i>
             <span class="nav-text">Bookings</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/enquiries" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/enquiries"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-question-circle"></i>
             <span class="nav-text">Enquiries</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/contacts" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/contacts"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-address-book"></i>
             <span class="nav-text">Contacts</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/tours" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/tours"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-route"></i>
             <span class="nav-text">Tours</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/destinations" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/destinations"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-globe-americas"></i>
             <span class="nav-text">Destinations</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/locations" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/locations"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-map-marker-alt"></i>
             <span class="nav-text">Locations</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/trip-leads" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/trip-leads"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-clipboard-list"></i>
             <span class="nav-text">Trip Leads</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a routerLink="/admin/enquiry-details" class="nav-link" routerLinkActive="active">
+          <a
+            routerLink="/admin/enquiry-details"
+            class="nav-link"
+            routerLinkActive="active"
+          >
             <i class="nav-icon fas fa-info-circle"></i>
             <span class="nav-text">Enquiry Details</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a
+            routerLink="/admin/jobs"
+            class="nav-link"
+            routerLinkActive="active"
+          >
+            <i class="nav-icon fas fa-solid fa-briefcase"></i>
+            <span class="nav-text">Jobs</span>
           </a>
         </li>
       </ul>

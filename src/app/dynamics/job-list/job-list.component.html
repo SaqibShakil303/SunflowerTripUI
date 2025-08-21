@@ -1,11 +1,33 @@
 <section class="job-listings glass-section">
   <div class="container">
-    <h2>Current Openings</h2>
-    <ul>
-      <li *ngFor="let job of jobs" (click)="selectJob.emit(job)">
-        <h3>{{ job.title }}</h3>
-        <p>{{ job.location }} • {{ job.experience }}</p>
-      </li>
-    </ul>
+    <h2 class="text-center mb-4">Current <span class="accent-text">Openings</span></h2>
+
+    <div *ngIf="isLoading" class="loading-container">
+      <i class="fas fa-spinner fa-spin loading-icon"></i>
+      <p>Loading jobs...</p>
+    </div>
+
+    <div *ngIf="!isLoading && error" class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!isLoading && jobs.length === 0" class="no-jobs">
+      <i class="fas fa-briefcase no-jobs-icon"></i>
+      <h3>No Open Positions</h3>
+      <p>No open positions are available at the moment.</p>
+    </div>
+
+    <div *ngIf="!isLoading && jobs.length > 0" class="jobs-grid">
+      <div *ngFor="let job of jobs" class="job-card" (click)="openJobDetails(job)">
+        <h3 class="job-title">{{ job.title }}</h3>
+        <div class="job-details">
+          <p><span class="detail-label">Location:</span> {{ job.location || 'N/A' }}</p>
+          <p><span class="detail-label">Department:</span> {{ job.department || 'N/A' }}</p>
+          <p><span class="detail-label">Type:</span> {{ job.type || 'N/A' }}</p>
+        </div>
+        <button class="btn job-apply-btn">View Details</button>
+      </div>
+    </div>
   </div>
 </section>
