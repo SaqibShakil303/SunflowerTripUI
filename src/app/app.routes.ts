@@ -33,6 +33,7 @@ import { CompanyPortfolioComponent } from './pages/company-portfolio/company-por
 import { GroupBrochureComponent } from './pages/group-brochure/group-brochure.component';
 import { ServiceComponent } from './pages/services/services.component';
 import { TestimonialComponent } from './pages/testimonials/testimonials.component';
+import { FlightResultsComponent } from './pages/flight-results/flight-results.component';
 
 
 export const routes: Routes = [
@@ -110,6 +111,7 @@ export const routes: Routes = [
     path: 'tours/:slug',
     loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent)
   },
+   { path: 'flights', component: FlightResultsComponent },
   //   {
   //   path: 'destinations/:id',
   //   loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent)

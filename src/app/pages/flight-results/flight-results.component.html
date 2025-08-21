@@ -1,0 +1,20 @@
+<div class="results-wrap">
+  <h2>Flight Results</h2>
+  <div *ngIf="loading">Loading…</div>
+  <div *ngIf="error" class="err">{{ error }}</div>
+
+  <div *ngFor="let f of items" class="card">
+    <div class="row">
+      <strong>{{ f.carriers.join(', ') }}</strong>
+      <span class="price">{{ f.price }} {{ f.currency }}</span>
+    </div>
+    <div class="itinerary" *ngFor="let it of f.itineraries">
+      <div class="seg" *ngFor="let s of it">
+        <span class="route">{{ s.from }} → {{ s.to }}</span>
+        <span class="time">{{ s.depart | date:'MMM d, HH:mm' }} → {{ s.arrive | date:'MMM d, HH:mm' }}</span>
+        <small class="fn">{{ s.flightNo }}</small>
+      </div>
+      <div class="stops">{{ durationLabel(it) }}</div>
+    </div>
+  </div>
+</div>

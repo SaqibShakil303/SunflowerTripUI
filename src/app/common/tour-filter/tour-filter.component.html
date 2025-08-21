@@ -1,6 +1,25 @@
 <div class="full-tour-filter" (clickOutside)="closeAllDropdowns()">
+
+    <!-- MODE TOGGLE -->
+  <div class="mode-toggle">
+    <button
+      type="button"
+      class="mode-btn"
+      [class.active]="mode === 'tours'"
+      (click)="setMode('tours')">
+      🧭 Tours
+    </button>
+    <button
+      type="button"
+      class="mode-btn"
+      [class.active]="mode === 'flights'"
+      (click)="setMode('flights')">
+      ✈️ Flights
+    </button>
+  </div>
+
   <div class="filter-container">
-    <div class="filter-row">
+    <div class="filter-row"  *ngIf="mode === 'tours'">
       <!-- FROM CITY -->
       <div class="filter-col">
         <label class="filter-label">
@@ -150,13 +169,92 @@
         </div>
       </div>
     </div>
+    <div class="filter-row" *ngIf="mode === 'flights'">
+      <!-- FROM AIRPORT -->
+      <div class="filter-col">
+        <label class="filter-label"><i class="icon-location"></i> From (Airport/City)</label>
+        <div class="input-group">
+          <input
+            [(ngModel)]="fromAirportText"
+            (input)="onAirportType('from')"
+            placeholder="e.g., Kolkata, CCU"
+            class="filter-input" />
+          <div class="suggest-dropdown" *ngIf="fromOptions.length">
+            <button type="button"
+              *ngFor="let a of fromOptions; trackBy: trackByIata"
+              (click)="pickAirport('from', a)">
+              {{ a.city || a.name }} ({{ a.iata }}) — {{ a.country }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TO AIRPORT -->
+      <div class="filter-col">
+        <label class="filter-label"><i class="icon-destination"></i> To (Airport/City)</label>
+        <div class="input-group">
+          <input
+            [(ngModel)]="toAirportText"
+            (input)="onAirportType('to')"
+            placeholder="e.g., Delhi, DEL"
+            class="filter-input" />
+          <div class="suggest-dropdown" *ngIf="toOptions.length">
+            <button type="button"
+              *ngFor="let a of toOptions; trackBy: trackByIata"
+              (click)="pickAirport('to', a)">
+              {{ a.city || a.name }} ({{ a.iata }}) — {{ a.country }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATES -->
+      <div class="filter-col">
+        <label class="filter-label"><i class="icon-calendar"></i> Dates</label>
+        <div class="select-group">
+          <input type="date" [(ngModel)]="departDate" class="filter-input" />
+          <input type="date" [(ngModel)]="returnDate" class="filter-input" placeholder="Return (optional)" />
+        </div>
+      </div>
+
+      <!-- PAX & CABIN -->
+      <div class="filter-col">
+        <label class="filter-label"><i class="icon-filter"></i> Travelers</label>
+        <div class="select-group">
+          <div class="pax-row">
+            <input type="number" min="1" [(ngModel)]="adults" class="filter-input" placeholder="Adults" />
+            <input type="number" min="0" [(ngModel)]="children" class="filter-input" placeholder="Children" />
+            <input type="number" min="0" [(ngModel)]="infants" class="filter-input" placeholder="Infants" />
+          </div>
+          <select [(ngModel)]="cabin" class="filter-select">
+            <option value="ECONOMY">Economy</option>
+            <option value="PREMIUM_ECONOMY">Premium Economy</option>
+            <option value="BUSINESS">Business</option>
+            <option value="FIRST">First</option>
+          </select>
+          <label class="nonstop">
+            <input type="checkbox" [(ngModel)]="nonStop" /> Non-stop only
+          </label>
+        </div>
+      </div>
+    </div>
+
 
     <!-- SEARCH BUTTON -->
     <div class="search-section">
-      <button class="search-btn" (click)="searchTours()" type="button">
+      <button class="search-btn" 
+      *ngIf="mode === 'tours'"
+      (click)="searchTours()" type="button">
         <i class="icon-search"></i>
         Search Tours
       </button>
+        <button class="search-btn"
+        *ngIf="mode === 'flights'"
+        (click)="searchFlights()" type="button">
+        <i class="icon-search"></i> Search Flights
+      </button>
     </div>
   </div>
+
+  
 </div>

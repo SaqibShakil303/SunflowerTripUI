@@ -6,6 +6,7 @@ import { DestinationService } from '../../services/destination/destination.servi
 import { TourService } from '../../services/tours/tour.service';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
+import { FlightsService, Airport } from '../../services/flights/flights.service';
 
 @Component({
   selector: 'app-tour-filter',
@@ -17,6 +18,26 @@ import { StatePersistenceService } from '../../services/state-persistence/state-
 export class TourFilterComponent implements OnInit {
   @Output() searchTriggered = new EventEmitter<any>();
   @HostListener('window:resize', ['$event'])
+   mode: 'tours' | 'flights' = 'tours';
+
+    // FLIGHT STATE
+  fromAirportText = '';
+  toAirportText = '';
+  fromIATA = '';
+  toIATA = '';
+  fromOptions: Airport[] = [];
+  toOptions:   Airport[] = [];
+
+  departDate = '';
+  returnDate = '';
+  adults = 1;
+  children = 0;
+  infants = 0;
+  cabin: 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST' = 'ECONOMY';
+  nonStop = false;
+
+    private airportTimer?: any;
+
   onResize(event: any) {
     // Close dropdowns on resize to prevent positioning issues
     this.closeAllDropdowns();
@@ -60,10 +81,63 @@ export class TourFilterComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router  // Add Router injection
     ,
+       private flightsSvc: FlightsService  ,
     private stateSvc: StatePersistenceService
   ) {
     this.initializeCalendar();
   }
+    setMode(m: 'tours' | 'flights') {
+    this.mode = m;
+    this.closeAllDropdowns();
+  }
+
+  // AUTOCOMPLETE HANDLERS
+onAirportType(which: 'from'|'to') {
+  clearTimeout(this.airportTimer);
+  this.airportTimer = setTimeout(() => {
+    const q = which==='from' ? this.fromAirportText : this.toAirportText;
+    if (!q || q.trim().length < 2) {
+      if (which==='from') this.fromOptions = []; else this.toOptions = [];
+      return;
+    }
+    this.flightsSvc.airports(q, true).subscribe(list => {
+      if (which==='from') this.fromOptions = list; else this.toOptions = list;
+    });
+  }, 250);
+}
+
+pickAirport(which: 'from'|'to', a: Airport) {
+  if (which==='from') {
+    this.fromAirportText = `${a.city || a.name} (${a.iata})`;
+    this.fromIATA = a.iata; this.fromOptions = [];
+  } else {
+    this.toAirportText = `${a.city || a.name} (${a.iata})`;
+    this.toIATA = a.iata; this.toOptions = [];
+  }
+}
+
+trackByIata = (_: number, a: Airport) => a.iata;
+
+// SEARCH FLIGHTS → navigate to /flights with query params
+searchFlights(){
+  const from = this.fromIATA || (this.fromAirportText?.trim().length===3 ? this.fromAirportText.trim().toUpperCase() : '');
+  const to   = this.toIATA   || (this.toAirportText?.trim().length===3 ? this.toAirportText.trim().toUpperCase() : '');
+  if (!from || !to || !this.departDate) return;
+
+  this.router.navigate(['/flights'], {
+    queryParams: {
+      from, to,
+      depart: this.departDate,
+      ...(this.returnDate ? { ret: this.returnDate } : {}),
+      adults: this.adults, children: this.children, infants: this.infants,
+      cabin: this.cabin, nonStop: this.nonStop, currency: 'INR'
+    }
+  });
+
+  // optional emit if parent listens:
+  this.searchTriggered.emit({ mode:'flights', from, to, depart:this.departDate, ret:this.returnDate,
+    adults:this.adults, children:this.children, infants:this.infants, cabin:this.cabin, nonStop:this.nonStop, currency:'INR' });
+}
 
   ngOnInit() {
     const saved = this.stateSvc.filter;

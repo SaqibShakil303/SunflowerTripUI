@@ -1,0 +1,170 @@
+Great—here’s a clean, copy-ready JD plus everything HR needs (screening task, interview plan, onboarding checklist, and KPIs). Tweak the brackets to fit your exact details.
+
+---
+
+# Internship: Full-Stack Web Developer (Angular + Express + MySQL)
+
+**Company:** Sunflower Trip Pvt. Ltd.
+**Location:** Kolkata (Hybrid; 2–3 days in office)
+**Employment Type:** Paid Internship (Full-time)
+**Duration:** 3–6 months
+**Stipend:** ₹\[X,000] – ₹\[Y,000] / month (based on skills & availability)
+**Start:** \[Immediate / From DD MMM YYYY]
+
+## Role Overview
+
+We’re looking for a hands-on engineering intern to help us build traveler-friendly features on domain —including **Flight API integration (Tequila by Kiwi)**, **payment gateway integration**, and enhancements to our **Angular frontend** and **Express + MySQL backend**. You’ll ship real features in JavaScript/TypeScript with guidance from our dev team.
+
+## Key projects you’ll work on
+
+* **Flight search (view-only):** Integrate **Tequila (Kiwi)** to power flight results; build filters (route, dates, cabin, stops), sorting, pagination, and caching.
+* **Payments:** Integrate a **payment gateway** into our existing app (preferably **Razorpay**;) for deposits & bookings flow (test mode first).
+* **Product features:** Angular UI components, state management, and API wiring for tours/filters; Express endpoints; MySQL queries and performance fixes.
+
+## Responsibilities
+
+* Build Angular components (v16+; we use v18) with clean, reusable HTML/SCSS and TypeScript.
+* Create/extend Express routes for flight and payment flows; handle env configs and secrets.
+* Design efficient MySQL queries (mysql2/promise), indexes, and migrations for new features.
+* Implement validation, error handling, and logging (e.g., Zod/Joi, try/catch, Winston).
+* Write basic unit/integration tests (Jest/Vitest or similar) where appropriate.
+* Document APIs, env variables, and setup steps; create concise READMEs.
+* Collaborate via Git (feature branches, PRs, code reviews).
+
+## Must-have skills
+
+* **JavaScript & TypeScript** (solid fundamentals).
+* **Angular** (components, services, routing, forms; RxJS basics).
+* **Node.js/Express** (REST APIs, middleware).
+* **MySQL** (joins, aggregations, indexes; basic schema design).
+* Working knowledge of Git/GitHub and Postman/Thunder Client.
+
+## Nice-to-have
+
+* Prior work with **Tequila (Kiwi) API** or any flight/transport API.
+* **Payment gateways** (Razorpay preferred; Stripe acceptable).
+* RxJS operators, Angular Material, Tailwind/SCSS.
+* Basic security hygiene (env files, input validation, CORS).
+* Familiarity with caching (Redis) and SSR/SEO (helpful but not required).
+
+## Tools you’ll use
+
+Angular 18, Express (Node 18+), MySQL, mysql2/promise, Postman, Git/GitHub, Razorpay/Stripe SDKs, Tequila API, Jira/Trello, Notion/Confluence (or similar).
+
+## What you’ll learn
+
+* Real-world API integrations (auth, rate limits, pagination).
+* Secure payments integration & test sandbox flows.
+* Performance-aware SQL and API design.
+* Production-grade code reviews and release discipline.
+
+## Eligibility
+
+* B.Tech/BE/BCA/MCA/B.Sc (CS/IT) students or recent grads; **final-year or pre-final-year preferred**.
+* Available **40 hrs/week** for the internship duration.
+* Portfolio or GitHub projects to review.
+
+## How to apply
+
+Send your **CV + GitHub/Portfolio** to **[careers@thesunflowertrip.com](mailto:careers@thesunflowertrip.com)** with subject:
+**“Full-Stack Intern (Angular/Express) – <Your Name>”**.
+Include 3–5 lines on a project you’re proud of and your earliest start date.
+
+---
+
+## Short version for Indeed (paste as is)
+
+**Title:** Internship – Full-Stack Developer (Angular + Express + MySQL)
+**Company:** Sunflower Trip Pvt. Ltd. | **Location:** Kolkata (Hybrid) | **Stipend:** ₹\[X,000–Y,000]/month | **Duration:** 3–6 months
+
+**About the role:** Build customer-facing features: **Flight API (Tequila by Kiwi) integration**, **payment gateway (Razorpay/Stripe)**, Angular UI, Express APIs, and MySQL queries.
+
+**Must-haves:** JavaScript, TypeScript, Angular, Express, MySQL, Git.
+**Nice-to-haves:** Tequila API, Razorpay/Stripe, RxJS, Angular Material, basic security.
+**Apply:** Email CV + GitHub to **[careers@thesunflowertrip.com](mailto:careers@thesunflowertrip.com)** (Subject: *Full-Stack Intern – Your Name*). Include availability and one project highlight.
+
+---
+
+## Optional screening task (1–2 hours, take-home)
+
+**Goal:** Show end-to-end ability across Angular, Express, and MySQL.
+
+1. **Angular mini-app**
+
+* Form with From, To, Date, Cabin (select), Non-stop (toggle).
+* On submit, call a **mock Express endpoint** and render a table (airline, depart/arrive, duration, price).
+* Add client-side filters (price range, stops) and sort (price asc/desc).
+
+2. **Express endpoint**
+
+* `GET /api/flights/search` returning a static JSON fixture (simulate Tequila).
+* Env config via `.env` (e.g., `TEQUILA_API_KEY` but don’t call the real API).
+* Validate inputs; return 400 on bad params.
+
+3. **MySQL**
+
+* Simple schema `search_logs(id, from_code, to_code, depart_date, created_at)` and insert one row per search.
+
+**Deliverables:** GitHub repo link, README with setup steps & screenshots.
+**Evaluation:** Code clarity, folder structure, validation, UI usability.
+
+---
+
+## Interview plan (compact, 2 rounds)
+
+1. **Tech screen (30–40 min)**
+
+   * Walkthrough of screening task; discuss trade-offs.
+   * Quick exercises:
+
+     * Write a SQL query for “top 5 cheapest flights per route” idea.
+     * Explain how you’d cache flight results (key design & TTL).
+
+2. **Final round (30–40 min)**
+
+   * System design lite: flow for “search flights → view → pay (test mode)”.
+   * Behavioral: collaboration, learning style, timeline management.
+
+---
+
+## Onboarding checklist (week 1)
+
+* Git access, branch policy, and env files shared.
+* Tequila docs + test credentials (or mock key) provided.
+* Payment gateway test keys (Razorpay) and webhooks URL spec (if needed).
+* DB access to dev schema; sample data and seed scripts.
+* Issue tracker board with “good first issues”.
+* Coding standards (Prettier/ESLint), commit conventions, PR template.
+
+---
+
+## KPIs / Milestones
+
+**30 days:**
+
+* Complete screening bug-fix tickets; deliver mock flight search UI + mock API.
+* Add logging + validation; pass code review.
+
+**60 days:**
+
+* Switch mock to **Tequila sandbox**; implement pagination, sorting, filters; basic caching.
+* Integrate **Razorpay (test)** and record payment intents.
+
+**90 days:**
+
+* Stabilize integration (error handling, retries, rate-limit guards).
+* Add unit tests for core utils; document setup & troubleshooting.
+
+---
+
+## One-liner email to HR/Boss (optional)
+
+> Subject: JD for Full-Stack Intern (Angular/Express/MySQL)
+> Hi \[Name],
+> Sharing a finalized JD for our Full-Stack Intern focused on **Tequila flight search** and **payment gateway integration**, plus a short Indeed version, screening task, interview plan, onboarding checklist, and KPIs. Please review the stipend range and dates in brackets and post to Indeed.
+> Thanks,
+> Saqib
+
+---
+
+If you want, I can swap in exact stipend, dates, and work mode—and tailor the screening task to **Tequila** real endpoints next.

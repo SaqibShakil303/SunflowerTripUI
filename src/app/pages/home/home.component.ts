@@ -125,6 +125,10 @@ export class HomeComponent implements AfterViewInit {
   }
 
   handleSearch(filters: any) {
+     if (filters.mode === 'flights') {
+    this.router.navigate(['/flights'], { queryParams: filters });
+    return;
+  }
     const queryParams: any = {};
 
     if (filters.fromCity) queryParams.fromCity = filters.fromCity;
