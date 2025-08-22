@@ -22,7 +22,7 @@ import { TourFilterComponent } from '../../common/tour-filter/tour-filter.compon
     FAQComponent,
     TestimonialsComponent,
     NavbarComponent,
-    ChatWidgetComponent
+    // ChatWidgetComponent
   ],
   templateUrl: './tour-package.component.html',
   styleUrl: './tour-package.component.scss'

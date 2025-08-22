@@ -1,20 +1,68 @@
-<div class="results-wrap">
-  <h2>Flight Results</h2>
-  <div *ngIf="loading">Loading…</div>
-  <div *ngIf="error" class="err">{{ error }}</div>
+<div class="results-container">
+  <h2 class="results-title">Flight Results</h2>
+  
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading flights...</p>
+  </div>
+  
+  <div *ngIf="error" class="error-message">
+    <i class="error-icon">⚠️</i>
+    {{ error }}
+  </div>
 
-  <div *ngFor="let f of items" class="card">
-    <div class="row">
-      <strong>{{ f.carriers.join(', ') }}</strong>
-      <span class="price">{{ f.price }} {{ f.currency }}</span>
-    </div>
-    <div class="itinerary" *ngFor="let it of f.itineraries">
-      <div class="seg" *ngFor="let s of it">
-        <span class="route">{{ s.from }} → {{ s.to }}</span>
-        <span class="time">{{ s.depart | date:'MMM d, HH:mm' }} → {{ s.arrive | date:'MMM d, HH:mm' }}</span>
-        <small class="fn">{{ s.flightNo }}</small>
+  <div *ngIf="!loading && !error && items.length === 0" class="no-results">
+    <i class="no-results-icon">✈️</i>
+    <p>No flights found. Try adjusting your search criteria.</p>
+  </div>
+
+  <div class="flight-grid">
+    <div *ngFor="let flight of items; let i = index" class="flight-card">
+      <div class="card-header">
+        <div class="carrier-info">
+          <img *ngFor="let carrier of flight.carriers" [src]="getAirlineLogo(carrier)" [alt]="carrier + ' logo'" class="airline-logo" />
+          <span class="carrier-names">{{ flight.carriers.join(', ') }}</span>
+        </div>
+        <div class="price-info">
+          <span class="price">{{ flight.price }} {{ flight.currency }}</span>
+          <button class="book-button">Book Now</button>
+        </div>
       </div>
-      <div class="stops">{{ durationLabel(it) }}</div>
+      
+      <div class="itineraries">
+        <div *ngFor="let itinerary of flight.itineraries; let j = index" class="itinerary">
+          <div class="itinerary-header">
+            <span class="direction">{{ j === 0 ? 'Outbound' : 'Return' }}</span>
+            <div class="duration-stops">
+              <span class="duration"><i class="icon">⏱️</i> {{ getDuration(itinerary) }}</span>
+              <span class="stops"><i class="icon">🔄</i> {{ getStopsLabel(itinerary) }}</span>
+            </div>
+          </div>
+          
+          <div class="segments">
+            <div *ngFor="let segment of itinerary; let k = index" class="segment">
+              <div class="segment-timeline">
+                <div class="timeline-dot"></div>
+                <div *ngIf="k < itinerary.length - 1" class="timeline-line"></div>
+              </div>
+              <div class="segment-details">
+                <div class="route-time">
+                  <span class="route">{{ segment.from }} → {{ segment.to }}</span>
+                  <span class="time">{{ segment.depart | date:'MMM d, HH:mm' }} - {{ segment.arrive | date:'MMM d, HH:mm' }}</span>
+                </div>
+                <div class="flight-info">
+                  <span class="flight-no">Flight: {{ segment.flightNo }}</span>
+                  <!-- <span class="cabin">Cabin: {{ flight.cabin || 'Economy' }}</span> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-footer">
+        <!-- <span class="passengers">For {{ flight.adults }} adult(s), {{ flight.children }} child(ren), {{ flight.infants }} infant(s)</span> -->
+      </div>
     </div>
   </div>
 </div>
