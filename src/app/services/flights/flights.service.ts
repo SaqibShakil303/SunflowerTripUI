@@ -15,8 +15,10 @@ export class FlightsService {
   private base = environment.apiDomain
 
   airports(q:string, includeCity=false) {
-    const params = new HttpParams().set('q', q).set('includeCity', includeCity);
-    return this.http.get<Airport[]>(`${this.base}/flights/airports`, { params });
+    const params = new HttpParams()
+    .set('q', q)
+    .set('includeCity', String(includeCity));
+    return this.http.get<Airport[]>(`${this.base}/flights/airports`, { params});
   }
 
   search(body: {

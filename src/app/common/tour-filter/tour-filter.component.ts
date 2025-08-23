@@ -494,4 +494,59 @@ searchFlights(){
 
     this.searchTours();
   }
+
+  private toYYMMDD(dateISO: string) {
+  // dateISO is 'YYYY-MM-DD' coming from <input type="date">
+  if (!dateISO) return '';
+  const [y, m, d] = dateISO.split('-');
+  return `${y.slice(2)}${m.padStart(2,'0')}${d.padStart(2,'0')}`; // YYMMDD
+}
+
+private normalizeIata(s: string) {
+  // Use the picked IATA if available; otherwise 3-char manual entry
+  const t = (s || '').trim().toUpperCase();
+  return t.length === 3 ? t : '';
+}
+
+private mapCabin(c: 'ECONOMY'|'PREMIUM_ECONOMY'|'BUSINESS'|'FIRST'): string {
+  switch (c) {
+    case 'PREMIUM_ECONOMY': return 'premiumeconomy';
+    case 'BUSINESS':        return 'business';
+    case 'FIRST':           return 'first';
+    default:                return 'economy';
+  }
+}
+
+/** Open Skyscanner with pre-filled search (no API required) */
+redirectToSkyscanner() {
+  const from = this.fromIATA || this.normalizeIata(this.fromAirportText);
+  const to   = this.toIATA   || this.normalizeIata(this.toAirportText);
+  if (!from || !to || !this.departDate) {
+    // optionally show a toast: "Please select valid airports and a date"
+    return;
+  }
+
+  const depart = this.toYYMMDD(this.departDate);
+  const ret    = this.returnDate ? this.toYYMMDD(this.returnDate) : '';
+
+  const domain = 'https://www.skyscanner.co.in';
+  const path = ret ? `/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${depart}/${ret}/`
+                   : `/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${depart}/`;
+
+  const params = new URLSearchParams({
+    adults: String(this.adults || 1),          // required
+    // children / infants are optional; only include if > 0
+    ...(this.children > 0 ? { children: String(this.children) } : {}),
+    ...(this.infants  > 0 ? { infants:  String(this.infants) }  : {}),
+    cabinclass: this.mapCabin(this.cabin),
+    preferdirects: String(!!this.nonStop),
+    currency: 'INR',
+    market: 'IN',
+    locale: 'en-GB',
+  });
+
+  const url = `${domain}${path}?${params.toString()}`;
+  window.open(url, '_blank'); // or window.location.href = url;
+}
+
 }

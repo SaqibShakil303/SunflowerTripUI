@@ -73,4 +73,6 @@ export class FlightResultsComponent implements OnInit, OnDestroy {
     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     return `${hours}h ${minutes}m`;
   }
+
+  
 }
