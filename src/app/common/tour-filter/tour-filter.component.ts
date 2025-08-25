@@ -17,16 +17,15 @@ import { FlightsService, Airport } from '../../services/flights/flights.service'
 })
 export class TourFilterComponent implements OnInit {
   @Output() searchTriggered = new EventEmitter<any>();
-  @HostListener('window:resize', ['$event'])
-   mode: 'tours' | 'flights' = 'tours';
+  mode: 'tours' | 'flights' = 'tours';
 
-    // FLIGHT STATE
+  // FLIGHT STATE
   fromAirportText = '';
   toAirportText = '';
   fromIATA = '';
   toIATA = '';
   fromOptions: Airport[] = [];
-  toOptions:   Airport[] = [];
+  toOptions: Airport[] = [];
 
   departDate = '';
   returnDate = '';
@@ -36,8 +35,9 @@ export class TourFilterComponent implements OnInit {
   cabin: 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST' = 'ECONOMY';
   nonStop = false;
 
-    private airportTimer?: any;
+  private airportTimer?: any;
 
+  @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     // Close dropdowns on resize to prevent positioning issues
     this.closeAllDropdowns();
@@ -53,7 +53,7 @@ export class TourFilterComponent implements OnInit {
   destinations: any[] = [];
   categories: string[] = [];
   selectedDestination: any | null = null;
-  // selectedLocation: any | null = null;
+  selectedLocation: any | null = null;
   selectedCategory: string | null = null;
   displayedFilters: any = null;
 
@@ -79,65 +79,64 @@ export class TourFilterComponent implements OnInit {
     private destSvc: DestinationService,
     private toursSvc: TourService,
     private route: ActivatedRoute,
-    private router: Router  // Add Router injection
-    ,
-       private flightsSvc: FlightsService  ,
+    private router: Router,
+    private flightsSvc: FlightsService,
     private stateSvc: StatePersistenceService
   ) {
     this.initializeCalendar();
   }
-    setMode(m: 'tours' | 'flights') {
+  setMode(m: 'tours' | 'flights') {
     this.mode = m;
     this.closeAllDropdowns();
   }
 
   // AUTOCOMPLETE HANDLERS
-onAirportType(which: 'from'|'to') {
-  clearTimeout(this.airportTimer);
-  this.airportTimer = setTimeout(() => {
-    const q = which==='from' ? this.fromAirportText : this.toAirportText;
-    if (!q || q.trim().length < 2) {
-      if (which==='from') this.fromOptions = []; else this.toOptions = [];
-      return;
-    }
-    this.flightsSvc.airports(q, true).subscribe(list => {
-      if (which==='from') this.fromOptions = list; else this.toOptions = list;
-    });
-  }, 250);
-}
-
-pickAirport(which: 'from'|'to', a: Airport) {
-  if (which==='from') {
-    this.fromAirportText = `${a.city || a.name} (${a.iata})`;
-    this.fromIATA = a.iata; this.fromOptions = [];
-  } else {
-    this.toAirportText = `${a.city || a.name} (${a.iata})`;
-    this.toIATA = a.iata; this.toOptions = [];
+  onAirportType(which: 'from'|'to') {
+    clearTimeout(this.airportTimer);
+    this.airportTimer = setTimeout(() => {
+      const q = which==='from' ? this.fromAirportText : this.toAirportText;
+      if (!q || q.trim().length < 2) {
+        if (which==='from') this.fromOptions = []; else this.toOptions = [];
+        return;
+      }
+      this.flightsSvc.airports(q, true).subscribe(list => {
+        if (which==='from') this.fromOptions = list; else this.toOptions = list;
+      });
+    }, 250);
   }
-}
 
-trackByIata = (_: number, a: Airport) => a.iata;
-
-// SEARCH FLIGHTS → navigate to /flights with query params
-searchFlights(){
-  const from = this.fromIATA || (this.fromAirportText?.trim().length===3 ? this.fromAirportText.trim().toUpperCase() : '');
-  const to   = this.toIATA   || (this.toAirportText?.trim().length===3 ? this.toAirportText.trim().toUpperCase() : '');
-  if (!from || !to || !this.departDate) return;
-
-  this.router.navigate(['/flights'], {
-    queryParams: {
-      from, to,
-      depart: this.departDate,
-      ...(this.returnDate ? { ret: this.returnDate } : {}),
-      adults: this.adults, children: this.children, infants: this.infants,
-      cabin: this.cabin, nonStop: this.nonStop, currency: 'INR'
+  pickAirport(which: 'from'|'to', a: Airport) {
+    if (which==='from') {
+      this.fromAirportText = `${a.city || a.name} (${a.iata})`;
+      this.fromIATA = a.iata; this.fromOptions = [];
+    } else {
+      this.toAirportText = `${a.city || a.name} (${a.iata})`;
+      this.toIATA = a.iata; this.toOptions = [];
     }
-  });
+  }
 
-  // optional emit if parent listens:
-  this.searchTriggered.emit({ mode:'flights', from, to, depart:this.departDate, ret:this.returnDate,
-    adults:this.adults, children:this.children, infants:this.infants, cabin:this.cabin, nonStop:this.nonStop, currency:'INR' });
-}
+  trackByIata = (_: number, a: Airport) => a.iata;
+
+  // SEARCH FLIGHTS → navigate to /flights with query params
+  searchFlights(){
+    const from = this.fromIATA || (this.fromAirportText?.trim().length===3 ? this.fromAirportText.trim().toUpperCase() : '');
+    const to   = this.toIATA   || (this.toAirportText?.trim().length===3 ? this.toAirportText.trim().toUpperCase() : '');
+    if (!from || !to || !this.departDate) return;
+
+    this.router.navigate(['/flights'], {
+      queryParams: {
+        from, to,
+        depart: this.departDate,
+        ...(this.returnDate ? { ret: this.returnDate } : {}),
+        adults: this.adults, children: this.children, infants: this.infants,
+        cabin: this.cabin, nonStop: this.nonStop, currency: 'INR'
+      }
+    });
+
+    // optional emit if parent listens:
+    this.searchTriggered.emit({ mode:'flights', from, to, depart:this.departDate, ret:this.returnDate,
+      adults:this.adults, children:this.children, infants:this.infants, cabin:this.cabin, nonStop:this.nonStop, currency:'INR' });
+  }
 
   ngOnInit() {
     const saved = this.stateSvc.filter;
@@ -147,7 +146,7 @@ searchFlights(){
       this.selectedDate = saved.selectedDate ? new Date(saved.selectedDate) : this.selectedDate;
       this.selectedCategory = saved.selectedCategory || this.selectedCategory;
       this.selectedDestination = saved.selectedDestination || this.selectedDestination;
-      // this.selectedLocation = saved.selectedLocation || this.selectedLocation;
+      this.selectedLocation = saved.selectedLocation || this.selectedLocation;
     }
     this.destSvc.getDestinationNames().subscribe({
       next: (data) => {
@@ -187,7 +186,7 @@ searchFlights(){
             // console.log('DEBUG - Found location:', loc);
             if (loc) {
               this.selectedDestination = dest;
-              // this.selectedLocation = loc;
+              this.selectedLocation = loc;
               // console.log('DEBUG - Set selectedDestination:', this.selectedDestination);
               // console.log('DEBUG - Set selectedLocation:', this.selectedLocation);
               break;
@@ -195,7 +194,7 @@ searchFlights(){
           }
         } else if (destinationId) {
           this.selectedDestination = this.destinations.find(d => d.id === destinationId) || null;
-          // this.selectedLocation = null;
+          this.selectedLocation = null;
           // console.log('DEBUG - Set selectedDestination (destination only):', this.selectedDestination);
         }
 
@@ -307,7 +306,7 @@ searchFlights(){
     return (
       this.selectedCategory !== null ||
       this.selectedDestination !== null ||
-      // this.selectedLocation !== null ||
+      this.selectedLocation !== null ||
       this.selectedDate !== null ||
       this.fromCity !== 'Kolkata' ||
       this.durationRange[0] !== this.defaultDurationRange[0] ||
@@ -370,10 +369,9 @@ searchFlights(){
     const queryParams: any = {};
 
     // Add destination or location ID (same logic as header)
-    // if (this.selectedLocation && typeof this.selectedLocation === 'object' && this.selectedLocation.id) {
-    //   queryParams.location = this.selectedLocation.id;
-    // } 
-    if (this.selectedDestination && this.selectedDestination.id) {
+    if (this.selectedLocation && typeof this.selectedLocation === 'object' && this.selectedLocation.id) {
+      queryParams.location = this.selectedLocation.id;
+    } else if (this.selectedDestination && this.selectedDestination.id) {
       queryParams.destination = this.selectedDestination.id;
     }
 
@@ -410,9 +408,9 @@ searchFlights(){
     });
 
     // Also emit the payload for backward compatibility  
-    // const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object') 
-    //   ? this.selectedLocation.id 
-    //   : '';
+    const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object') 
+      ? this.selectedLocation.id 
+      : '';
 
     const payload = {
       destination_id: this.selectedDestination?.id || '',
@@ -423,7 +421,7 @@ searchFlights(){
       max_duration: this.durationRange[1],
       available_from: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
       available_to: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
-      // location: locationId
+      location: locationId
     };
     this.stateSvc.setFilter({
       durationRange: this.durationRange,
@@ -431,7 +429,7 @@ searchFlights(){
       selectedDate: this.selectedDate,
       selectedCategory: this.selectedCategory,
       selectedDestination: this.selectedDestination,
-      // selectedLocation: this.selectedLocation
+      selectedLocation: this.selectedLocation
     });
     this.searchTriggered.emit(payload);
   }
@@ -439,7 +437,7 @@ searchFlights(){
   onDestinationChange() {
     // console.log('DEBUG - onDestinationChange called');
     // console.log('DEBUG - selectedDestination after change:', this.selectedDestination);
-    // this.selectedLocation = null;
+    this.selectedLocation = null;
     // console.log('DEBUG - selectedLocation reset to null');
     // this.searchTours();
   }
@@ -479,7 +477,7 @@ searchFlights(){
     this.budgetRange = [...this.defaultBudgetRange];
     this.selectedCategory = null;
     this.selectedDestination = null;
-    // this.selectedLocation = null;
+    this.selectedLocation = null;
     this.selectedDate = null;
     this.fromCity = 'Kolkata';
     this.filterChips = [];
@@ -547,6 +545,27 @@ redirectToSkyscanner() {
 
   const url = `${domain}${path}?${params.toString()}`;
   window.open(url, '_blank'); // or window.location.href = url;
+}
+
+
+// Add helpers
+get todayISO(): string { return new Date().toISOString().split('T')[0]; }
+
+swapFromTo() {
+  [this.fromAirportText, this.toAirportText] = [this.toAirportText, this.fromAirportText];
+  [this.fromIATA, this.toIATA] = [this.toIATA, this.fromIATA];
+}
+
+inc(field: 'adults'|'children'|'infants') {
+  if (field === 'adults') this.adults = Math.min(9, this.adults + 1);
+  if (field === 'children') this.children = Math.min(8, this.children + 1);
+  if (field === 'infants') this.infants = Math.min(this.adults, this.infants + 1); // 1 infant per adult rule
+}
+
+dec(field: 'adults'|'children'|'infants') {
+  if (field === 'adults') this.adults = Math.max(1, this.adults - 1);
+  if (field === 'children') this.children = Math.max(0, this.children - 1);
+  if (field === 'infants') this.infants = Math.max(0, this.infants - 1);
 }
 
 }

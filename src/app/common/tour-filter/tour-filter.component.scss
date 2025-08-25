@@ -776,3 +776,48 @@
   color: #2d3748;
   font-weight: 600;
 }
+
+/* Fix left positioning typos */
+.calendar-dropdown { left: 0; }
+.filter-flyout { left: 0; }
+
+/* Swap column (the ⇆ button) */
+.swap-col {
+  display: flex; align-items: end; justify-content: center;
+}
+.swap-btn {
+  @include glass-card(0.25, 10px, 0.35);
+  border: none; border-radius: 12px; padding: .9rem 1rem; font-weight: 800;
+  cursor: pointer; line-height: 1; transform: translateY(6px);
+  &:hover { transform: translateY(4px); }
+}
+
+/* Suggest dropdown better for mobile */
+.suggest-dropdown {
+  max-height: 280px; overflow-y: auto;
+}
+
+/* Steppers for travellers */
+.steppers {
+  grid-template-columns: 1fr; gap: .75rem;
+}
+.stepper {
+  display: flex; align-items: center; justify-content: space-between;
+  .stepper-label { font-weight: 700; color: #2d3748; }
+  .stepper-ctrl {
+    display: inline-flex; align-items: center; gap: .75rem;
+    button {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: none; cursor: pointer; font-size: 1.2rem; font-weight: 800;
+      @include glass-card(0.25, 8px, 0.35);
+    }
+    span { min-width: 1.5rem; text-align: center; font-weight: 700; }
+  }
+}
+
+/* Small screens: tighter layout for flights row */
+@media (max-width: 768px) {
+  .filter-row { gap: .75rem; }
+  .swap-col { order: 3; } /* put swap between fields on mobile nicely */
+  .suggest-dropdown { max-height: 220px; }
+}
