@@ -52,7 +52,17 @@ app-header{
 
   app-header {
     position: relative;
+    z-index: 12;
+  }
+
+  
+  .tour-filter-section {
+    position: relative;
+    // position: sticky;
+    // top: 0;
     z-index: 10;
+    // background: var(--background-gradient);
+    padding: 1rem 0;
   }
 }
 
@@ -254,9 +264,9 @@ h2._active {
   width: 100%;
 }
 
-.tour-filter-section {
-  position: relative;
-  top: 0;
-  // z-index: 999;
-  padding: 1rem 0;
-}
+// .tour-filter-section {
+//   position: relative;
+//   top: 0;
+//   // z-index: 999;
+//   padding: 1rem 0;
+// }

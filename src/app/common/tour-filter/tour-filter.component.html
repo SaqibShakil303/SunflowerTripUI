@@ -170,81 +170,105 @@
       </div>
     </div>
    <!-- Flights row -->
-<div class="filter-row" *ngIf="mode === 'flights'">
+<!-- Flights row -->
+<div class="flights-row" *ngIf="mode === 'flights'">
   <!-- FROM -->
-  <div class="filter-col">
-    <label class="filter-label"><i class="icon-location"></i> From (Airport/City)</label>
-    <div class="input-group">
-      <input [(ngModel)]="fromAirportText" (input)="onAirportType('from')" placeholder="e.g., Kolkata, CCU" class="filter-input" />
-      <div class="suggest-dropdown" *ngIf="fromOptions?.length">
-        <button type="button" *ngFor="let a of fromOptions; trackBy: trackByIata" (click)="pickAirport('from', a)">
-          {{ a.city || a.name }} ({{ a.iata }}) — {{ a.country }}
+  <div class="flight-col">
+    <label class="flight-label"><i class="icon-location"></i> From</label>
+    <div class="autocomplete">
+      <input
+        class="flight-input"
+        [(ngModel)]="fromAirportText"
+        (input)="onAirportType('from')"
+        placeholder="City or airport (e.g., Kolkata, CCU)"
+      />
+      <div class="suggest-menu" *ngIf="fromOptions?.length">
+        <button
+          type="button"
+          class="suggest-item"
+          *ngFor="let a of fromOptions; trackBy: trackByIata"
+          (click)="pickAirport('from', a)"
+        >
+          <span class="suggest-title">{{ a.city || a.name }}</span>
+          <span class="suggest-meta">({{ a.iata }}) • {{ a.country }}</span>
         </button>
       </div>
     </div>
   </div>
 
   <!-- SWAP -->
-  <div class="swap-col">
-    <button type="button" class="swap-btn" (click)="swapFromTo()" aria-label="Swap origin and destination">⇆</button>
+  <div class="flight-swap">
+    <button type="button" class="swap-btn" (click)="swapFromTo()" aria-label="Swap origin and destination">
+      ⇆
+    </button>
   </div>
 
   <!-- TO -->
-  <div class="filter-col">
-    <label class="filter-label"><i class="icon-destination"></i> To (Airport/City)</label>
-    <div class="input-group">
-      <input [(ngModel)]="toAirportText" (input)="onAirportType('to')" placeholder="e.g., Delhi, DEL" class="filter-input" />
-      <div class="suggest-dropdown" *ngIf="toOptions?.length">
-        <button type="button" *ngFor="let a of toOptions; trackBy: trackByIata" (click)="pickAirport('to', a)">
-          {{ a.city || a.name }} ({{ a.iata }}) — {{ a.country }}
+  <div class="flight-col">
+    <label class="flight-label"><i class="icon-destination"></i> To</label>
+    <div class="autocomplete">
+      <input
+        class="flight-input"
+        [(ngModel)]="toAirportText"
+        (input)="onAirportType('to')"
+        placeholder="City or airport (e.g., Delhi, DEL)"
+      />
+      <div class="suggest-menu" *ngIf="toOptions?.length">
+        <button
+          type="button"
+          class="suggest-item"
+          *ngFor="let a of toOptions; trackBy: trackByIata"
+          (click)="pickAirport('to', a)"
+        >
+          <span class="suggest-title">{{ a.city || a.name }}</span>
+          <span class="suggest-meta">({{ a.iata }}) • {{ a.country }}</span>
         </button>
       </div>
     </div>
   </div>
 
   <!-- DATES -->
-  <div class="filter-col">
-    <label class="filter-label"><i class="icon-calendar"></i> Dates</label>
-    <div class="select-group">
-      <input type="date" [(ngModel)]="departDate" [min]="todayISO" class="filter-input" />
-      <input type="date" [(ngModel)]="returnDate" [min]="departDate || todayISO" class="filter-input" placeholder="Return (optional)" />
+  <div class="flight-col">
+    <label class="flight-label"><i class="icon-calendar"></i> Dates</label>
+    <div class="date-pair">
+      <input type="date" class="flight-input" [(ngModel)]="departDate" [min]="todayISO" />
+      <input type="date" class="flight-input" [(ngModel)]="returnDate" [min]="departDate || todayISO" placeholder="Return (optional)" />
     </div>
+    <small class="muted" *ngIf="!returnDate">One-way? Leave return empty.</small>
   </div>
 
-  <!-- TRAVELLERS -->
-  <div class="filter-col">
-    <label class="filter-label"><i class="icon-filter"></i> Travelers & Cabin</label>
+  <!-- TRAVELLERS / CABIN -->
+  <div class="flight-col">
+    <label class="flight-label"><i class="icon-filter"></i> Travelers & Cabin</label>
 
-    <div class="pax-row steppers">
+    <div class="pax-steppers">
       <div class="stepper">
-        <span class="stepper-label">Adults</span>
+        <span class="stepper-name">Adults</span>
         <div class="stepper-ctrl">
           <button type="button" (click)="dec('adults')">−</button>
           <span>{{ adults }}</span>
           <button type="button" (click)="inc('adults')">+</button>
         </div>
       </div>
-
       <div class="stepper">
-        <span class="stepper-label">Children</span>
+        <span class="stepper-name">Children</span>
         <div class="stepper-ctrl">
           <button type="button" (click)="dec('children')">−</button>
           <span>{{ children }}</span>
           <button type="button" (click)="inc('children')">+</button>
         </div>
       </div>
-
-      <div class="stepper">
-        <span class="stepper-label">Infants</span>
+      <!-- <div class="stepper">
+        <span class="stepper-name">Infants</span>
         <div class="stepper-ctrl">
           <button type="button" (click)="dec('infants')">−</button>
           <span>{{ infants }}</span>
           <button type="button" (click)="inc('infants')">+</button>
         </div>
-      </div>
+      </div> -->
     </div>
 
-    <select [(ngModel)]="cabin" class="filter-select">
+    <select [(ngModel)]="cabin" class="flight-select">
       <option value="ECONOMY">Economy</option>
       <option value="PREMIUM_ECONOMY">Premium Economy</option>
       <option value="BUSINESS">Business</option>
@@ -256,6 +280,7 @@
     </label>
   </div>
 </div>
+
 
 
     <!-- SEARCH BUTTON -->
