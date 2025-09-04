@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { tap, catchError, of } from 'rxjs';
+import { tap, catchError, of, timeout } from 'rxjs';
 import { JobModel } from '../../models/job.model';
 import { JobService } from '../../services/job/job.service';
 import { CommonModule } from '@angular/common';
@@ -47,7 +47,7 @@ export class JobsComponent implements OnInit {
   // Load jobs data
   loadData(): void {
     this.isLoading = true;
-    this.jobService.getAllJobs().pipe(
+    this.jobService.getAllJobs().pipe( timeout(8000),
       tap((jobs) => {
         console.log('Fetched jobs:', jobs);
       }),

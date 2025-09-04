@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TripPlannerComponent } from '../../common/trip-planner/trip-planner.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { tripPlanner } from '../../models/tripPlanner.model';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { TripLead } from '../../models/tripLead.model';
 
@@ -30,7 +30,7 @@ private apiUrl =environment.apiDomain
   }
 
 getAllTripLeads(): Observable<TripLead[]> {
-    return this.http.get<TripLead[]>(`${this.apiUrl}/trip-leads`).pipe(
+    return this.http.get<TripLead[]>(`${this.apiUrl}/trip-leads`).pipe( timeout(8000),
       map(tripLeads =>
         tripLeads.map(lead => ({
           ...lead,
@@ -42,7 +42,7 @@ getAllTripLeads(): Observable<TripLead[]> {
   }
 
   deleteTripLead(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/trip-leads/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/trip-leads/${id}`).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }

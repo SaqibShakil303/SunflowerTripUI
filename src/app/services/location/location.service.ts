@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, throwError, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { LocationModel } from '../../models/location.model';
 
@@ -14,23 +14,25 @@ export class LocationService {
   private apiUrl = environment.apiDomain;
 
   addLocation(data: Partial<LocationModel>): Observable<any> {
-    return this.http.post(`${this.apiUrl}/locations`, data).pipe(
+    return this.http.post(`${this.apiUrl}/locations`, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   getAllLocations(): Observable<LocationModel[]> {
-    return this.http.get<LocationModel[]>(`${this.apiUrl}/locations`);
+    return this.http.get<LocationModel[]>(`${this.apiUrl}/locations`).pipe( timeout(8000),
+      catchError(this.handleError)
+    );
   }
 
   updateLocation(data: Partial<LocationModel>): Observable<LocationModel> {
-    return this.http.put<LocationModel>(`${this.apiUrl}/locations/${data.id}`, data).pipe(
+    return this.http.put<LocationModel>(`${this.apiUrl}/locations/${data.id}`, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   deleteLocation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/locations/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/locations/${id}`).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }

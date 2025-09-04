@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { ItineraryDay, RoomType, Tour, TourPhoto, TourReview } from '../../models/tour.model';
 import { DestinationPayload } from '../destination/destination.service';
@@ -86,7 +86,7 @@ export class TourService {
   getTourBySlug(slug: string): Observable<Tour> {
     return this.http
       .get<any>(`${this.apiUrl}/Tours/${slug}`)
-      .pipe(
+      .pipe( timeout(8000),
         map(raw => this.transformTourData(raw))
       );
   }
@@ -95,28 +95,28 @@ export class TourService {
   }
 
   getFilteredTours(params: any): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params });
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params }).pipe( timeout(8000));
   }
 
   getFeaturedTours(): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/getFeaturedTours`);
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/getFeaturedTours`).pipe( timeout(8000));
   }
 
   getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/Tours/categories`);
+    return this.http.get<string[]>(`${this.apiUrl}/Tours/categories`).pipe( timeout(8000));
   }
   getAllTours(): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours`);
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours`).pipe( timeout(8000));
   }
   getByDestination(destId: number): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${destId}/destination`);
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${destId}/destination`).pipe( timeout(8000));
   }
 
   getByLocation(locId: number): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${locId}/location`);
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${locId}/location`).pipe( timeout(8000));
   }
   getByCategory(category: string): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/category/${category}`);
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/category/${category}`).pipe( timeout(8000));
   }
 
   deleteTour(id: number): Observable<any> {
@@ -144,7 +144,7 @@ export class TourService {
       });
     }
 
-    return this.http.get<any>(`${this.apiUrl}/tours`, { params: httpParams }).pipe(
+    return this.http.get<any>(`${this.apiUrl}/tours`, { params: httpParams }).pipe( timeout(8000),
       map(response => ({
         ...response,
         tours: response.tours.map((tour: any) => this.transformTourData(tour))
@@ -219,7 +219,7 @@ export class TourService {
 
   // Get user's wishlist
   getUserWishlist(): Observable<Tour[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/wishlist`).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/wishlist`).pipe( timeout(8000),
       map(response => response.map(item => this.transformTourData(item.tour)))
     );
   }
@@ -236,7 +236,7 @@ export class TourService {
 
   // Get similar tours
   getSimilarTours(tourId: number, limit: number = 4): Observable<Tour[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/tours/${tourId}/similar?limit=${limit}`).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/tours/${tourId}/similar?limit=${limit}`).pipe( timeout(8000),
       map(response => response.map(tour => this.transformTourData(tour)))
     );
   }
@@ -359,7 +359,7 @@ export class TourService {
   getFilters(): Observable<{ cities: string[]; categories: string[] }> {
     return this.http.get<{ cities: string[]; categories: string[] }>(
       `${this.apiUrl}/Tours/filters`
-    );
+    ).pipe( timeout(8000));
   }
 
   // Helper method to get availability status

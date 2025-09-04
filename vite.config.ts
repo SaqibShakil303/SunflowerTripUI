@@ -1,11 +1,14 @@
-// // vite.config.ts
-// import { defineConfig } from 'vite';
-// import angular from '@analogjs/vite-plugin-angular';
+import { defineConfig } from 'vite';
+import angular from '@analogjs/vite-plugin-angular';
 
-// export default defineConfig({
-//   plugins: [ angular() ],
-//   ssr: false,
-//   build: {
-//     ssrManifest: false
-//   }
-// });
+export default defineConfig({
+  plugins: [angular()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',   // your Express backend
+        changeOrigin: true,
+      },
+    },
+  },
+});

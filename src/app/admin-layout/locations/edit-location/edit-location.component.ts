@@ -7,7 +7,7 @@ import { DestinationNav } from '../../../services/destination/destination.servic
 import { LocationModel } from '../../../models/location.model';
 import { DestinationService } from '../../../services/destination/destination.service';
 import { LocationService } from '../../../services/location/location.service';
-import { tap } from 'rxjs';
+import { tap, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-edit-location',
@@ -71,7 +71,7 @@ export class EditLocationComponent implements OnInit {
   }
 
   private loadDestinations() {
-    return this.destinationService.getNamesAndLocations().pipe(
+    return this.destinationService.getNamesAndLocations().pipe( timeout(8000),
       tap((destinations: DestinationNav[]) => {
         this.destinations = destinations;
       })

@@ -1,6 +1,6 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, timeout } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../../environments/environments.prod';
 import { isPlatformBrowser } from '@angular/common';
@@ -33,13 +33,13 @@ export class AuthService {
   signup(email: string, password: string, role: string): Observable<any> {
     return this.http
       .post<AuthResponse>(`${environment.apiDomain}/auth/signup`, { email, password, role })
-      .pipe(tap(r => this.persistTokens(r.tokens)));
+      .pipe(timeout(8000),tap(r => this.persistTokens(r.tokens)));
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${environment.apiDomain}/auth/login`, { email, password })
-      .pipe(
+      .pipe( timeout(8000),
         tap(response => this.persistToken(response.tokens, response.userRole))
       );
   }
@@ -64,7 +64,7 @@ export class AuthService {
   refreshToken(): Observable<any> {
     const tokens = this.tokensSubject.value;
     if (!tokens) throw new Error('No tokens available');
-    return this.http.post(`${environment.apiDomain}/auth/refresh-token`, { refreshToken: tokens.refreshToken }).pipe(
+    return this.http.post(`${environment.apiDomain}/auth/refresh-token`, { refreshToken: tokens.refreshToken }).pipe( timeout(8000),
       tap((response: any) => this.persistTokens(response.tokens))
     );
   }
@@ -79,7 +79,7 @@ export class AuthService {
 
   googleAuth(code: string): Observable<any> {
     console.log('Sending Google auth request with code:', code);
-    return this.http.post(`${environment.apiDomain}/auth/google`, { code }, { observe: 'response' }).pipe(
+    return this.http.post(`${environment.apiDomain}/auth/google`, { code }, { observe: 'response' }).pipe( timeout(8000),
       tap((response: any) => {
         console.log('Google auth response:', response.body);
         this.persistTokens(response.body.tokens);
@@ -87,7 +87,7 @@ export class AuthService {
     );
   }
   truecallerAuth(code: string): Observable<any> {
-    return this.http.post(`${environment.apiDomain}/auth/truecaller`, { code }).pipe(
+    return this.http.post(`${environment.apiDomain}/auth/truecaller`, { code }).pipe( timeout(8000),
       tap((response: any) => this.persistTokens(response.tokens))
     );
   }

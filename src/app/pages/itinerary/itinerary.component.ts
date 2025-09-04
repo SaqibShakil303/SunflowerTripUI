@@ -20,7 +20,7 @@ import { NavbarComponent } from "../../common/navbar/navbar.component";
     ReactiveFormsModule,
     FooterComponent,
     // HeaderComponent,
-    ChatWidgetComponent,
+    // ChatWidgetComponent,
     NavbarComponent
 ],
   providers: [ItineraryService], // Provide service locally

@@ -32,7 +32,7 @@ import { DestinationsComponent } from '../../components/destinations/destination
     // TestimonialsComponent,
     ToursComponent,
     ServicesComponent,
-    ChatWidgetComponent,
+    // ChatWidgetComponent,
     FooterComponent,
     MapComponent,
     WhyUsComponent,

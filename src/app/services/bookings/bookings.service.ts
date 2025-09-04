@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environments.dev';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError, timeout } from 'rxjs';
 import { Booking } from '../../models/booking.model';
 
 interface RawBooking {
@@ -30,34 +30,35 @@ export class BookingsService {
   constructor(private http: HttpClient) {}
 
   submitEnquiry(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/Contact/enquiries`, data).pipe(
+    return this.http.post(`${this.apiUrl}/Contact/enquiries`, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   submitBooking(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/Contact/bookings`, data).pipe(
+    return this.http.post(`${this.apiUrl}/Contact/bookings`, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   // ✅ GET all enquiries
   getAllEnquiries(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/Contact/GetAllEnquiries`).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/Contact/GetAllEnquiries`).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   // ✅ DELETE enquiry by ID
   deleteEnquiry(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteEnquiry/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteEnquiry/${id}`).pipe( timeout(8000),
+      timeout(8000),
       catchError(this.handleError)
     );
   }
 
   // ✅ GET all bookings
  getAllBookings(): Observable<Booking[]> {
-    return this.http.get<RawBooking[]>(`${this.apiUrl}/Contact/GetAllBookings`).pipe(
+    return this.http.get<RawBooking[]>(`${this.apiUrl}/Contact/GetAllBookings`).pipe( timeout(8000),
      map(bookings =>
         bookings.map(booking => ({
           ...booking,
@@ -69,7 +70,7 @@ export class BookingsService {
   }
 
   deleteBooking(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteBooking/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/Contact/deleteBooking/${id}`).pipe( timeout(8000));
   }
   // ❗️Centralized error handler
   private handleError(error: HttpErrorResponse): Observable<never> {

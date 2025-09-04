@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserModel } from '../../models/user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, throwError, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 
 @Injectable({
@@ -14,11 +14,11 @@ export class UserService {
   private apiUrl = environment.apiDomain;
 
   getAllUsers(): Observable<UserModel[]> {
-    return this.http.get<UserModel[]>(`${this.apiUrl}/users`);
+    return this.http.get<UserModel[]>(`${this.apiUrl}/users`).pipe( timeout(8000));
   }
 
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/users/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }

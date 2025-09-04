@@ -21,7 +21,7 @@ import { DOCUMENT } from '@angular/common';
     RouterModule,
     FooterComponent,
     NavbarComponent,
-    ChatWidgetComponent,
+    // ChatWidgetComponent,
     BookingModalComponent,
     MatSnackBarModule
   ],
@@ -95,7 +95,7 @@ private setJsonLd(data: object) {                   // ✅ add
         this.selectedChildren = tour.children || 0;
         this.selectedRooms = tour.rooms || 1;
         this.loading = false;
-
+           if (isPlatformBrowser(this.platformId)) {
            const url = `https://thesunflowertrip.com/tours/${tour.slug}`;
       const title = tour.meta_title || tour.title;
       const desc  = this.short(tour.meta_description || tour.description);
@@ -143,6 +143,7 @@ private setJsonLd(data: object) {                   // ✅ add
         // this.meta.updateTag({ name: 'og:description', content: tour.meta_description || tour.description });
         // this.meta.updateTag({ name: 'og:image', content: tour.image_url });
         // this.meta.updateTag({ name: 'og:url', content: `https://thesunflowertrip.com/tours/${tour.slug}` });
+    }
       },
       error: () => {
         this.tour = null;

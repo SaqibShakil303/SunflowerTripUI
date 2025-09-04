@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Itinerary } from '../../models/itinerary.model';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { isPlatformBrowser } from '@angular/common';
+import { time } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class ItineraryService {
     }
   }
   getItineraries(): Observable<Itinerary[]> {
-    return this.http.get<Itinerary[]>(`${this.APIurl}/Itinerary/GetItineraries`);
+    return this.http.get<Itinerary[]>(`${this.APIurl}/Itinerary/GetItineraries`).pipe(timeout(8000));
   }
 
   deleteItinerary(id: number): Observable<any> {

@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { inject, Inject, Injectable, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
+import { map, Observable, of, tap, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { Activity, Attraction, Cuisine, Destination, Ethnicity } from '../../models/destination.model';
+import { isPlatformServer } from '@angular/common';
 export interface DestinationNav {
   parent_id: null;
   id: number;
   title: string;
   locations: { id: number; name: string }[];
 }
-
+const DEST_NAMES_KEY = makeStateKey<any[]>('dest_names');
 // Interface for the backend payload
 export interface DestinationPayload {
   destination: {
@@ -41,20 +42,31 @@ export class DestinationService {
     ) private platformId: Object
   ) { }
   private APIurl = environment.apiDomain
-
+ private ts = inject(TransferState);
+  // private platformId = inject(PLATFORM_ID);
 
   getDestinations(): Observable<Destination[]> {
     return this.http.get<Destination[]>(`${this.APIurl}/Destination`);
   }
 
   getDestinationNames(): Observable<Destination[]> {
-    return this.http.get<Destination[]>(`${this.APIurl}/Destination/destinationNames`);
+    const cached = this.ts.get(DEST_NAMES_KEY, null as any);
+    if (cached) return of(cached);
+
+    return this.http.get<Destination[]>(`${this.APIurl}/Destination/destinationNames`).pipe(
+      tap((data) => {
+        // store only on server so it’s available to the client
+        if (isPlatformServer(this.platformId)) {
+          this.ts.set(DEST_NAMES_KEY, data);
+        }
+      })
+    );
   }
   getDestinationById(id: number): Observable<any> {
     return this.http.get<any>(`${this.APIurl}/${id}/details`);
   }
   getDestinationByTitle(title: string): Observable<Destination> {
-    return this.http.get<any>(`${this.APIurl}/Destination/${title}`).pipe(
+    return this.http.get<any>(`${this.APIurl}/Destination/${title}`).pipe(timeout(8000),
       map((data) => ({
         id: data.id,
         title: data.title,
@@ -79,10 +91,10 @@ export class DestinationService {
   }
 
   getDestinationDetails(id: number): Observable<Destination> {
-    return this.http.get<Destination>(`${this.APIurl}/Destination/${id}/details`);
+    return this.http.get<Destination>(`${this.APIurl}/Destination/${id}/details`).pipe(timeout(8000));
   }
   getNamesAndLocations(): Observable<DestinationNav[]> {
-    return this.http.get<DestinationNav[]>(`${this.APIurl}/Destination/names`);
+    return this.http.get<DestinationNav[]>(`${this.APIurl}/Destination/names`).pipe(timeout(8000));
   }
 
   addDestination(destinationPayload: DestinationPayload): Observable<any> {

@@ -3,7 +3,7 @@
   import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
    import { ActivatedRoute, Router } from '@angular/router';
 
-   import { catchError, tap } from 'rxjs/operators';
+   import { catchError, tap, timeout } from 'rxjs/operators';
    import { of } from 'rxjs';
 import { AuthService } from '../services/authService/auth.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -66,7 +66,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
         }, 3000);
         return;
       }
-      this.authService.googleAuth(code).pipe(
+      this.authService.googleAuth(code).pipe( timeout(8000),
         tap((response) => {
           console.log('Google auth response:', response.body);
           this.router.navigate(['/dashboard']);

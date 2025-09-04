@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-travel-guide',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, CommonModule, FormsModule, ChatWidgetComponent],
+  imports: [NavbarComponent, FooterComponent, CommonModule, FormsModule],
   templateUrl: './travel-guide.component.html',
   styleUrl: './travel-guide.component.scss'
 })

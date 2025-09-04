@@ -24,7 +24,7 @@ import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.co
 @Component({
   selector: 'app-destination-main',
   standalone: true,
-  imports: [CommonModule, RouterModule, SafeUrlPipe, FooterComponent, NavbarComponent, ChatWidgetComponent],
+  imports: [CommonModule, RouterModule, SafeUrlPipe, FooterComponent, NavbarComponent],
   templateUrl: './destination-main.component.html',
   styleUrls: ['./destination-main.component.scss']
 })

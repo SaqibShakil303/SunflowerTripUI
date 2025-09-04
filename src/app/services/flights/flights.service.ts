@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environments.prod';
-import { map, of } from 'rxjs';
+import { map, of, timeout } from 'rxjs';
 
 export interface Airport { iata:string; name:string; city?:string; country?:string; type?:'AIRPORT'|'CITY'; }
 export interface FlightSegment { from:string; to:string; depart:string; arrive:string; flightNo:string; duration:string; }
@@ -36,7 +36,7 @@ airports(term: string, includeCity = true) {
   // Travelpayouts endpoint (no API key needed for autocomplete)
   const url = 'https://autocomplete.travelpayouts.com/places2';
 
-  return this.http.get<any[]>(url, { params }).pipe(
+  return this.http.get<any[]>(url, { params }).pipe( timeout(8000),
     map(list =>
       (list || [])
         // Some entries have no code; keep those that have IATA-like code

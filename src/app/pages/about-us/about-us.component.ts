@@ -21,7 +21,7 @@ import { ChatWidgetComponent } from "../../components/chat-widget/chat-widget.co
     WhyUsComponent,
     NavbarComponent,
     FooterComponent,
-    ChatWidgetComponent
+    // ChatWidgetComponent
 ],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.scss',

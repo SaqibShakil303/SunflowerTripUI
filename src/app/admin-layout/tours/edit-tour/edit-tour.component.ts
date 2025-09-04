@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { TourService } from '../../../services/tours/tour.service';
 import { DestinationNav, DestinationService } from '../../../services/destination/destination.service';
-import { tap } from 'rxjs';
+import { tap, timeout } from 'rxjs';
 
 interface TourPayload {
   tour: {
@@ -403,7 +403,7 @@ export class EditTourComponent implements OnInit {
   get departures() { return this.tourForm.get('departures') as FormArray<FormGroup>; }
 
   loadDestinations() {
-    return this.destinationService.getNamesAndLocations().pipe(
+    return this.destinationService.getNamesAndLocations().pipe( timeout(8000),
       tap((destinations: DestinationNav[]) => {
         this.destinations = destinations;
       })
@@ -411,7 +411,7 @@ export class EditTourComponent implements OnInit {
   }
 
   loadCategories() {
-    return this.tourService.getCategories().pipe(
+    return this.tourService.getCategories().pipe( timeout(8000),
       tap((categories: string[]) => {
         this.categories = categories;
       })

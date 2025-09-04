@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user/user.service';
-import { tap, catchError, of,  } from 'rxjs';
+import { tap, catchError, of, timeout,  } from 'rxjs';
 import { formatInTimeZone } from 'date-fns-tz';
 
 @Component({
@@ -40,7 +40,7 @@ constructor(private userService: UserService, @Inject(PLATFORM_ID) private platf
   }
 
   loadUsers(): void {
-    this.userService.getAllUsers().pipe(
+    this.userService.getAllUsers().pipe( timeout(8000),
       tap((users) => {
         console.log('API Response:', users);
         this.users = users.map(user => ({

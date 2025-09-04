@@ -68,6 +68,9 @@ export const routes: Routes = [
       { path: '', redirectTo: '', pathMatch: 'full' }
     ]
   },
+//   { path: 'booking/success/:bookingId', loadComponent: () => import('./pages/booking-success/booking-success.component').then(m => m.BookingSuccessComponent) },
+// { path: 'booking/cancelled', loadComponent: () => import('./pages/booking-cancelled/booking-cancelled.component').then(m => m.BookingCancelledComponent) },
+
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignUpComponent },
   {
@@ -129,6 +132,10 @@ export const routes: Routes = [
     path: 'tour/:slug',
     component: TourDetailComponent
   },
+    { path: 'booking/success/:bookingId',
+       loadComponent: () => import('./pages/booking-success/booking-success.component').then(m => m.BookingSuccessComponent)
+       },
+{ path: 'booking/cancelled', loadComponent: () => import('./pages/booking-cancelled/booking-cancelled.component').then(m => m.BookingCancelledComponent) },
   // {
   //   path:'customize-planner',
   //   component: CustomPlannerComponent

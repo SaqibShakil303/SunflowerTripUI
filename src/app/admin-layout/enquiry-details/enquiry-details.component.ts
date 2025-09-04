@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ItineraryService } from '../../services/itinerary/itinerary.service';
 import { Itinerary } from '../../models/itinerary.model';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of, tap, timeout } from 'rxjs';
 
 // Extend interface to include isDeleting and showDetails
 interface ExtendedItinerary extends Itinerary {
@@ -48,7 +48,7 @@ export class EnquiryDetailsComponent implements OnInit {
    * Load itineraries data from service
    */
   loadItineraries(): void {
-    this.itineraryService.getItineraries().pipe(
+    this.itineraryService.getItineraries().pipe( timeout(8000),
       tap((itineraries) => {
         this.itineraries = itineraries.map(itinerary => ({ ...itinerary, isDeleting: false, showDetails: false }));
         this.applyFiltersAndSort();
@@ -235,7 +235,7 @@ export class EnquiryDetailsComponent implements OnInit {
   confirmDelete(): void {
     if (this.itineraryToDelete) {
       this.itineraryToDelete.isDeleting = true;
-      this.itineraryService.deleteItinerary(this.itineraryToDelete.id!).pipe(
+      this.itineraryService.deleteItinerary(this.itineraryToDelete.id!).pipe( timeout(8000),
         tap(() => {
           this.itineraries = this.itineraries.filter(i => i.id !== this.itineraryToDelete!.id);
           this.showDeleteModal = false;

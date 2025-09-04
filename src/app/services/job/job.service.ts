@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, Observable, of, throwError, timeout } from 'rxjs';
 import { ApplicationModel, JobModel } from '../../models/job.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environments.prod';
@@ -14,37 +14,37 @@ export class JobService {
   constructor(private http: HttpClient) { }
 
   getAllJobs(): Observable<JobModel[]> {
-    return this.http.get<JobModel[]>(this.apiUrl).pipe(
+    return this.http.get<JobModel[]>(this.apiUrl).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   getJobById(id: number): Observable<JobModel> {
-    return this.http.get<JobModel>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<JobModel>(`${this.apiUrl}/${id}`).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   addJob(data: Partial<JobModel>): Observable<JobModel> {
-    return this.http.post<JobModel>(this.apiUrl, data).pipe(
+    return this.http.post<JobModel>(this.apiUrl, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   updateJob(data: Partial<JobModel>): Observable<JobModel> {
-    return this.http.put<JobModel>(`${this.apiUrl}/${data.id}`, data).pipe(
+    return this.http.put<JobModel>(`${this.apiUrl}/${data.id}`, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   deleteJob(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
 
   submitApplication(data: Partial<ApplicationModel>): Observable<ApplicationModel> {
-    return this.http.post<ApplicationModel>(this.applicationUrl, data).pipe(
+    return this.http.post<ApplicationModel>(this.applicationUrl, data).pipe( timeout(8000),
       catchError(this.handleError)
     );
   }
