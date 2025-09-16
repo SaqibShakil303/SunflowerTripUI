@@ -301,27 +301,27 @@ private setJsonLd(data: object) {                   // ✅ add
     });
   }
 
-  handleBookingSubmit(data: any): void {
-    this.bookingsService.submitBooking({
-      ...data,
-      adults: this.selectedAdults,
-      children: this.selectedChildren,
-      rooms: this.selectedRooms
-    }).subscribe({
-      next: (response) => {
-        console.log('Booking submitted successfully:', response);
-        if (isPlatformBrowser(this.platformId)) {
-          this.snackBar.open(`Your booking has been submitted successfully!`, 'Close', { duration: 3000 });
-        }
-      },
-      error: (error) => {
-        console.error('Booking submission failed:', error.message);
-        if (isPlatformBrowser(this.platformId)) {
-          this.snackBar.open(`Failed to submit booking: ${error.message}`, 'Close', { duration: 5000 });
-        }
-      }
-    });
-  }
+  // handleBookingSubmit(data: any): void {
+  //   this.bookingsService.submitBooking({
+  //     ...data,
+  //     adults: this.selectedAdults,
+  //     children: this.selectedChildren,
+  //     rooms: this.selectedRooms
+  //   }).subscribe({
+  //     next: (response) => {
+  //       console.log('Booking submitted successfully:', response);
+  //       if (isPlatformBrowser(this.platformId)) {
+  //         this.snackBar.open(`Your booking has been submitted successfully!`, 'Close', { duration: 3000 });
+  //       }
+  //     },
+  //     error: (error) => {
+  //       console.error('Booking submission failed:', error.message);
+  //       if (isPlatformBrowser(this.platformId)) {
+  //         this.snackBar.open(`Failed to submit booking: ${error.message}`, 'Close', { duration: 5000 });
+  //       }
+  //     }
+  //   });
+  // }
 
   proceedBooking(): void {
     console.log('Proceeding with booking', {

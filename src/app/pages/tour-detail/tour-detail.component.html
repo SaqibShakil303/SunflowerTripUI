@@ -51,10 +51,10 @@
             <span class="price-label">Price per Person</span>
             <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price_per_person || tour.price)
               }}</span>
-            <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{
+            <!-- <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{
               formatDiscount(tour.early_bird_discount) }} off</span>
             <span class="discount" *ngIf="tour.group_discount">Group: {{ formatDiscount(tour.group_discount) }}
-              off</span>
+              off</span> -->
             <span class="advance-booking" *ngIf="tour.advance_booking_days">Book {{ tour.advance_booking_days }} days in
               advance</span>
           </div>
@@ -359,7 +359,7 @@
 </section>
 
 <app-booking-modal [isOpen]="isModalOpen" [formType]="modalFormType" [tour]="tour" (close)="closeModal()"
-  (onSubmitEnquiry)="handleEnquirySubmit($event)" (onSubmitBooking)="handleBookingSubmit($event)"></app-booking-modal>
-
+  (onSubmitEnquiry)="handleEnquirySubmit($event)" ></app-booking-modal>
+<!-- (onSubmitBooking)="handleBookingSubmit($event)" -->
 <!-- <app-chat-widget></app-chat-widget> -->
 <app-footer></app-footer>
