@@ -1,59 +1,40 @@
+Here’s the full, drop-in **`booking-modal.component.html`** with the group/holiday logic, airports info banner, departures + live seats, and the submit guard. Paste it as-is.
+
+```html
 <ng-container *ngIf="isOpen">
   <div class="modal-overlay" (click)="closeModal()"></div>
   <div class="modal-content" [ngClass]="{'enquiry-form': formType === 'enquiry', 'booking-form': formType === 'booking'}">
-    <!-- Enquiry Form (unchanged) -->
+
+    <!-- ===================== ENQUIRY FORM (unchanged) ===================== -->
     <div *ngIf="formType === 'enquiry'" class="form-container">
       <h2 class="form-title">Enquiry Form</h2>
       <form #enquiryForm="ngForm" (ngSubmit)="submitEnquiry(enquiryForm)">
         <div class="form-group">
           <label for="enquiry-name">Name</label>
-          <input
-            id="enquiry-name"
-            type="text"
-            class="form-control"
-            [(ngModel)]="enquiryData.name"
-            name="name"
-            required
-            placeholder="Enter your name"
-          />
+          <input id="enquiry-name" type="text" class="form-control"
+                 [(ngModel)]="enquiryData.name" name="name" required placeholder="Enter your name" />
         </div>
+
         <div class="form-group">
           <label for="enquiry-email">Email</label>
-          <input
-            id="enquiry-email"
-            type="email"
-            class="form-control"
-            [(ngModel)]="enquiryData.email"
-            name="email"
-            required
-            email
-            placeholder="Enter your email"
-          />
+          <input id="enquiry-email" type="email" class="form-control"
+                 [(ngModel)]="enquiryData.email" name="email" required email placeholder="Enter your email" />
         </div>
+
         <div class="form-group">
           <label for="enquiry-phone">Phone Number</label>
-          <input
-            id="enquiry-phone"
-            type="tel"
-            class="form-control"
-            [(ngModel)]="enquiryData.phone"
-            name="phone"
-            required
-            pattern="[0-9]{10}"
-            placeholder="Enter your phone number"
-          />
+          <input id="enquiry-phone" type="tel" class="form-control"
+                 [(ngModel)]="enquiryData.phone" name="phone" required pattern="[0-9]{10}"
+                 placeholder="Enter your phone number" />
         </div>
+
         <div class="form-group">
           <label for="enquiry-description">Description</label>
-          <textarea
-            id="enquiry-description"
-            class="form-control"
-            [(ngModel)]="enquiryData.description"
-            name="description"
-            rows="4"
-            placeholder="Enter your enquiry details"
-          ></textarea>
+          <textarea id="enquiry-description" class="form-control"
+                    [(ngModel)]="enquiryData.description" name="description" rows="4"
+                    placeholder="Enter your enquiry details"></textarea>
         </div>
+
         <div class="form-actions">
           <button type="button" class="btn btn-outline" (click)="closeModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" [disabled]="!enquiryForm.valid">Submit Enquiry</button>
@@ -61,192 +42,200 @@
       </form>
     </div>
 
-    <!-- Booking Form -->
+    <!-- ===================== BOOKING FORM (updated) ===================== -->
     <div *ngIf="formType === 'booking'" class="form-container">
       <h2 class="form-title">Booking Form</h2>
+
+      <!-- Airports info banner -->
+      <div class="info-banner" *ngIf="tour?.departure_airport || tour?.arrival_airport" style="margin-bottom:12px;">
+        <small>
+          <span *ngIf="tour?.departure_airport"><b>Departure:</b> {{ tour?.departure_airport }}</span>
+          <span *ngIf="tour?.arrival_airport" style="margin-left:12px"><b>Arrival:</b> {{ tour?.arrival_airport }}</span>
+        </small>
+      </div>
+
       <form #bookingForm="ngForm" (ngSubmit)="submitBooking(bookingForm)">
+        <!-- Contact -->
         <div class="form-group">
           <label for="booking-name">Name</label>
-          <input
-            id="booking-name"
-            type="text"
-            class="form-control"
-            [(ngModel)]="bookingData.name"
-            name="name"
-            required
-            placeholder="Enter your name"
-          />
+          <input id="booking-name" type="text" class="form-control"
+                 [(ngModel)]="bookingData.name" name="name" required placeholder="Enter your name" />
         </div>
+
         <div class="form-group">
           <label for="booking-email">Email</label>
-          <input
-            id="booking-email"
-            type="email"
-            class="form-control"
-            [(ngModel)]="bookingData.email"
-            name="email"
-            required
-            email
-            placeholder="Enter your email"
-          />
+          <input id="booking-email" type="email" class="form-control"
+                 [(ngModel)]="bookingData.email" name="email" required email placeholder="Enter your email" />
         </div>
+
         <div class="form-group">
           <label for="booking-phone">Phone Number</label>
-          <input
-            id="booking-phone"
-            type="tel"
-            class="form-control"
-            [(ngModel)]="bookingData.phone"
-            name="phone"
-            required
-            pattern="[0-9]{10}"
-            placeholder="Enter your phone number"
-          />
+          <input id="booking-phone" type="tel" class="form-control"
+                 [(ngModel)]="bookingData.phone" name="phone" required pattern="[0-9]{10}"
+                 placeholder="Enter your phone number" />
         </div>
+
+        <!-- Customized days (holiday/customizable only) -->
         <div class="form-group" *ngIf="tour?.is_customizable">
           <label for="booking-days">Days (Customized)</label>
-          <input
-            id="booking-days"
-            type="number"
-            class="form-control"
-            [(ngModel)]="bookingData.days"
-            name="days"
-            min="1"
-            placeholder="Enter number of days"
-          />
+          <input id="booking-days" type="number" class="form-control"
+                 [(ngModel)]="bookingData.days" name="days" min="1" placeholder="Enter number of days" />
         </div>
+
+        <!-- Guests -->
         <div class="form-group">
           <label>Guests</label>
           <div class="guest-selection">
             <div class="guest-type">
               <label for="booking-adults">Adults (age 12+)</label>
-              <input
-                id="booking-adults"
-                type="number"
-                class="form-control"
-                [(ngModel)]="bookingData.adults"
-                name="adults"
-                min="1"
-                required
-                (ngModelChange)="updateChildAges()"
-              />
+              <input id="booking-adults" type="number" class="form-control"
+                     [(ngModel)]="bookingData.adults" name="adults" min="1" required
+                     (ngModelChange)="onGuestsChange()" />
             </div>
             <div class="guest-type">
               <label for="booking-children">Children (below 12)</label>
-              <input
-                id="booking-children"
-                type="number"
-                class="form-control"
-                [(ngModel)]="bookingData.children"
-                name="children"
-                min="0"
-                (ngModelChange)="updateChildAges()"
-              />
+              <input id="booking-children" type="number" class="form-control"
+                     [(ngModel)]="bookingData.children" name="children" min="0"
+                     (ngModelChange)="onGuestsChange(); updateChildAges()" />
             </div>
           </div>
         </div>
+
+        <!-- Child Ages -->
         <div class="form-group" *ngIf="bookingData.children > 0">
           <label>Child Ages</label>
           <div class="child-ages">
-            <select
-              *ngFor="let age of bookingData.childAges; let i = index"
-              class="form-control"
-              [(ngModel)]="bookingData.childAges[i]"
-              [name]="'childAge' + i"
-              required
-            >
+            <select *ngFor="let age of bookingData.childAges; let i = index"
+                    class="form-control" [(ngModel)]="bookingData.childAges[i]"
+                    [name]="'childAge' + i" required>
               <option value="" disabled selected>Select age</option>
               <option *ngFor="let n of ageOptions" [value]="n">{{ n }}</option>
             </select>
           </div>
         </div>
+
+        <!-- Hotel Rating -->
         <div class="form-group">
           <label for="booking-hotel-rating">Hotel Rating</label>
-          <select
-            id="booking-hotel-rating"
-            class="form-control"
-            [(ngModel)]="bookingData.hotelRating"
-            name="hotelRating"
-            required
-          >
+
+          <!-- GROUP -->
+          <div *ngIf="isGroup" class="form-static">as per incl in group</div>
+
+          <!-- HOLIDAY -->
+          <select *ngIf="!isGroup" id="booking-hotel-rating" class="form-control"
+                  [(ngModel)]="bookingData.hotelRating" name="hotelRating" required>
             <option value="" disabled selected>Select hotel rating</option>
             <option value="3">3-Star</option>
             <option value="4">4-Star</option>
             <option value="5">5-Star</option>
           </select>
         </div>
+
+        <!-- Meal Plan -->
         <div class="form-group">
           <label for="booking-meal-plan">Meal Plan</label>
-          <select
-            id="booking-meal-plan"
-            class="form-control"
-            [(ngModel)]="bookingData.mealPlan"
-            name="mealPlan"
-            required
-          >
+
+          <!-- GROUP -->
+          <div *ngIf="isGroup" class="form-static">meals according to the group</div>
+
+          <!-- HOLIDAY -->
+          <select *ngIf="!isGroup" id="booking-meal-plan" class="form-control"
+                  [(ngModel)]="bookingData.mealPlan" name="mealPlan" required>
             <option value="" disabled selected>Select meal plan</option>
             <option value="no-meal">No Meal</option>
             <option value="breakfast">Only Breakfast</option>
           </select>
         </div>
+
+        <!-- Flight Option -->
         <div class="form-group" *ngIf="tour?.category">
           <label for="booking-flight-option">Flight Option</label>
-          <select
-            id="booking-flight-option"
-            class="form-control"
-            [(ngModel)]="bookingData.flightOption"
-            name="flightOption"
-            required
-          >
+
+          <!-- GROUP: Yes/No -->
+          <select *ngIf="isGroup" id="booking-flight-option" class="form-control"
+                  [(ngModel)]="bookingData.flightOption" name="flightOption" required>
             <option value="" disabled selected>Select flight option</option>
-            <option value="with-flight" *ngIf="tour?.category === 'group'">With Flight</option>
-            <option value="without-flight" *ngIf="tour?.category === 'holiday'">Without Flight</option>
+            <option value="with-flight">Yes</option>
+            <option value="without-flight">No</option>
+          </select>
+
+          <!-- HOLIDAY -->
+          <select *ngIf="!isGroup" id="booking-flight-option" class="form-control"
+                  [(ngModel)]="bookingData.flightOption" name="flightOption" required>
+            <option value="" disabled selected>Select flight option</option>
+            <option value="with-flight">With Flight</option>
+            <option value="without-flight">Without Flight</option>
           </select>
         </div>
-        <div class="form-group" *ngIf="bookingData.flightOption === 'without-flight' && tour?.category === 'holiday'">
+
+        <!-- Flight Number (holiday + without-flight only) -->
+        <div class="form-group" *ngIf="!isGroup && bookingData.flightOption === 'without-flight'">
           <label for="booking-flight-number">Flight Number (Optional)</label>
-          <input
-            id="booking-flight-number"
-            type="text"
-            class="form-control"
-            [(ngModel)]="bookingData.flightNumber"
-            name="flightNumber"
-            placeholder="Enter flight number for pick up"
-          />
+          <input id="booking-flight-number" type="text" class="form-control"
+                 [(ngModel)]="bookingData.flightNumber" name="flightNumber"
+                 placeholder="Enter flight number for pick up" />
         </div>
-        <div class="form-group">
-          <label for="booking-date">Travel Date</label>
-          <input
-            id="booking-date"
-            type="date"
-            class="form-control"
-            [(ngModel)]="bookingData.travelDate"
-            name="travelDate"
-            [min]="minDate"
-            required
-          />
-        </div>
+
+        <!-- Travel Date / Departures + Seats -->
+  <div class="form-group">
+  <label for="booking-date">Travel Date</label>
+
+  <!-- GROUP: choose departure (shows seats) -->
+  <ng-container *ngIf="isGroup; else holidayDate">
+    <select id="booking-date" class="form-control"
+            [(ngModel)]="selectedDepartureIndex"       
+            name="departureIndex"
+            (ngModelChange)="onDepartureChange()"
+            required>
+      <option [ngValue]="null" disabled selected>Select departure</option>
+      <option *ngFor="let d of tour?.departures; let i = index"
+              [ngValue]="i">
+        {{ d.departure_date | date:'mediumDate' }} – {{ d.available_seats }} seats
+      </option>
+    </select>
+
+    <div class="seat-meta" *ngIf="selectedDepartureIndex !== null" style="margin-top:6px;">
+      <small><b>Seats left after your selection:</b>
+        {{ seatsRemaining }} / {{ selectedDepartureSeats }}
+      </small>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="seatError" style="margin-top:6px;">
+      {{ seatError }}
+    </div>
+  </ng-container>
+
+  <!-- HOLIDAY: free date picker -->
+  <ng-template #holidayDate>
+    <input id="booking-date" type="date" class="form-control"
+           [(ngModel)]="bookingData.travelDate" name="travelDate"
+           [min]="minDate" required />
+  </ng-template>
+</div>
+
+        <!-- Terms -->
         <div class="terms-section">
           <h3>Terms and Conditions</h3>
           <div class="terms-container">
             <div class="terms-text">{{ termsContent }}</div>
           </div>
           <div class="checkbox-group">
-            <input
-              type="checkbox"
-              id="agree-terms"
-              [(ngModel)]="agreeTerms"
-              name="agreeTerms"
-              required
-            />
+            <input type="checkbox" id="agree-terms"
+                   [(ngModel)]="agreeTerms" name="agreeTerms" required />
             <label for="agree-terms">I have read and agree to the terms and conditions</label>
           </div>
         </div>
+
+        <!-- Actions -->
         <div class="form-actions">
           <button type="button" class="btn btn-outline" (click)="closeModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="!bookingForm.valid || !agreeTerms || loading">  {{ loading ? 'Please wait...' : 'Proceed to Payment' }}</button>
+          <button type="submit" class="btn btn-primary"
+                  [disabled]="!bookingForm.valid || !agreeTerms || loading || (isGroup && !!seatError)">
+            {{ loading ? 'Please wait...' : 'Proceed to Payment' }}
+          </button>
         </div>
       </form>
     </div>
   </div>
 </ng-container>
+```

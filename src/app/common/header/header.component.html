@@ -40,7 +40,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="continent-image" *ngIf="selectedContinent?.image_url">
+              <div class="continent-image" *ngIf="selectedContinent?.image_url && !isLoading">
                 <img [src]="selectedContinent?.image_url" [alt]="selectedContinent?.name" />
               </div>
             </div>

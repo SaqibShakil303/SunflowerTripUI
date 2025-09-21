@@ -1,0 +1,139 @@
+@import 'mixins'; // Assuming you have a mixins file as in your modal SCSS
+
+.success-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  @include glass-card(0.1, 12px, 0.15);
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+  background: rgba(10, 24, 40, 0.8); // Dark theme to match modal
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #4cd7d0;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .animation {
+    margin-bottom: 1.5rem;
+
+    .tick {
+      font-size: 5rem;
+      color: #28a745; // Green
+      animation: tickAnim 1s ease-out;
+    }
+  }
+
+  .tour-quote {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border-left: 4px solid #4cd7d0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+
+    blockquote {
+      font-style: italic;
+      font-size: 1.3rem;
+      margin: 0;
+    }
+
+    .tour-details {
+      font-size: 1rem;
+      text-align: left;
+      margin-top: 1rem;
+    }
+  }
+
+  .booking-details {
+    text-align: left;
+    margin: 2rem 0;
+
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #4cd7d0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        strong {
+          color: #4cd7d0;
+        }
+      }
+    }
+  }
+
+  .next-steps {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: rgba(76, 215, 208, 0.1);
+    border-radius: 10px;
+
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #4cd7d0;
+    }
+
+    .highlight {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+    }
+  }
+
+  .btn-primary {
+    padding: 1rem 2rem;
+    background: #4cd7d0;
+    color: #0a1828;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+
+    &:hover {
+      background: #3bc2bb;
+    }
+  }
+}
+
+@keyframes tickAnim {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .success-container {
+    padding: 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .animation .tick {
+    font-size: 4rem;
+  }
+}

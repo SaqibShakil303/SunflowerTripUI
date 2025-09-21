@@ -12,7 +12,7 @@
       <input
         class="search-input"
         type="text"
-        placeholder="Search by name, email, or tour ID"
+        placeholder="Search by name, email, tour title, booking ID, or tour ID"
         [(ngModel)]="searchTerm"
         (input)="onSearch()" />
     </div>
@@ -33,11 +33,17 @@
         <i class="fas fa-calendar-check"></i> Bookings List
       </div>
       <div class="table-actions">
-        <select class="sort-select" [(ngModel)]="sortBy" (change)="toggleSortOrder()">
-          <option value="name">Sort by Name</option>
-          <option value="travel_date">Sort by Travel Date</option>
+        <select class="sort-select" [(ngModel)]="sortBy" (change)="onSort()">
           <option value="created_at">Sort by Created At</option>
+          <option value="travel_date">Sort by Travel Date</option>
+          <option value="tour_title">Sort by Tour Title</option>
+          <option value="total_amount_paise">Sort by Amount</option>
+          <option value="payment_status">Sort by Pay Status</option>
+          <option value="booking_status">Sort by Booking Status</option>
         </select>
+        <button class="btn btn-sort" (click)="toggleSortOrder()">
+          <i class="fas" [class.fa-sort-amount-up]="sortOrder==='asc'" [class.fa-sort-amount-down]="sortOrder==='desc'"></i>
+        </button>
       </div>
     </div>
 
@@ -49,43 +55,75 @@
             <th class="col-name">Name</th>
             <th class="col-email">Email</th>
             <th class="col-travel-date">Travel Date</th>
-            <th class="col-tour-id">Tour ID</th>
-            <!-- <th class="col-hotel-rating">Hotel Rating</th>
-            <th class="col-meal-plan">Meal Plan</th>
-            <th class="col-flight-option">Flight Option</th> -->
+            <th class="col-tour">Tour</th>
+            <th class="col-guests">Guests</th>
+            <th class="col-amount">Amount</th>
+            <th class="col-pay">Pay</th>
+            <th class="col-status">Status</th>
             <th class="col-actions">Actions</th>
           </tr>
         </thead>
+
         <tbody>
           <ng-container *ngFor="let booking of paginatedBookings; let i = index; trackBy: trackByBookingId">
             <tr class="booking-row" [class.deleting]="booking.isDeleting">
               <td class="col-serial">
                 <div class="serial-number">{{ getSerialNumber(i) }}</div>
               </td>
+
               <td class="col-name">
                 <div class="name-cell">
-                  <div class="user-avatar">{{ booking.name.charAt(0).toUpperCase() }}</div>
+                  <div class="user-avatar">{{ booking.name?.charAt(0)?.toUpperCase() }}</div>
                   <div class="name-text">{{ booking.name }}</div>
+                  <div class="sub-muted">#BD{{ booking.booking_detail_id }}</div>
                 </div>
               </td>
+
               <td class="col-email">
-                <span class="email-text">{{ booking.email }}</span>
+                <div class="email-text">{{ booking.email }}</div>
+                <div class="sub-muted">Phone: {{ booking.phone || '—' }}</div>
               </td>
+
               <td class="col-travel-date">
-                <span class="date-text">{{ formatDate(booking.travel_date) }}</span>
+                <div class="date-text">{{ formatDate(booking.travel_date) }}</div>
+                <div class="sub-muted" *ngIf="booking.departure_date">
+                  Departure: {{ formatDate(booking.departure_date) }}
+                </div>
               </td>
-              <td class="col-tour-id">
-                <span class="tour-id-text">{{ booking.tour_id }}</span>
+
+              <td class="col-tour">
+                <div class="tour-title">{{ booking.tour_title || '—' }}</div>
+                <div class="tour-meta sub-muted">
+                  <span *ngIf="booking.tour_category">{{ booking.tour_category | titlecase }}</span>
+                  <span *ngIf="booking.tour_duration_days"> • {{ booking.tour_duration_days }} days</span>
+                  <span *ngIf="booking.tour_price_inr"> • {{ formatINR(booking.tour_price_inr) }}</span>
+                  <span> • TID: {{ booking.tour_id }}</span>
+                </div>
               </td>
-              <!-- <td class="col-hotel-rating">
-                <span class="hotel-rating-text">{{ booking.hotel_rating || 'Not specified' }}</span>
+
+              <td class="col-guests">
+                {{ getGuests(booking) }}
               </td>
-              <td class="col-meal-plan">
-                <span class="meal-plan-text">{{ booking.meal_plan || 'Not specified' }}</span>
+
+              <td class="col-amount">
+                {{ formatINRFromPaise(booking.total_amount_paise) }}
               </td>
-              <td class="col-flight-option">
-                <span class="flight-option-text">{{ booking.flight_option || 'Not specified' }}</span>
-              </td> -->
+
+              <td class="col-pay">
+                <span class="status-chip" [class.paid]="booking.payment_status==='PAID'" [class.unpaid]="booking.payment_status!=='PAID'">
+                  {{ booking.payment_status || '—' }}
+                </span>
+              </td>
+
+              <td class="col-status">
+                <span class="status-chip"
+                      [class.confirmed]="booking.booking_status==='CONFIRMED'"
+                      [class.pending]="booking.booking_status==='PENDING'"
+                      [class.failed]="booking.booking_status?.startsWith('FAILED')">
+                  {{ booking.booking_status || '—' }}
+                </span>
+              </td>
+
               <td class="col-actions">
                 <button class="btn btn-sm expand-btn" (click)="toggleExpanded(booking)">
                   <i class="fas" [class.fa-chevron-down]="!booking.isExpanded" [class.fa-chevron-up]="booking.isExpanded"></i>
@@ -96,50 +134,92 @@
                 </button>
               </td>
             </tr>
+
+            <!-- Expanded details -->
             <tr *ngIf="booking.isExpanded" class="details-row">
-              <td colspan="9">
+              <td colspan="10">
                 <div class="details-content">
                   <div class="details-grid">
+
                     <div class="detail-item">
-                      <span class="detail-label">Phone:</span>
-                      <span class="detail-value">{{ booking.phone || 'Not provided' }}</span>
+                      <span class="detail-label">Booking IDs:</span>
+                      <span class="detail-value">
+                        BD#{{ booking.booking_detail_id }}
+                        <span *ngIf="booking.booking_id_ref"> • B#{{ booking.booking_id_ref }}</span>
+                      </span>
                     </div>
+
                     <div class="detail-item">
-                      <span class="detail-label">Days:</span>
-                      <span class="detail-value">{{ booking.days || 'Not specified' }}</span>
+                      <span class="detail-label">Amount (₹):</span>
+                      <span class="detail-value">{{ formatINRFromPaise(booking.total_amount_paise) }}</span>
                     </div>
+
                     <div class="detail-item">
-                      <span class="detail-label">Adults:</span>
-                      <span class="detail-value">{{ booking.adults }}</span>
+                      <span class="detail-label">Payment Status:</span>
+                      <span class="detail-value">{{ booking.payment_status || '—' }}</span>
                     </div>
+
                     <div class="detail-item">
-                      <span class="detail-label">Children:</span>
-                      <span class="detail-value">{{ booking.children }}</span>
+                      <span class="detail-label">Booking Status:</span>
+                      <span class="detail-value">{{ booking.booking_status || '—' }}</span>
                     </div>
+
+                    <div class="detail-item">
+                      <span class="detail-label">Departure:</span>
+                      <span class="detail-value">
+                        <ng-container *ngIf="booking.departure_date; else noDep">
+                          {{ formatDate(booking.departure_date) }} (ID: {{ booking.departure_id }})
+                        </ng-container>
+                        <ng-template #noDep>—</ng-template>
+                      </span>
+                    </div>
+
+                    <div class="detail-item">
+                      <span class="detail-label">Seats Remaining:</span>
+                      <span class="detail-value">
+                        {{ booking.departure_available_seats != null ? booking.departure_available_seats : '—' }}
+                      </span>
+                    </div>
+
+                    <div class="detail-item">
+                      <span class="detail-label">Adults / Children:</span>
+                      <span class="detail-value">{{ booking.adults }} / {{ booking.children }}</span>
+                    </div>
+
                     <div class="detail-item">
                       <span class="detail-label">Child Ages:</span>
-                      <span class="detail-value">{{ booking.child_ages && booking.child_ages.length ? booking.child_ages.join(', ') : 'None' }}</span>
+                      <span class="detail-value">
+                        {{ booking.child_ages && booking.child_ages.length ? booking.child_ages.join(', ') : 'None' }}
+                      </span>
                     </div>
+
                     <div class="detail-item">
                       <span class="detail-label">Hotel Rating:</span>
                       <span class="detail-value">{{ booking.hotel_rating || 'Not specified' }}</span>
                     </div>
+
                     <div class="detail-item">
                       <span class="detail-label">Meal Plan:</span>
                       <span class="detail-value">{{ booking.meal_plan || 'Not specified' }}</span>
                     </div>
+
                     <div class="detail-item">
                       <span class="detail-label">Flight Option:</span>
                       <span class="detail-value">{{ booking.flight_option || 'Not specified' }}</span>
                     </div>
+
                     <div class="detail-item" *ngIf="booking.flight_option === 'with-flight'">
                       <span class="detail-label">Flight Number:</span>
                       <span class="detail-value">{{ booking.flight_number || 'Not provided' }}</span>
                     </div>
+
                     <div class="detail-item">
                       <span class="detail-label">Created At:</span>
-                      <span class="detail-value">{{ formatDate(booking.created_at) }} {{ formatTime(booking.created_at) }}</span>
+                      <span class="detail-value">
+                        {{ formatDate(booking.created_at) }} {{ formatTime(booking.created_at) }}
+                      </span>
                     </div>
+
                   </div>
                 </div>
               </td>
@@ -183,7 +263,9 @@
         <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
         <p>Are you sure you want to delete booking for:</p>
         <strong>{{ bookingToDelete?.name }}</strong>
-        <p class="booking-details">{{ bookingToDelete?.email }} (Tour ID: {{ bookingToDelete?.tour_id }})</p>
+        <p class="booking-details">
+          {{ bookingToDelete?.email }} (Tour ID: {{ bookingToDelete?.tour_id }})
+        </p>
         <div class="warning-text">This action cannot be undone.</div>
       </div>
       <div class="modal-footer">

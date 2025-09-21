@@ -34,6 +34,7 @@ export interface ItineraryDay {
 }
 
 export interface TourDeparture {
+  id: number;
   departure_date: string;
   available_seats: number;
 }

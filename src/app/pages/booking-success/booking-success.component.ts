@@ -1,26 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
+import { Tour } from '../../models/tour.model';
 
 @Component({
   selector: 'app-booking-success',
   standalone: true,
   imports: [CommonModule],
-
-    template: `
-    <h2>Payment Successful 🎉</h2>
-    <p>Booking ID: {{bookingId}}</p>
-    <p *ngIf="paymentId">Payment ID: {{paymentId}}</p>
-    <a routerLink="/">Back to Home</a>
-  `
-
+  templateUrl: './booking-success.component.html',
+  styleUrls: ['./booking-success.component.scss']
 })
-export class BookingSuccessComponent {
+export class BookingSuccessComponent implements OnInit {
   bookingId: string | null = null;
   paymentId: string | null = null;
+  bookingData: any = {};
+  tour: Tour | null = null;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private stateSvc: StatePersistenceService,   private router: Router) {
     this.bookingId = this.route.snapshot.paramMap.get('bookingId');
     this.paymentId = this.route.snapshot.queryParamMap.get('paymentId');
+  }
+
+  ngOnInit() {
+    const stored = this.stateSvc.booking || {};
+    this.bookingData = stored;
+    this.tour = stored.tour || null;
+  }
+
+   goHome() {
+    this.router.navigate(['/']);
+        this.stateSvc.clearBooking // Clear booking data when navigating home
   }
 }

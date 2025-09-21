@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Booking } from '../../models/booking.model';
 import { BookingsService } from '../../services/bookings/bookings.service';
 
 @Component({
@@ -12,16 +11,21 @@ import { BookingsService } from '../../services/bookings/bookings.service';
   styleUrls: ['./bookings.component.scss']
 })
 export class BookingsComponent implements OnInit {
-  bookings: Booking[] = [];
-  filteredBookings: Booking[] = [];
-  paginatedBookings: Booking[] = [];
+  // use "any" here because the API returns joined/aliased columns
+  bookings: any[] = [];
+  filteredBookings: any[] = [];
+  paginatedBookings: any[] = [];
+
   searchTerm = '';
-  sortBy: keyof Booking = 'travel_date';
+  // allow sorting by any of these fields
+  sortBy: string = 'created_at';
   sortOrder: 'asc' | 'desc' = 'desc';
+
   currentPage = 1;
   pageSize = 10;
+
   showDeleteModal = false;
-  bookingToDelete: Booking | null = null;
+  bookingToDelete: any | null = null;
 
   constructor(private bookingService: BookingsService) {}
 
@@ -31,21 +35,33 @@ export class BookingsComponent implements OnInit {
 
   loadBookings(): void {
     this.bookingService.getAllBookings().subscribe({
-      next: (data) => {
-        console.log('Bookings fetched:', data);
-        this.bookings = data.map((b: Booking) => ({
-          ...b,
-          child_ages: b.child_ages ?? [], // Ensure child_ages is always an array
-          isExpanded: false,
-          isDeleting: false
-        }));
+      next: (data: any[]) => {
+        // normalize rows for the UI
+        this.bookings = data.map((row: any) => {
+          const id = row.booking_detail_id ?? row.id ?? null;
+          const guestsComputed =
+            row.booking_guests ??
+            (Number(row.adults || 0) + Number(row.children || 0));
+
+          return {
+            ...row,
+            id, // keep legacy usage (delete uses this)
+            child_ages: Array.isArray(row.child_ages) ? row.child_ages : [],
+            guestsComputed,
+            // helpful parsed numbers
+            tour_price_number:
+              row.tour_price_inr != null ? Number(row.tour_price_inr) : null,
+            isExpanded: false,
+            isDeleting: false,
+          };
+        });
         this.applyFilters();
       },
-      error: (err) => console.error('Failed to fetch bookings', err)
+      error: (err) => console.error('Failed to fetch bookings', err),
     });
   }
 
-  deleteBooking(booking: Booking): void {
+  deleteBooking(booking: any): void {
     this.bookingToDelete = booking;
     this.showDeleteModal = true;
   }
@@ -54,9 +70,10 @@ export class BookingsComponent implements OnInit {
     if (!this.bookingToDelete) return;
 
     this.bookingToDelete.isDeleting = true;
+    // backend delete expects booking_details.id -> we normalized as .id above
     this.bookingService.deleteBooking(this.bookingToDelete.id).subscribe({
       next: () => {
-        this.bookings = this.bookings.filter(b => b !== this.bookingToDelete);
+        this.bookings = this.bookings.filter((b) => b !== this.bookingToDelete);
         this.applyFilters();
         this.cancelDelete();
       },
@@ -64,7 +81,7 @@ export class BookingsComponent implements OnInit {
         console.error('Delete failed', err);
         this.bookingToDelete!.isDeleting = false;
         this.cancelDelete();
-      }
+      },
     });
   }
 
@@ -97,22 +114,30 @@ export class BookingsComponent implements OnInit {
 
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(b =>
-        b.name.toLowerCase().includes(term) ||
-        b.email.toLowerCase().includes(term)
+      filtered = filtered.filter((b) =>
+        (b.name && b.name.toLowerCase().includes(term)) ||
+        (b.email && b.email.toLowerCase().includes(term)) ||
+        (b.tour_title && b.tour_title.toLowerCase().includes(term)) ||
+        String(b.booking_id_ref ?? b.booking_id ?? '').includes(term) ||
+        String(b.tour_id ?? '').includes(term) ||
+        String(b.phone ?? '').includes(term)
       );
     }
 
     filtered.sort((a, b) => {
-      const valA = this.sortBy === 'travel_date' || this.sortBy === 'created_at'
-        ? new Date(a[this.sortBy]!).getTime()
-        : String(a[this.sortBy] ?? '').toLowerCase();
-      const valB = this.sortBy === 'travel_date' || this.sortBy === 'created_at'
-        ? new Date(b[this.sortBy]!).getTime()
-        : String(b[this.sortBy] ?? '').toLowerCase();
-      return this.sortOrder === 'asc'
-        ? valA < valB ? -1 : valA > valB ? 1 : 0
-        : valA > valB ? -1 : valA < valB ? 1 : 0;
+      const key = this.sortBy;
+      const get = (x: any) => {
+        const v = x[key];
+        if (key === 'travel_date' || key === 'created_at' || key === 'departure_date') {
+          return v ? new Date(v).getTime() : 0;
+        }
+        if (key === 'total_amount_paise') return Number(v || 0);
+        // default string compare
+        return String(v ?? '').toLowerCase();
+      };
+      const A = get(a), B = get(b);
+      const cmp = A < B ? -1 : A > B ? 1 : 0;
+      return this.sortOrder === 'asc' ? cmp : -cmp;
     });
 
     this.filteredBookings = filtered;
@@ -175,29 +200,55 @@ export class BookingsComponent implements OnInit {
     return this.getStartIndex() + index + 1;
   }
 
-  formatDate(date: string | Date | undefined): string {
-    return date ? new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: '2-digit'
-    }) : '';
+  formatDate(date: string | Date | undefined | null): string {
+    return date
+      ? new Date(date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+        })
+      : '';
   }
 
-  formatTime(date: string | Date | undefined): string {
-    return date ? new Date(date).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    }) : '';
+  formatTime(date: string | Date | undefined | null): string {
+    return date
+      ? new Date(date).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+      : '';
   }
 
-  trackByBookingId(index: number, item: Booking): number {
-    return item.id || index;
+  formatINRFromPaise(paise?: number | null): string {
+    if (paise == null) return '-';
+    const rupees = paise / 100;
+    return '₹ ' + rupees.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   }
 
-  toggleExpanded(booking: Booking): void {
+  formatINR(val?: number | string | null): string {
+    if (val == null || val === '') return '-';
+    const num = typeof val === 'string' ? Number(val) : val;
+    if (!isFinite(num as number)) return String(val);
+    return '₹ ' + (num as number).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  getGuests(b: any): number {
+    return Number(b.guestsComputed || 0);
+  }
+
+  trackByBookingId(index: number, item: any): number {
+    return item.booking_detail_id ?? item.id ?? index;
+  }
+
+  toggleExpanded(booking: any): void {
     booking.isExpanded = !booking.isExpanded;
-    console.log('Toggled isExpanded for booking:', booking.id, booking.isExpanded);
   }
 
   refreshBookings(): void {
@@ -206,15 +257,21 @@ export class BookingsComponent implements OnInit {
 
   exportBookings(): void {
     const headers = [
-      'id', 'tour_id', 'name', 'email', 'phone', 'days', 'adults', 'children',
-      'child_ages', 'hotel_rating', 'meal_plan', 'flight_option', 'flight_number',
-      'travel_date', 'created_at'
+      'booking_detail_id','booking_id_ref','tour_id',
+      'tour_title','tour_category','tour_duration_days','tour_price_inr',
+      'name','email','phone','adults','children','child_ages',
+      'travel_date','total_amount_paise','payment_status','booking_status',
+      'departure_id','departure_date','departure_available_seats','created_at'
     ];
-    const rows = this.filteredBookings.map(b => headers.map(h => {
-      if (h === 'child_ages') return JSON.stringify(b[h] ?? []);
-      if (h === 'travel_date' || h === 'created_at') return this.formatDate(b[h]);
-      return JSON.stringify((b as any)[h] ?? '')
-    }).join(','));
+    const rows = this.filteredBookings.map(b =>
+      headers.map(h => {
+        const v = (b as any)[h];
+        if (h === 'child_ages') return JSON.stringify(v ?? []);
+        if (['travel_date','created_at','departure_date'].includes(h)) return this.formatDate(v);
+        if (h === 'total_amount_paise') return v != null ? (v/100).toFixed(2) : '';
+        return typeof v === 'object' ? JSON.stringify(v ?? '') : (v ?? '');
+      }).join(',')
+    );
 
     const csvContent = [headers.join(','), ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });

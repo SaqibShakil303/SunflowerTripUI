@@ -1,1 +1,10 @@
-<p>booking-cancelled works!</p>
+<div class="cancel-container">
+  <div class="animation">
+    <div class="cross">✖</div>
+  </div>
+  <h2>Payment Not Completed 😔</h2>
+  <p class="subtitle">We're sorry, but your booking could not be confirmed at this time.</p>
+  <p><strong>Reason:</strong> {{ reason || 'Cancelled or Failed' }}</p>
+  <p>If this was unexpected, please try again or contact our support team for assistance.</p>
+  <button (click)="goBack()" class="btn btn-primary">Back</button>
+</div>

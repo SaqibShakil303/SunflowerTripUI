@@ -100,6 +100,7 @@ export class ToursComponent implements OnInit {
             })),
             room_types: tour.room_types || [],
             departures: (tour.departures ?? []).map(dep => ({
+              id: dep.id,
               departure_date: this.formatDate(dep.departure_date),
               available_seats: dep.available_seats
             })),

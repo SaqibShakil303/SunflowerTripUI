@@ -60,7 +60,7 @@ export class BookingsService {
  getAllBookings(): Observable<Booking[]> {
     return this.http.get<RawBooking[]>(`${this.apiUrl}/Contact/GetAllBookings`).pipe( timeout(8000),
      map(bookings =>
-        bookings.map(booking => ({
+      bookings.map(booking => ({
           ...booking,
           child_ages: booking.child_ages ? JSON.parse(booking.child_ages).map((age: string) => Number(age)) : [],
           created_at: booking.created_at ? new Date(booking.created_at) : undefined

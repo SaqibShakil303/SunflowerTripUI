@@ -82,6 +82,14 @@ export class StatePersistenceService {
     if (this.isBrowser) localStorage.setItem('destination', JSON.stringify(data));
   }
 
+  clearEnquiry() {
+    this.setEnquiry({});
+  }
+
+  clearBooking() {  
+    this.setBooking({});
+  }
+
   clearTour() {
     this.setTour({});
   }

@@ -1,1 +1,47 @@
-<p>booking-success works!</p>
+<div class="success-container">
+  <div class="animation">
+    <div class="tick">✔</div>
+  </div>
+  <h2>Booking Confirmed! 🎉</h2>
+  <p class="subtitle">Your adventure awaits. We've successfully processed your payment for this amazing tour.</p>
+
+  <div class="tour-quote" *ngIf="tour">
+    <blockquote>
+      "{{ tour.title }}" - Get ready for an unforgettable experience with {{ tour.duration_days }} days of exploration, adventure, and relaxation.
+    </blockquote>
+    <p class="tour-details">
+      <strong>Category:</strong> {{ tour.category || 'N/A' }}<br>
+      <strong>Departure Airport:</strong> {{ tour.departure_airport || 'N/A' }}<br>
+      <strong>Arrival Airport:</strong> {{ tour.arrival_airport || 'N/A' }}<br>
+      <strong>Customizable:</strong> {{ tour.is_customizable ? 'Yes' : 'No' }}
+    </p>
+  </div>
+
+  <div class="booking-details">
+    <h3>Your Booking Details</h3>
+    <ul>
+      <li><strong>Name:</strong> {{ bookingData.name || 'N/A' }}</li>
+      <li><strong>Email:</strong> {{ bookingData.email || 'N/A' }}</li>
+      <li><strong>Phone:</strong> {{ bookingData.phone || 'N/A' }}</li>
+      <li><strong>Travel Date:</strong> {{ bookingData.travelDate ? (bookingData.travelDate | date:'mediumDate') : 'N/A' }}</li>
+      <li><strong>Adults:</strong> {{ bookingData.adults || 'N/A' }}</li>
+      <li><strong>Children:</strong> {{ bookingData.children || '0' }} (Ages: {{ bookingData.childAges?.join(', ') || 'N/A' }})</li>
+      <li *ngIf="bookingData.days"><strong>Custom Days:</strong> {{ bookingData.days }}</li>
+      <li><strong>Hotel Rating:</strong> {{ bookingData.hotelRating || 'As per group' }}</li>
+      <li><strong>Meal Plan:</strong> {{ bookingData.mealPlan || 'As per group' }}</li>
+      <li><strong>Flight Option:</strong> {{ bookingData.flightOption || 'N/A' }}</li>
+      <li *ngIf="bookingData.flightNumber"><strong>Flight Number:</strong> {{ bookingData.flightNumber }}</li>
+    </ul>
+  </div>
+
+  <div class="next-steps">
+    <h3>What Happens Next?</h3>
+    <p class="highlight">We will send your detailed invoice and personalized itinerary to {{ bookingData.email || 'your email' }} within the next 24-48 hours. Our team will reach out shortly via phone or email to confirm details and answer any questions.</p>
+    <p>In the meantime, start packing and get excited for your trip!</p>
+  </div>
+
+  <p *ngIf="bookingId"><strong>Booking ID:</strong> {{ bookingId }}</p>
+  <p *ngIf="paymentId"><strong>Payment ID:</strong> {{ paymentId }}</p>
+
+  <a (click)="goHome()" class="btn btn-primary">Back to Home</a>
+</div>

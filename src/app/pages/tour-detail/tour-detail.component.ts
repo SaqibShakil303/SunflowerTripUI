@@ -12,6 +12,7 @@ import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { BookingsService } from '../../services/bookings/bookings.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DOCUMENT } from '@angular/common';
+import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
 @Component({
   selector: 'app-tour-detail',
   standalone: true,
@@ -51,7 +52,8 @@ export class TourDetailComponent implements OnInit {
     private meta: Meta,
     private title: Title,
     private snackBar: MatSnackBar,
-      @Inject(DOCUMENT) private doc: Document    
+      @Inject(DOCUMENT) private doc: Document  ,
+      private stateSvc: StatePersistenceService  
   ) { }
 
   
@@ -95,6 +97,8 @@ private setJsonLd(data: object) {                   // ✅ add
         this.selectedChildren = tour.children || 0;
         this.selectedRooms = tour.rooms || 1;
         this.loading = false;
+
+        console.log('Tour data:', this.tour);
            if (isPlatformBrowser(this.platformId)) {
            const url = `https://thesunflowertrip.com/tours/${tour.slug}`;
       const title = tour.meta_title || tour.title;
@@ -291,6 +295,7 @@ private setJsonLd(data: object) {                   // ✅ add
         if (isPlatformBrowser(this.platformId)) {
           this.snackBar.open('Your enquiry has been submitted successfully!', 'Close', { duration: 3000 });
         }
+        this.stateSvc.clearEnquiry();  // Clear enquiry data after successful submission
       },
       error: (error) => {
         console.error('Enquiry submission failed:', error.message);

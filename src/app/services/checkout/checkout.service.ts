@@ -18,7 +18,9 @@ export class CheckoutService {
     return this.http.post<any>(`${this.apiUrl}/checkout/verify`, payload);
  
   }
-
+consumeSeats(payload: { tourId: number; departure_id: number; seats: number; }) {
+  return this.http.post(`${this.apiUrl}/booking/consume-seats`, payload);
+}
  /** Load Razorpay only when a real DOM exists. No-op otherwise. */
   loadScript(): Promise<void> {
     // Hard guard 1: SSR / no window

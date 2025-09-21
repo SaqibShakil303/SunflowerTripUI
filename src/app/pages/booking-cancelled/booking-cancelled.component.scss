@@ -1,0 +1,87 @@
+@import 'mixins'; // Assuming you have a mixins file as in your modal SCSS
+
+.cancel-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  @include glass-card(0.1, 12px, 0.15);
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+  background: rgba(10, 24, 40, 0.8); // Dark theme to match modal
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #dc3545; // Red
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .animation {
+    margin-bottom: 1.5rem;
+
+    .cross {
+      font-size: 5rem;
+      color: #dc3545; // Red
+      animation: crossAnim 1s ease-out;
+    }
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+
+    strong {
+      color: #dc3545;
+    }
+  }
+
+  .btn-primary {
+    padding: 1rem 2rem;
+    background: #4cd7d0;
+    color: #0a1828;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background: #3bc2bb;
+    }
+  }
+}
+
+@keyframes crossAnim {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .cancel-container {
+    padding: 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .animation .cross {
+    font-size: 4rem;
+  }
+}

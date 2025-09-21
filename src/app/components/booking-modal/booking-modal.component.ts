@@ -27,6 +27,13 @@ export class BookingModalComponent {
   @Output() onSubmitBooking = new EventEmitter<any>();
 
     loading = false;
+// ----- NEW: group-mode state -----
+  isGroup = false;
+  selectedDepartureId: number | null = null;
+  selectedDepartureSeats = 0;       // seats for selected departure BEFORE deduction
+  seatsRequested = 1;               // adults + children
+  seatsRemaining = 0;               // dynamic (available - requested)
+  seatError = '';                   // "no available seats" message
 
   enquiryData = {
     name: '',
@@ -152,35 +159,89 @@ By paying the booking amount or signing/accepting these Terms (including electro
 
   ageOptions = Array.from({ length: 12 }, (_, i) => i + 1);
   minDate: string = '';
-
+selectedDepartureIndex: number | null = null; 
 constructor(private stateSvc: StatePersistenceService,  private checkout: CheckoutService,  private router: Router, @Inject(PLATFORM_ID) private platformId: Object  ) {}
+  // ---------- helpers ----------
+  private getDepartureById(id: number | null) {
+    if (!this.tour?.departures || id == null) return undefined;
+    return this.tour.departures.find(d => d.id === id);
+  }
+
+private getDepartureByIndex(idx: number | null) {
+  if (!this.tour?.departures || idx == null) return undefined;
+  return this.tour.departures[idx];
+}
+
+
+private hydrateGroupDefaults() {
+  const deps = this.tour?.departures || [];
+  const firstIdx = Math.max(0, deps.findIndex(d => (d.available_seats ?? 0) > 0));
+  const useIdx = firstIdx === -1 ? 0 : firstIdx;
+
+  this.selectedDepartureIndex = deps.length ? useIdx : null;
+  const first = this.getDepartureByIndex(this.selectedDepartureIndex);
+
+  this.selectedDepartureSeats = first?.available_seats ?? 0;
+  this.bookingData.travelDate = first ? new Date(first.departure_date).toISOString().split('T')[0] : '';
+
+  // Readonly labels in UI (group mode)
+  this.bookingData.mealPlan = 'group-included';
+  this.bookingData.hotelRating = 'group-included';
+  this.bookingData.flightOption = this.tour?.flight_included ? 'with-flight' : 'without-flight';
+
+  this.recomputeSeats();
+}
+
+
+  private hydrateHolidayDefaults() {
+    // keep your previous behavior (calendar min date)
+    this.setMinDate();
+    if (!this.bookingData.travelDate) this.bookingData.travelDate = this.minDate;
+  }
+
+  private recomputeSeats() {
+    // adults + children requested
+    const adults = Number(this.bookingData.adults) || 0;
+    const children = Number(this.bookingData.children) || 0;
+    this.seatsRequested = adults + children;
+
+    const available = this.selectedDepartureSeats || 0;
+    this.seatsRemaining = Math.max(available - this.seatsRequested, 0);
+
+    if (this.seatsRequested > available) {
+      this.seatError = 'No available seats to book for this departure.';
+    } else {
+      this.seatError = '';
+    }
+  }
+
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['isOpen']?.currentValue && this.tour) {
-      this.setMinDate();
-         const savedBooking = this.stateSvc.booking;
-    const savedEnquiry = this.stateSvc.enquiry;
+  if (changes['isOpen']?.currentValue && this.tour) {
+      this.isGroup = this.tour.category === 'group';
 
-    this.bookingData = { ...this.bookingData, ...savedBooking };
-    this.enquiryData = { ...this.enquiryData, ...savedEnquiry };
+      // restore cached state
+      const savedBooking = this.stateSvc.booking;
+      const savedEnquiry = this.stateSvc.enquiry;
+      this.bookingData = { ...this.bookingData, ...savedBooking };
+      this.enquiryData = { ...this.enquiryData, ...savedEnquiry };
+
+      if (this.isGroup && this.tour.departures?.length) {
+        this.hydrateGroupDefaults();
+      } else {
+        this.hydrateHolidayDefaults();
+      }
     }
   }
 
   setMinDate() {
     const today = new Date();
-    let monthsToAdd = 2; // Default to 2 months
-    // if (this.tour?.location) {
-    //   // Example logic: adjust based on location
-    //   if (['Europe', 'Asia'].includes(this.tour.location)) {
-    //     monthsToAdd = 4;
-    //   }
-    // }
-    today.setMonth(today.getMonth() + monthsToAdd);
+    today.setMonth(today.getMonth() + 2);
     this.minDate = today.toISOString().split('T')[0];
-    this.bookingData.travelDate = this.minDate;
+    if (!this.bookingData.travelDate) this.bookingData.travelDate = this.minDate;
   }
 
-  resetForms() {
+    resetForms() {
     this.enquiryData = { name: '', email: '', phone: '', description: '' };
     this.bookingData = {
       name: '',
@@ -193,19 +254,37 @@ constructor(private stateSvc: StatePersistenceService,  private checkout: Checko
       hotelRating: '',
       mealPlan: '',
       flightOption: '',
-      flightNumber: '', // Reset to empty string
+      flightNumber: '',
       travelDate: this.minDate
     };
     this.agreeTerms = false;
+
+    // reset group state too
+    this.selectedDepartureId = null;
+    this.selectedDepartureSeats = 0;
+    this.seatsRequested = 1;
+    this.seatsRemaining = 0;
+    this.seatError = '';
   }
 
-  updateChildAges() {
+
+updateChildAges() {
     const childCount = this.bookingData.children || 0;
-    this.bookingData.childAges = Array(childCount)
-      .fill(null)
-      .map((_, i) => this.bookingData.childAges[i] || 1);
+    this.bookingData.childAges = Array(childCount).fill(null).map((_, i) => this.bookingData.childAges[i] || 1);
+    if (this.isGroup) this.recomputeSeats();
   }
 
+  onGuestsChange() {
+    if (this.isGroup) this.recomputeSeats();
+  }
+onDepartureChange() {
+  const dep = this.getDepartureByIndex(this.selectedDepartureIndex);
+  this.selectedDepartureSeats = dep?.available_seats ?? 0;
+  this.bookingData.travelDate = dep ? new Date(dep.departure_date).toISOString().split('T')[0] : '';
+  this.recomputeSeats();
+}
+
+  
   closeModal() {
     this.isOpen = false;
     this.close.emit();
@@ -224,16 +303,17 @@ constructor(private stateSvc: StatePersistenceService,  private checkout: Checko
       return; // SSR render path — do nothing
     }
     if (!form.valid || !this.tour || !this.agreeTerms) return;
-
+  if (this.isGroup && this.seatError) return;
     this.stateSvc.setBooking(this.bookingData);   // keep your local persistence
     this.loading = true;
 
     try {
       // 1) Load Razorpay checkout script
       await this.checkout.loadScript();
+const guests = Number(this.bookingData.adults) + Number(this.bookingData.children || 0);
 
       // 2) Ask the server to create booking + order (authoritative amount)
-  
+  const selectedDep = this.getDepartureByIndex(this.selectedDepartureIndex);
     const createPayload = {
       tourId: this.tour.id,
       userId: undefined, // pass real user id if you have auth
@@ -242,6 +322,7 @@ constructor(private stateSvc: StatePersistenceService,  private checkout: Checko
       customer_phone: this.bookingData.phone,
       guests: Number(this.bookingData.adults) + Number(this.bookingData.children || 0),
       travel_date: this.bookingData.travelDate,
+      departure_id: this.isGroup ? (selectedDep?.id ?? undefined) : undefined, 
       notes: {
         days: this.bookingData.days,
         hotelRating: this.bookingData.hotelRating,
@@ -250,8 +331,21 @@ constructor(private stateSvc: StatePersistenceService,  private checkout: Checko
         flightNumber: this.bookingData.flightNumber,
         childAges: this.bookingData.childAges
       }
+,
+      name: this.bookingData.name,
+      email: this.bookingData.email,
+      phone: this.bookingData.phone,
+      adults: this.bookingData.adults,
+      children: this.bookingData.children || 0,
+        days: this.bookingData.days,
+        hotel_rating: this.bookingData.hotelRating,
+        meal_plan: this.bookingData.mealPlan,
+        flight_option: this.bookingData.flightOption,
+        flight_number: this.bookingData.flightNumber,
+        child_ages: this.bookingData.childAges
+      
     };
-
+console.log('Creating order with payload:', createPayload);
       const order = await this.checkout.create(createPayload).toPromise();
       // order = { key, orderId, amount, currency, bookingId }
 
@@ -277,6 +371,15 @@ constructor(private stateSvc: StatePersistenceService,  private checkout: Checko
           }).toPromise();
 
           if (verify?.ok) {
+            //   if (this.isGroup && this.selectedDepartureId && guests > 0) {
+            //   // implement this API in your CheckoutService (or BookingsService)
+            //   await this.checkout.consumeSeats({
+            //     tourId: this.tour!.id,
+            //     departure_id: this.selectedDepartureId,
+            //     seats: guests
+            //   }).toPromise();
+            // }
+
             // optional: emit to parent if you still want
             this.stateSvc.setBooking(this.bookingData);
       this.onSubmitBooking.emit({ ...this.bookingData, tourId: this.tour?.id });

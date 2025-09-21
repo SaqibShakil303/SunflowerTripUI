@@ -7,7 +7,7 @@ import { DestinationService } from '../../services/destination/destination.servi
 interface NavItem {
   name: string;
   route: string;
-  queryParams?: { 
+  queryParams?: {
     destination?: number;
     location?: number;
     category?: string;
@@ -32,7 +32,7 @@ interface DestinationGroup {
   standalone: true,
   imports: [RouterLink, CommonModule, RouterModule, NavbarComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
   isDropdownOpen = false;
@@ -43,16 +43,87 @@ export class HeaderComponent {
     label: 'Destinations',
     destinations: []
   };
+  isLoading = true; // Track loading state
+
+  // Fallback data for continents and countries
+  private fallbackDestinations: DestinationGroup = {
+    label: 'Destinations',
+    destinations: [
+      {
+        name: 'Europe & Britain',
+        route: '/destination/Europe & Britain',
+        locations: [
+          { name: 'France', route: '/destination/France' },
+          { name: 'Italy', route: '/destination/Italy' },
+          { name: 'United Kingdom', route: '/destination/United Kingdom' },
+          { name: 'Germany', route: '/destination/Germany' }
+        ]
+      },
+      {
+        name: 'North America',
+        route: '/destination/North America',
+        locations: [
+          { name: 'United States', route: '/destination/United States' },
+          { name: 'Canada', route: '/destination/Canada' },
+          { name: 'Mexico', route: '/destination/Mexico' }
+        ]
+      },
+      {
+        name: 'South America',
+        route: '/destination/South America',
+        locations: [
+          { name: 'Brazil', route: '/destination/Brazil' },
+          { name: 'Argentina', route: '/destination/Argentina' },
+          { name: 'Peru', route: '/destination/Peru' }
+        ]
+      },
+      {
+        name: 'Africa',
+        route: '/destination/Africa',
+        locations: [
+          { name: 'South Africa', route: '/destination/South Africa' },
+          { name: 'Kenya', route: '/destination/Kenya' },
+          { name: 'Egypt', route: '/destination/Egypt' }
+        ]
+      },
+      {
+        name: 'Asia',
+        route: '/destination/Asia',
+        locations: [
+          // { name: 'India', route: '/destination/India' },
+          { name: 'Japan', route: '/destination/Japan' },
+          { name: 'Thailand', route: '/destination/Thailand' }
+        ]
+      },
+      {
+        name: 'Australia & New Zealand',
+        route: '/destination/Australia & New Zealand',
+        locations: [
+          { name: 'Australia', route: '/destination/Australia' },
+          { name: 'New Zealand', route: '/destination/New Zealand' }
+        ]
+      }
+    ]
+  };
 
   constructor(
-    private elementRef: ElementRef, 
+    private elementRef: ElementRef,
     private destSvc: DestinationService,
     private router: Router
   ) {
-      this.destSvc.getDestinationNames().subscribe({
+    // Initialize with fallback data
+    this.destinationGroup = this.fallbackDestinations;
+    if (this.fallbackDestinations.destinations.length > 0) {
+      this.selectedContinent = this.fallbackDestinations.destinations[0];
+    }
+
+    // Fetch actual data
+    this.destSvc.getDestinationNames().subscribe({
       next: (destinations) => {
         const continents = destinations.filter(d => d.parent_id === null);
         const countries = destinations.filter(d => d.parent_id !== null);
+        console.log('Continents:', continents);
+        console.log('Countries:', countries);
 
         const continentImages: { [key: string]: string } = {
           'Europe & Britain': 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3',
@@ -69,11 +140,13 @@ export class HeaderComponent {
             name: continent.title,
             route: `/destination/${continent.title}`,
             image_url: continent.image_url || continentImages[continent.title] || '',
+            queryParams: { destination: continent.id },
             locations: countries
               .filter(country => country.parent_id === continent.id)
               .map(country => ({
                 name: country.title,
                 route: `/destination/${country.title}`,
+                queryParams: { destination: country.id }
               }))
           }))
         };
@@ -81,18 +154,19 @@ export class HeaderComponent {
         if (this.destinationGroup.destinations.length > 0) {
           this.selectedContinent = this.destinationGroup.destinations[0];
         }
+        this.isLoading = false; // Data loaded
       },
-      error: err => console.error('Failed to load destinations', err)
+      error: err => {
+        console.error('Failed to load destinations', err);
+        this.isLoading = false; // Stop loading even on error, keep fallback
+      }
     });
   }
 
-  ngOnInit(): void {
-  
-  } 
+  toggleContinent(destination: Destination) {
+    this.expandedContinent = this.expandedContinent === destination ? null : destination;
+  }
 
-toggleContinent(destination: Destination) {
-  this.expandedContinent = this.expandedContinent === destination ? null : destination;
-}
   openDropdown() {
     this.isDropdownOpen = true;
   }
@@ -120,7 +194,7 @@ toggleContinent(destination: Destination) {
     this.router.navigate([route]);
     this.isDropdownOpen = false;
     this.isMobileMenuOpen = false;
-     this.expandedContinent = null;
+    this.expandedContinent = null;
   }
 
   @HostListener('document:click', ['$event'])
@@ -128,11 +202,11 @@ toggleContinent(destination: Destination) {
     const target = event.target as HTMLElement;
     const dropdown = this.elementRef.nativeElement.querySelector('.dropdown-nav');
     const mobileMenu = this.elementRef.nativeElement.querySelector('.mobile-menu');
-    
+
     if (this.isDropdownOpen && dropdown && !dropdown.contains(target)) {
       this.isDropdownOpen = false;
     }
-    
+
     if (this.isMobileMenuOpen && mobileMenu && !mobileMenu.contains(target) && !target.closest('.mobile-menu-toggle')) {
       this.isMobileMenuOpen = false;
     }
@@ -140,7 +214,6 @@ toggleContinent(destination: Destination) {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    // Close mobile menu on resize to desktop
     if (window.innerWidth > 768) {
       this.isMobileMenuOpen = false;
     }
