@@ -85,12 +85,24 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="price_per_person" class="form-label">Price per Person *</label>
+              <label for="price_per_person" class="form-label">Price per Person(without flight) *</label>
               <input type="number" id="price_per_person" formControlName="price_per_person"
                 class="form-control" [class.error]="isFieldInvalid(tourForm, 'price_per_person')"
                 placeholder="Enter price">
               <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'price_per_person')">
                 {{ getFieldError(tourForm, 'price_per_person') }}
+              </div>
+            </div>
+            </div>
+
+                      <div class="form-row">
+            <div class="form-group">
+              <label for="price_with_flight" class="form-label">Price with flight *</label>
+              <input type="number" id="price_with_flight" formControlName="price_with_flight"
+                class="form-control" [class.error]="isFieldInvalid(tourForm, 'price_with_flight')"
+                placeholder="Enter price">
+              <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'price_with_flight')">
+                {{ getFieldError(tourForm, 'price_with_flight') }}
               </div>
             </div>
 

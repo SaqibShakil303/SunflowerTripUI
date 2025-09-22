@@ -18,6 +18,7 @@ interface TourPayload {
     description: string;
     price: string;
     price_per_person: string;
+    price_with_flight:string;
     price_currency: string;
     image_url: string;
     map_embed_url: string;
@@ -177,6 +178,7 @@ export class EditTourComponent implements OnInit {
       duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
       category: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       price_per_person: [0, [Validators.required, Validators.min(0)]],
+      price_with_flight: [0, [Validators.required, Validators.min(0)]],
       price_currency: ['INR', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       image_url: [''],
       map_embed_url: [''],
@@ -273,6 +275,7 @@ export class EditTourComponent implements OnInit {
       duration_days: tour.duration_days || 1,
       category: tour.category || '',
       price_per_person: tour.price_per_person ? parseFloat(tour.price_per_person) : 0,
+        price_with_flight: tour.price_with_flight ? parseFloat(tour.price_with_flight) : 0,
       price_currency: tour.price_currency || 'INR',
       image_url: tour.image_url || '',
       map_embed_url: tour.map_embed_url || '',
@@ -513,6 +516,7 @@ export class EditTourComponent implements OnInit {
         description: formValue.description,
         price: formValue.price_per_person.toFixed(2),
         price_per_person: formValue.price_per_person.toFixed(2),
+           price_with_flight: formValue.price_with_flight.toFixed(2),
         price_currency: formValue.price_currency,
         image_url: formValue.image_url,
         map_embed_url: formValue.map_embed_url,
@@ -672,6 +676,7 @@ export class EditTourComponent implements OnInit {
       duration_days: 'Duration',
       category: 'Category',
       price_per_person: 'Price per person',
+      price_with_flight:'price with flight',
       price_currency: 'Currency',
       image_url: 'Image URL',
       map_embed_url: 'Map URL',

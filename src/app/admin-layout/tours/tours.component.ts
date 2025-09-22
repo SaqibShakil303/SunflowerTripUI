@@ -328,6 +328,7 @@ export class ToursComponent implements OnInit {
         description: tour.description || '',
         price: tour.price || '0.00',
         price_per_person: tour.price_per_person || '0.00',
+        price_with_flight:tour.price_with_flight||'0.00',
         price_currency: tour.price_currency || 'INR',
         image_url: tour.image_url || '',
         map_embed_url: tour.map_embed_url || '',

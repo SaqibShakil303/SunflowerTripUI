@@ -21,6 +21,7 @@ export interface TourPayload {
   location_ids: number[];
   slug: string;
   price_per_person: number;
+  price_with_flight:number;
   price_currency: string;
   duration_days: number;
   available_from: string;

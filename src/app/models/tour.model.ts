@@ -52,6 +52,7 @@ export class Tour {
   itinerary!: string | ItineraryDay[];
   price!: string;
   price_per_person!: string;
+  price_with_flight!:string;
   price_currency?: string;
   image_url!: string;
   map_embed_url!: string;

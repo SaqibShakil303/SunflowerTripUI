@@ -14,6 +14,7 @@ interface TourCard {
   description: string;
   duration_days: number;
   price_per_person: string;
+  price_with_flight:string;
   price_currency: string;
   image_url: string;
 }
@@ -57,6 +58,7 @@ export class ToursComponent implements AfterViewInit {
           description: tour.description,
           duration_days: tour.duration_days,
           price_per_person: tour.price_per_person ?? '',
+          price_with_flight:tour.price_with_flight??'',
           price_currency: tour.price_currency ?? '',
           image_url: tour.image_url
         }));
