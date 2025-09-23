@@ -1,6 +1,4 @@
-Here’s the full, drop-in **`booking-modal.component.html`** with the group/holiday logic, airports info banner, departures + live seats, and the submit guard. Paste it as-is.
 
-```html
 <ng-container *ngIf="isOpen">
   <div class="modal-overlay" (click)="closeModal()"></div>
   <div class="modal-content" [ngClass]="{'enquiry-form': formType === 'enquiry', 'booking-form': formType === 'booking'}">
@@ -238,4 +236,4 @@ Here’s the full, drop-in **`booking-modal.component.html`** with the group/hol
     </div>
   </div>
 </ng-container>
-```
+

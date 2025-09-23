@@ -47,6 +47,7 @@ interface TourPayload {
     packing_list?: string[];
     languages_supported?: string[];
     guide_included?: boolean;
+    flight_included?: boolean;
     guide_languages?: string[];
     transportation_included?: boolean;
     transportation_details?: string;
@@ -206,6 +207,7 @@ export class EditTourComponent implements OnInit {
       packing_list: [''],
       languages_supported: [''],
       guide_included: [true],
+      flight_included: [true],
       guide_languages: [''],
       transportation_included: [true],
       transportation_details: [''],
@@ -303,6 +305,7 @@ export class EditTourComponent implements OnInit {
       packing_list: tour.packing_list?.join('\n') || '',
       languages_supported: tour.languages_supported?.join('\n') || '',
       guide_included: tour.guide_included ?? true,
+      flight_included: tour.flight_included ?? true,
       guide_languages: tour.guide_languages?.join('\n') || '',
       transportation_included: tour.transportation_included ?? true,
       transportation_details: tour.transportation_details || '',
@@ -545,6 +548,7 @@ export class EditTourComponent implements OnInit {
         packing_list: formValue.packing_list ? formValue.packing_list.split('\n').filter((item: string) => item.trim()) : [],
         languages_supported: formValue.languages_supported ? formValue.languages_supported.split('\n').filter((item: string) => item.trim()) : [],
         guide_included: formValue.guide_included ? true : false,
+        flight_included: formValue.flight_included ? true : false,
         guide_languages: formValue.guide_languages ? formValue.guide_languages.split('\n').filter((item: string) => item.trim()) : [],
         transportation_included: formValue.transportation_included ? true : false,
         transportation_details: formValue.transportation_details,

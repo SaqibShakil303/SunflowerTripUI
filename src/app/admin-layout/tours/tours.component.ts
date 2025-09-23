@@ -357,6 +357,7 @@ export class ToursComponent implements OnInit {
         packing_list: tour.packing_list || [],
         languages_supported: tour.languages_supported || [],
         guide_included: tour.guide_included ?? true,
+        flight_included: tour.flight_included ?? true,
         guide_languages: tour.guide_languages || [],
         transportation_included: tour.transportation_included ?? true,
         transportation_details: tour.transportation_details || '',

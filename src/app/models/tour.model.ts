@@ -85,6 +85,7 @@ export class Tour {
   packing_list?: string[];
   languages_supported?: string[];
   guide_included?: boolean;
+  flight_included!: boolean;
   guide_languages?: string[];
   transportation_included?: boolean;
   transportation_details?: string;
@@ -100,7 +101,6 @@ export class Tour {
   is_active?: boolean;
   is_featured?: boolean;
   is_customizable?: boolean;
-  flight_included?: boolean;
   adults?: number;
   children?: number;
   rooms?: number;

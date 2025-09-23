@@ -48,11 +48,11 @@
         </div>
         <div class="booking-card">
           <div class="price-section">
-            <span class="price-label">Price excluding Flight</span>
+            <span class="price-label">Price excluding Flight with GST</span>
             <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price_per_person || tour.price)
               }}</span>
 
-                       <span class="price-label">Price including Flight</span>
+                       <span class="price-label">Price including Flight with GST</span>
             <span class="price">{{ tour.price_currency || 'INR' }} {{ formatPrice(tour.price_with_flight || tour.price)
               }}</span>
             <!-- <span class="discount" *ngIf="tour.early_bird_discount">Early Bird: {{
