@@ -66,7 +66,7 @@ export class DestinationService {
     return this.http.get<any>(`${this.APIurl}/${id}/details`);
   }
   getDestinationByTitle(title: string): Observable<Destination> {
-    return this.http.get<any>(`${this.APIurl}/Destination/${title}`).pipe(timeout(8000),
+    return this.http.get<any>(`${this.APIurl}/Destination/${title}`).pipe(//timeout(8000),
       map((data) => ({
         id: data.id,
         title: data.title,
@@ -91,10 +91,12 @@ export class DestinationService {
   }
 
   getDestinationDetails(id: number): Observable<Destination> {
-    return this.http.get<Destination>(`${this.APIurl}/Destination/${id}/details`).pipe(timeout(8000));
+    return this.http.get<Destination>(`${this.APIurl}/Destination/${id}/details`).pipe(//timeout(8000)
+    );
   }
   getNamesAndLocations(): Observable<DestinationNav[]> {
-    return this.http.get<DestinationNav[]>(`${this.APIurl}/Destination/names`).pipe(timeout(8000));
+    return this.http.get<DestinationNav[]>(`${this.APIurl}/Destination/names`).pipe(//timeout(8000)
+    );
   }
 
   addDestination(destinationPayload: DestinationPayload): Observable<any> {

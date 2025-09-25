@@ -14,25 +14,25 @@ export class LocationService {
   private apiUrl = environment.apiDomain;
 
   addLocation(data: Partial<LocationModel>): Observable<any> {
-    return this.http.post(`${this.apiUrl}/locations`, data).pipe( timeout(8000),
+    return this.http.post(`${this.apiUrl}/locations`, data).pipe( //timeout(8000),
       catchError(this.handleError)
     );
   }
 
   getAllLocations(): Observable<LocationModel[]> {
-    return this.http.get<LocationModel[]>(`${this.apiUrl}/locations`).pipe( timeout(8000),
+    return this.http.get<LocationModel[]>(`${this.apiUrl}/locations`).pipe( //timeout(8000),
       catchError(this.handleError)
     );
   }
 
   updateLocation(data: Partial<LocationModel>): Observable<LocationModel> {
-    return this.http.put<LocationModel>(`${this.apiUrl}/locations/${data.id}`, data).pipe( timeout(8000),
+    return this.http.put<LocationModel>(`${this.apiUrl}/locations/${data.id}`, data).pipe( //timeout(8000),
       catchError(this.handleError)
     );
   }
 
   deleteLocation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/locations/${id}`).pipe( timeout(8000),
+    return this.http.delete<void>(`${this.apiUrl}/locations/${id}`).pipe( //timeout(8000),
       catchError(this.handleError)
     );
   }

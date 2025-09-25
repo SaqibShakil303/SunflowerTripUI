@@ -14,7 +14,7 @@ export class UserService {
   private apiUrl = environment.apiDomain;
 
   getAllUsers(): Observable<UserModel[]> {
-    return this.http.get<UserModel[]>(`${this.apiUrl}/users`).pipe( timeout(8000));
+    return this.http.get<UserModel[]>(`${this.apiUrl}/users`);
   }
 
   deleteUser(id: number): Observable<void> {

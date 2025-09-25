@@ -87,8 +87,9 @@ export class TourService {
   getTourBySlug(slug: string): Observable<Tour> {
     return this.http
       .get<any>(`${this.apiUrl}/Tours/${slug}`)
-      .pipe( timeout(15000),
-        map(raw => this.transformTourData(raw))
+      .pipe( 
+        //timeout(15000),
+        // map(raw => this.transformTourData(raw))
       );
   }
   updateTour(id: number, payload: any): Observable<any> {
@@ -96,11 +97,14 @@ export class TourService {
   }
 
   getFilteredTours(params: any): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params }).pipe( timeout(15000));
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/filters`, { params }).pipe( 
+      //timeout(15000)
+    );
   }
 
   getFeaturedTours(): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/getFeaturedTours`).pipe( timeout(15000),
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/getFeaturedTours`).pipe( 
+      //timeout(15000),
     retry({ count: 1, delay: 800 }),
      catchError(err => {
       // graceful fallback: show skeleton or message
@@ -111,20 +115,30 @@ export class TourService {
   }
 
   getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/Tours/categories`).pipe( timeout(15000));
+    return this.http.get<string[]>(`${this.apiUrl}/Tours/categories`).pipe( 
+      //timeout(15000)
+    );
   }
   getAllTours(): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours`).pipe( timeout(15000));
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours`).pipe( 
+      //timeout(15000)
+      );
   }
   getByDestination(destId: number): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${destId}/destination`).pipe( timeout(15000));
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${destId}/destination`).pipe( 
+      //timeout(15000)
+    );
   }
 
   getByLocation(locId: number): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${locId}/location`).pipe( timeout(15000));
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/${locId}/location`).pipe( 
+      //timeout(15000)
+  );
   }
   getByCategory(category: string): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/category/${category}`).pipe( timeout(15000));
+    return this.http.get<Tour[]>(`${this.apiUrl}/Tours/category/${category}`).pipe(
+       //timeout(15000)
+  );
   }
 
   deleteTour(id: number): Observable<any> {
@@ -152,7 +166,7 @@ export class TourService {
       });
     }
 
-    return this.http.get<any>(`${this.apiUrl}/tours`, { params: httpParams }).pipe( timeout(15000),
+    return this.http.get<any>(`${this.apiUrl}/tours`, { params: httpParams }).pipe( //timeout(15000),
       map(response => ({
         ...response,
         tours: response.tours.map((tour: any) => this.transformTourData(tour))
@@ -227,7 +241,7 @@ export class TourService {
 
   // Get user's wishlist
   getUserWishlist(): Observable<Tour[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/wishlist`).pipe( timeout(15000),
+    return this.http.get<any[]>(`${this.apiUrl}/wishlist`).pipe( //timeout(15000),
       map(response => response.map(item => this.transformTourData(item.tour)))
     );
   }
@@ -244,7 +258,7 @@ export class TourService {
 
   // Get similar tours
   getSimilarTours(tourId: number, limit: number = 4): Observable<Tour[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/tours/${tourId}/similar?limit=${limit}`).pipe( timeout(15000),
+    return this.http.get<any[]>(`${this.apiUrl}/tours/${tourId}/similar?limit=${limit}`).pipe( //timeout(15000),
       map(response => response.map(tour => this.transformTourData(tour)))
     );
   }
@@ -367,7 +381,8 @@ export class TourService {
   getFilters(): Observable<{ cities: string[]; categories: string[] }> {
     return this.http.get<{ cities: string[]; categories: string[] }>(
       `${this.apiUrl}/Tours/filters`
-    ).pipe( timeout(15000));
+    ).pipe( //timeout(15000)
+    );
   }
 
   // Helper method to get availability status

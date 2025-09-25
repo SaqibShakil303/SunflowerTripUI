@@ -39,7 +39,7 @@ export class AuthService {
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${environment.apiDomain}/auth/login`, { email, password })
-      .pipe( timeout(8000),
+      .pipe( //timeout(8000),
         tap(response => this.persistToken(response.tokens, response.userRole))
       );
   }
