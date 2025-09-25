@@ -11,6 +11,7 @@ import { LocationService } from '../../services/location/location.service';
 import { DestinationService } from '../../services/destination/destination.service';
 import { SafeUrlPipe } from '../../common/pipes/safe-url.pipe';
 import { catchError, of, tap, forkJoin } from 'rxjs';
+import { LocationImageViewerComponent } from '../../components/location-image-viewer/location-image-viewer.component';
 
 @Component({
   selector: 'app-locations',
@@ -52,6 +53,15 @@ export class LocationsComponent implements OnInit {
     this.loadData();
   }
 
+openImageViewer(location: LocationModel): void {
+  if (!location?.id) return;
+  this.dialog.open(LocationImageViewerComponent, {
+    width: '90vw',
+    height: '85vh',
+    panelClass: 'image-viewer-dialog',
+    data: { id: location.id, name: location.name }
+  });
+}
   // Load locations and destinations data
   loadData(): void {
     this.isLoading = true;

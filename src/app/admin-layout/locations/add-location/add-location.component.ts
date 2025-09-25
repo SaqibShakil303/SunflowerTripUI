@@ -7,7 +7,8 @@ import { Destination } from '../../../models/destination.model';
 import { LocationModel } from '../../../models/location.model';
 import { DestinationService } from '../../../services/destination/destination.service';
 import { LocationService } from '../../../services/location/location.service';
-
+const IMAGE_URL_REGEX =
+  /^https?:\/\/[^\s]+?\.(?:png|jpe?g|webp)(?:\?[^\s#]*)?(?:#[^\s]*)?$/i;
 @Component({
   selector: 'app-add-location',
   standalone: true,
@@ -21,7 +22,7 @@ export class AddLocationComponent implements OnInit {
   imagePreview: string | null = null;
   imageInputType: 'file' | 'url' = 'file';
   destinations: Destination[] = [];
-
+urlChecking = false;
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddLocationComponent>,
@@ -48,6 +49,7 @@ export class AddLocationComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+       this.setImageInputType(this.imageInputType);
   }
 
   private createForm(): FormGroup {
@@ -56,7 +58,7 @@ export class AddLocationComponent implements OnInit {
       destination_ids: [[], [Validators.required, Validators.minLength(1)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       imageFile: [null],
-      imageUrl: ['', [Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]],
+      imageUrl: ['', []],
       iframe360: ['', [Validators.required, Validators.pattern(/^https?:\/\/.*/)]]
     });
   }
@@ -65,18 +67,40 @@ export class AddLocationComponent implements OnInit {
   setImageInputType(type: 'file' | 'url'): void {
     this.imageInputType = type;
     this.imagePreview = null;
-    this.locationForm.get('imageFile')?.reset();
-    this.locationForm.get('imageUrl')?.reset();
+
+    const imageFileCtrl = this.locationForm.get('imageFile')!;
+    const imageUrlCtrl  = this.locationForm.get('imageUrl')!;
+
+    // reset values & errors
+    imageFileCtrl.reset();
+    imageUrlCtrl.reset();
+    imageFileCtrl.setErrors(null);
+    imageUrlCtrl.setErrors(null);
+
     if (type === 'file') {
-      this.locationForm.get('imageFile')?.setValidators([Validators.required]);
-      this.locationForm.get('imageUrl')?.clearValidators();
+      imageFileCtrl.setValidators([Validators.required]);
+      imageUrlCtrl.clearValidators();
     } else {
-      this.locationForm.get('imageUrl')?.setValidators([Validators.required, Validators.pattern(/^(https?:\/\/.*\.(?:png|jpg|jpeg|webp))$/i)]);
-      this.locationForm.get('imageFile')?.clearValidators();
+      // required + improved regex
+      imageUrlCtrl.setValidators([
+        Validators.required,
+        Validators.pattern(IMAGE_URL_REGEX)
+      ]);
+      imageFileCtrl.clearValidators();
     }
-    this.locationForm.get('imageFile')?.updateValueAndValidity();
-    this.locationForm.get('imageUrl')?.updateValueAndValidity();
+
+    imageFileCtrl.updateValueAndValidity();
+    imageUrlCtrl.updateValueAndValidity();
     this.cdr.detectChanges();
+  }
+  // Small helper to verify that the image URL actually loads
+  private loadImage(url: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
   }
 
   // Handle file input
@@ -121,19 +145,43 @@ export class AddLocationComponent implements OnInit {
     }
   }
 
-  // Handle URL input
-  onImageUrlChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const imageUrlControl = this.locationForm.get('imageUrl');
-    const url = input.value;
 
-    if (url && imageUrlControl?.valid) {
+  // Handle URL input
+ async onImageUrlChange(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const imageUrlCtrl = this.locationForm.get('imageUrl')!;
+    const url = input.value?.trim();
+
+    this.imagePreview = null;
+    imageUrlCtrl.markAsTouched();
+
+    // If pattern fails, show format error immediately
+    if (!url || imageUrlCtrl.hasError('required') ||
+        (IMAGE_URL_REGEX.test(url) === false)) {
+      imageUrlCtrl.setErrors({ ...(imageUrlCtrl.errors || {}), pattern: true });
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // Pattern OK → verify it actually loads
+    this.urlChecking = true;
+    this.cdr.detectChanges();
+
+    const ok = await this.loadImage(url);
+    this.urlChecking = false;
+
+    if (ok) {
+      // valid and loadable
+      imageUrlCtrl.setErrors(null);
       this.imagePreview = url;
     } else {
+      // unreachable or blocked
+      imageUrlCtrl.setErrors({ invalidImageUrl: true });
       this.imagePreview = null;
     }
     this.cdr.detectChanges();
   }
+
 
   // Form validation helpers
   isFieldInvalid(fieldName: string): boolean {
@@ -141,6 +189,8 @@ export class AddLocationComponent implements OnInit {
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
+
+  // Error message helper: add cases for invalidImageUrl
   getFieldError(fieldName: string): string {
     const field = this.locationForm.get(fieldName);
 
@@ -166,11 +216,13 @@ export class AddLocationComponent implements OnInit {
       if (field.errors['pattern'] && fieldName === 'imageUrl') {
         return 'Please enter a valid image URL (PNG, JPG, WEBP or JPEG)';
       }
+      if (field.errors['invalidImageUrl']) {
+        return 'The image URL could not be loaded (unreachable or blocked).';
+      }
       if (field.errors['pattern'] && fieldName === 'iframe360') {
         return 'Please enter a valid URL starting with http:// or https://';
       }
     }
-
     return '';
   }
 
@@ -188,49 +240,52 @@ export class AddLocationComponent implements OnInit {
 
   // Form submission
   onSubmit(): void {
-    if (this.locationForm.valid && (this.imageInputType === 'file' ? this.locationForm.get('imageFile')?.valid : this.locationForm.get('imageUrl')?.valid)) {
-      this.isSubmitting = true;
+    // ensure the active input is valid
+    const usingFile = this.imageInputType === 'file';
+    const activeCtrl = this.locationForm.get(usingFile ? 'imageFile' : 'imageUrl')!;
 
-      const formValue = this.locationForm.value;
-      const locationData: Partial<LocationModel> = {
-        destination_ids: formValue.destination_ids,
-        name: formValue.name,
-        description: formValue.description,
-        iframe_360: formValue.iframe360,
-        image_url: this.imageInputType === 'url' ? formValue.imageUrl : formValue.imageFile // Use base64 for file
-      };
-
-      this.locationService.addLocation(locationData).subscribe({
-        next: (insertId) => {
-          this.snackBar.open('Location added successfully', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar']
-          });
-          this.isSubmitting = false;
-          this.dialogRef.close({ ...locationData, id: insertId });
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          this.isSubmitting = false;
-          this.snackBar.open('Failed to add location: ' + (error.error?.message || 'Unknown error'), 'Close', {
-            duration: 5000,
-            panelClass: ['error-snackbar']
-          });
-          this.cdr.detectChanges();
-        }
-      });
-    } else {
+    if (!this.locationForm.valid || activeCtrl.invalid) {
       Object.keys(this.locationForm.controls).forEach(key => {
         this.locationForm.get(key)?.markAsTouched();
       });
       this.snackBar.open('Please fill all required fields correctly', 'Close', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
+        duration: 3000, panelClass: ['error-snackbar']
       });
       this.cdr.detectChanges();
+      return;
     }
+
+    this.isSubmitting = true;
+    const v = this.locationForm.value;
+
+    const locationData: Partial<LocationModel> = {
+      destination_ids: v.destination_ids,
+      name: v.name,
+      description: v.description,
+      iframe_360: v.iframe360,
+      image_url: usingFile ? v.imageFile : v.imageUrl   // base64 or URL
+    };
+
+    this.locationService.addLocation(locationData).subscribe({
+      next: (insertId) => {
+        this.snackBar.open('Location added successfully', 'Close', {
+          duration: 3000, panelClass: ['success-snackbar']
+        });
+        this.isSubmitting = false;
+        this.dialogRef.close({ ...locationData, id: insertId });
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.snackBar.open('Failed to add location: ' + (error.error?.message || 'Unknown error'), 'Close', {
+          duration: 5000, panelClass: ['error-snackbar']
+        });
+        this.cdr.detectChanges();
+      }
+    });
   }
 
+ 
   onCancel(): void {
     this.dialogRef.close();
   }

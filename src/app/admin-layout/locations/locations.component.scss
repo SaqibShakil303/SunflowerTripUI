@@ -887,3 +887,11 @@ $font-heading: 'Playfair Display', serif;
         }
     }
 }
+
+
+.image-viewer-dialog .mat-dialog__surface{
+    background: #111;
+    padding: 0;
+    border-radius:12px;
+    overflow: hidden;
+}

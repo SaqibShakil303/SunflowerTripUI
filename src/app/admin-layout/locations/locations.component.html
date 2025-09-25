@@ -72,9 +72,13 @@
                                         <i class="fas"
                                             [ngClass]="{'fa-chevron-down': !location.showDetails, 'fa-chevron-up': location.showDetails}"></i>
                                     </button>
-                                    <img [src]="location.image_url || fallbackImage"
-                                        [alt]="location.name || 'Image not available'" class="location-image"
-                                        (error)="handleImageError(location)">
+                               <img [src]="location.image_url || fallbackImage"
+  [alt]="location.name || 'Image not available'"
+  class="location-image"
+  (error)="handleImageError(location)"
+  (click)="openImageViewer(location)"         
+  [title]="'Click to view ' + (location.name || 'image')"
+/>
                                     <div class="location-info">
                                         <span class="location-name">{{ location.name }}</span>
                                     </div>

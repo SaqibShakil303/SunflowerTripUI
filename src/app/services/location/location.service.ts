@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { catchError, Observable, throwError, timeout } from 'rxjs';
+import { catchError, map, Observable, shareReplay, throwError, timeout } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
 import { LocationModel } from '../../models/location.model';
 
@@ -13,6 +13,8 @@ export class LocationService {
 
   private apiUrl = environment.apiDomain;
 
+   private imageUrlCache = new Map<number, string>();
+
   addLocation(data: Partial<LocationModel>): Observable<any> {
     return this.http.post(`${this.apiUrl}/locations`, data).pipe( //timeout(8000),
       catchError(this.handleError)
@@ -23,6 +25,34 @@ export class LocationService {
     return this.http.get<LocationModel[]>(`${this.apiUrl}/locations`).pipe( //timeout(8000),
       catchError(this.handleError)
     );
+  }
+
+  getLocationImageUrl(id: number): Observable<string> {
+    const cached = this.imageUrlCache.get(id);
+    if (cached) return new Observable<string>(o => { o.next(cached); o.complete(); });
+
+    return this.http.get(`${this.apiUrl}/locations/${id}/image`, {
+      observe: 'response',
+      responseType: 'blob'
+    }).pipe(
+      map((res: HttpResponse<Blob>) => {
+        const blob = res.body!;
+        const url = URL.createObjectURL(blob);
+        this.imageUrlCache.set(id, url);
+        return url;
+      }),
+      // replay so multiple subscribers don’t duplicate network
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+  }
+
+  /** Optional: clear one cached image (e.g., on edit) */
+  clearCachedImage(id: number) {
+    const url = this.imageUrlCache.get(id);
+    if (url) {
+      URL.revokeObjectURL(url);
+      this.imageUrlCache.delete(id);
+    }
   }
 
   updateLocation(data: Partial<LocationModel>): Observable<LocationModel> {
