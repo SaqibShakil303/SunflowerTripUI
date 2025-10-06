@@ -25,6 +25,9 @@ export class AddTourComponent implements OnInit {
   categories: string[] = [];
   availableLocations: { id: number; name: string }[] = [];
   private formSubscription!: Subscription;
+imagePreview: string | null = null;
+photoPreviews: string[] = [];
+private imageFiles: { [key: string]: File } = {}; // optional, if you ever need raw files later
 
   constructor(
     private fb: FormBuilder,
@@ -95,6 +98,7 @@ export class AddTourComponent implements OnInit {
       room_types: this.fb.array([]),
       reviews: this.fb.array([])
     });
+     this.imagePreview = this.tourForm.get('image_url')?.value || null;
 
     const savedTourState = this.stateService.tour;
     if (savedTourState && Object.keys(savedTourState).length > 0) {
@@ -188,7 +192,66 @@ export class AddTourComponent implements OnInit {
     this.restoreFormArray(savedState.itinerary, this.itineraryDays, this.addItineraryDay.bind(this));
     this.restoreFormArray(savedState.room_types, this.roomTypes, this.addRoomType.bind(this));
     this.restoreFormArray(savedState.reviews, this.reviews, this.addReview.bind(this));
+
+    this.imagePreview = this.tourForm.get('image_url')?.value || null;
+this.photoPreviews = (this.photos.controls || []).map(ctrl => ctrl.get('url')?.value || '');
+
   }
+onImageChange(event: Event, controlName: 'image_url' | 'photos', index?: number): void {
+  const input = event.target as HTMLInputElement;
+  const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+
+  const control =
+    controlName === 'image_url'
+      ? this.tourForm.get('image_url')
+      : (this.photos.at(index!) as FormGroup).get('url');
+
+  const fileKey = controlName === 'image_url' ? 'image_url' : `photos.${index}`;
+
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+
+    if (!validTypes.includes(file.type)) {
+      control?.setErrors({ ...(control?.errors || {}), invalidType: true });
+      if (controlName === 'image_url') this.imagePreview = null;
+      if (controlName === 'photos') this.photoPreviews[index!] = '';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.imageFiles[fileKey] = file;
+    control?.setErrors(null);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      control?.setValue(base64);                // store Base64 into the same form control
+      if (controlName === 'image_url') {
+        this.imagePreview = base64;             // main image preview
+      } else {
+        this.photoPreviews[index!] = base64;    // per-photo preview
+      }
+      this.cdr.detectChanges();
+    };
+    reader.onerror = () => {
+      control?.setErrors({ ...(control?.errors || {}), readError: true });
+      if (controlName === 'image_url') this.imagePreview = null;
+      if (controlName === 'photos') this.photoPreviews[index!] = '';
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(file);
+  } else {
+    delete this.imageFiles[fileKey]; // clear
+    if (controlName === 'image_url') {
+      this.imagePreview = null;
+      this.tourForm.get('image_url')?.setValue('');
+    } else {
+      this.photoPreviews[index!] = '';
+      (this.photos.at(index!) as FormGroup).get('url')?.setValue('');
+    }
+    this.cdr.detectChanges();
+  }
+}
 
   private restoreFormArray(savedArray: any[], formArray: FormArray, addFn: () => void): void {
     if (savedArray && savedArray.length > 0) {
@@ -265,6 +328,7 @@ export class AddTourComponent implements OnInit {
       is_primary: [false],
       display_order: [null]
     }));
+      this.photoPreviews.push(''); 
   }
 
   addItineraryDay(): void {
@@ -297,11 +361,15 @@ export class AddTourComponent implements OnInit {
     }));
   }
 
-  removeItem(array: FormArray<FormGroup>, index: number, arrayName: string): void {
-    array.removeAt(index);
-    delete this.imagePreviews[`${arrayName}-${index}`];
-    this.cdr.detectChanges();
+removeItem(array: FormArray<FormGroup>, index: number, arrayName: string): void {
+  array.removeAt(index);
+  if (arrayName === 'photos') {
+    this.photoPreviews.splice(index, 1);
+    delete this.imageFiles[`photos.${index}`];
   }
+  delete this.imagePreviews[`${arrayName}-${index}`];
+  this.cdr.detectChanges();
+}
 
   onSubmit(): void {
     if (this.tourForm.valid) {
@@ -456,6 +524,9 @@ export class AddTourComponent implements OnInit {
       if (field.errors['min']) return `${this.getFieldLabel(fieldName)} must be at least ${field.errors['min'].min}`;
       if (field.errors['max']) return `${this.getFieldLabel(fieldName)} must not exceed ${field.errors['max'].max}`;
       if (field.errors['pattern']) return `${this.getFieldLabel(fieldName)} must contain only lowercase letters, numbers, and hyphens`;
+      if (field.errors['invalidType']) return 'Please select a valid image (PNG, JPG, JPEG, or WebP)';
+if (field.errors['readError']) return 'Error reading the image file';
+
     }
     return '';
   }

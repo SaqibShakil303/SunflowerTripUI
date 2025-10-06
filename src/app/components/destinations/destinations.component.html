@@ -9,7 +9,9 @@
         <div class="swiper-slide" *ngFor="let destination of destinations; let i = index">
           <div class="destination-card fade-in-up" [style.--delay]="i">
             <div class="destination-image">
-              <img [src]="destination.image_url" [alt]="destination.title">
+              <img ngSrc="{{ destination.image_url }}"
+ alt="{{ destination.title }}" width="600" height="400" loading="lazy" decoding="async">
+              <!-- <img [src]="destination.image_url" [alt]="destination.title"> -->
             </div>
             <div class="destination-content">
               <h3>{{ destination.title }}</h3>

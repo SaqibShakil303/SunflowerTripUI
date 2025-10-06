@@ -126,20 +126,38 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="image_url" class="form-label">Main Image URL</label>
-              <input type="text" id="image_url" formControlName="image_url" class="form-control"
-                placeholder="Enter main image URL">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
+          <div class="form-group">
               <label for="map_embed_url" class="form-label">Map URL</label>
               <input type="text" id="map_embed_url" formControlName="map_embed_url" class="form-control"
                 placeholder="Enter map URL">
             </div>
+            
           </div>
+<div class="form-row">
+  <!-- Main image file input (NEW) -->
+  <div class="form-group">
+    <label for="image_file" class="form-label">Main Image (PNG, JPG, JPEG, WebP)</label>
+    <input
+      type="file"
+      id="image_file"
+      class="form-control"
+      accept="image/png,image/jpeg,image/jpg,image/webp"
+      (change)="onImageChange($event, 'image_url')"
+      [class.error]="isFieldInvalid(tourForm, 'image_url')"
+    />
+    <div class="image-preview" *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Preview" class="preview-image" />
+    </div>
+  </div>
+
+  <!-- Keep URL field as an alternative (user can paste a link) -->
+  <div class="form-group">
+    <label for="image_url" class="form-label">Main Image URL (optional)</label>
+    <input type="text" id="image_url" formControlName="image_url" class="form-control"
+      placeholder="Paste a direct image URL">
+  </div>
+</div>
+
         </div>
 
         <!-- Tour Details Section -->
@@ -512,21 +530,39 @@
           </button>
           <div *ngFor="let photo of photos.controls; let i=index" class="form-subsection" [formGroup]="photo">
             <h5>Image {{i + 1}}</h5>
-            <div class="form-row">
-              <div class="form-group">
-                <label [attr.for]="'photo-url-' + i" class="form-label">Image URL *</label>
-                <input type="text" [attr.id]="'photo-url-' + i" formControlName="url" class="form-control"
-                  [class.error]="isFieldInvalid(photo, 'url')" placeholder="Enter image URL">
-                <div class="error-message" *ngIf="isFieldInvalid(photo, 'url')">
-                  {{ getFieldError(photo, 'url') }}
-                </div>
-              </div>
-              <div class="form-group">
-                <label [attr.for]="'photo-caption-' + i" class="form-label">Caption</label>
-                <input type="text" [attr.id]="'photo-caption-' + i" formControlName="caption"
-                  class="form-control" placeholder="Enter photo caption">
-              </div>
-            </div>
+          <div class="form-row">
+  <!-- File input (NEW) -->
+  <div class="form-group">
+    <label [attr.for]="'photo-file-' + i" class="form-label">Upload Image</label>
+    <input
+      type="file"
+      [attr.id]="'photo-file-' + i"
+      class="form-control"
+      accept="image/png,image/jpeg,image/jpg,image/webp"
+      (change)="onImageChange($event, 'photos', i)"
+    />
+    <div class="image-preview" *ngIf="photoPreviews[i]">
+      <img [src]="photoPreviews[i]" alt="Photo Preview" class="preview-image" />
+    </div>
+  </div>
+
+  <!-- Existing URL input (kept) -->
+  <div class="form-group">
+    <label [attr.for]="'photo-url-' + i" class="form-label">Image URL *</label>
+    <input type="text" [attr.id]="'photo-url-' + i" formControlName="url" class="form-control"
+      [class.error]="isFieldInvalid(photo, 'url')" placeholder="Enter image URL or upload a file above">
+    <div class="error-message" *ngIf="isFieldInvalid(photo, 'url')">
+      {{ getFieldError(photo, 'url') }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label [attr.for]="'photo-caption-' + i" class="form-label">Caption</label>
+    <input type="text" [attr.id]="'photo-caption-' + i" formControlName="caption"
+      class="form-control" placeholder="Enter photo caption">
+  </div>
+</div>
+
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Options</label>

@@ -103,10 +103,8 @@
                                 {{ getFieldError(tourForm, 'price_with_flight') }}
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
+                           <div class="form-group">
                             <label for="price_currency" class="form-label">Currency *</label>
                             <input type="text" id="price_currency" formControlName="price_currency" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'price_currency')" placeholder="e.g., INR">
@@ -115,6 +113,10 @@
                             </div>
                         </div>
 
+                    </div>
+
+                    <div class="form-row">
+                     
                         <div class="form-group">
                             <label for="slug" class="form-label">Slug *</label>
                             <input type="text" id="slug" formControlName="slug" class="form-control"
@@ -123,20 +125,39 @@
                                 {{ getFieldError(tourForm, 'slug') }}
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="image_url" class="form-label">Main Image URL</label>
-                            <input type="text" id="image_url" formControlName="image_url" class="form-control"
-                                placeholder="Enter main image URL">
-                        </div>
-                        <div class="form-group">
+                          <div class="form-group">
                             <label for="map_embed_url" class="form-label">Map URL</label>
                             <input type="text" id="map_embed_url" formControlName="map_embed_url" class="form-control"
                                 placeholder="Enter map URL">
                         </div>
                     </div>
+
+                <div class="form-row">
+  <!-- NEW: main image file input -->
+  <div class="form-group">
+    <label for="image_file" class="form-label">Main Image (PNG, JPG, JPEG, WebP)</label>
+    <input
+      type="file"
+      id="image_file"
+      class="form-control"
+      accept="image/png,image/jpeg,image/jpg,image/webp"
+      (change)="onImageChange($event, 'image_url')"
+      [class.error]="isFieldInvalid(tourForm, 'image_url')"
+    />
+    <div class="image-preview" *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Preview" class="preview-image" />
+    </div>
+  </div>
+
+  <!-- Optional: keep URL input as an alternative -->
+  <div class="form-group">
+    <label for="image_url" class="form-label">Main Image URL (optional)</label>
+    <input type="text" id="image_url" formControlName="image_url" class="form-control"
+           placeholder="Paste a direct image URL">
+  </div>
+
+</div>
+
                 </div>
 
                 <!-- Tour Details Section -->

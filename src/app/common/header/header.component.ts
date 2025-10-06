@@ -37,7 +37,7 @@ interface DestinationGroup {
 export class HeaderComponent {
   isDropdownOpen = false;
   isMobileMenuOpen = false;
-  expandedContinent: Destination | null = null;
+  expandedContinent: Destination | null = null; 
   selectedContinent: Destination | null = null;
   destinationGroup: DestinationGroup = {
     label: 'Destinations',

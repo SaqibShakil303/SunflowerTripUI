@@ -6,7 +6,7 @@ import Aos from 'aos';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { DestinationService } from '../../services/destination/destination.service';
-
+import { NgOptimizedImage } from '@angular/common';
 interface DestinationCard {
   id: number;
   title: string;
@@ -20,7 +20,7 @@ interface DestinationCard {
   templateUrl: './destinations.component.html',
   styleUrls: ['./destinations.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,NgOptimizedImage],
   animations: [
     trigger('staggerAnimation', [
       transition('* => *', [
@@ -35,7 +35,7 @@ interface DestinationCard {
   ]
 })
 export class DestinationsComponent implements AfterViewInit {
-  @ViewChild('swiperContainer') swiperContainer!: ElementRef;
+  @ViewChild('swiperContainer') swiperContainer!: ElementRef; 
   destinations: DestinationCard[] = [];
   private swiper!: Swiper;
 

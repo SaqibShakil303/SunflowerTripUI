@@ -6,7 +6,7 @@ import Aos from 'aos';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { TourService } from '../../services/tours/tour.service';
-
+import { NgOptimizedImage } from '@angular/common';
 interface TourCard {
   id: number;
   title: string;
@@ -24,7 +24,7 @@ interface TourCard {
   templateUrl: './tours.component.html',
   styleUrls: ['./tours.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgOptimizedImage],
   animations: [
     trigger('staggerAnimation', [
       transition('* => *', [
@@ -38,7 +38,7 @@ interface TourCard {
     ])
   ]
 })
-export class ToursComponent implements AfterViewInit {
+export class ToursComponent implements AfterViewInit { 
   @ViewChild('swiperContainer') swiperContainer!: ElementRef;
   tours: TourCard[] = [];
   private swiper!: Swiper;

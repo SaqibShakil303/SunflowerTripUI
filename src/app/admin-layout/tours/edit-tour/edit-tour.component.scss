@@ -142,6 +142,19 @@ $font-heading: 'Playfair Display', serif;
           &.single-column {
             grid-template-columns: 1fr;
           }
+             .image-preview {
+            margin-top: 1rem;
+            text-align: center;
+
+            .preview-image {
+              max-width: 200px;
+              max-height: 150px;
+              border-radius: 8px;
+              border: 2px solid $saffron;
+              box-shadow: 0 4px 15px rgba(244, 164, 96, 0.2);
+              object-fit: cover;
+            }
+          }
         }
 
         .form-group {
