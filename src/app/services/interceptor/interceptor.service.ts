@@ -1,26 +1,23 @@
-// import { Injectable } from '@angular/core';
-// import { HttpEvent, HttpHandler, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-// import { Observable } from 'rxjs';
-// import { AuthService } from '../authService/auth.service';
+// import { HttpInterceptorFn } from '@angular/common/http';
 
-// @Injectable()
-// export class InterceptorService {
-// constructor(
-//     private _auth: AuthService
-//   ) {
-//   }
-// intercept(
-//     request: HttpRequest<any>,
-//     next: HttpHandler
-//   ): Observable<HttpEvent<any>> {
-//     if (!request.headers.has('Content-Type')) {
-//       request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
-//     }
-//     request = request.clone({ headers: request.headers.set('Accept', 'application/json') }).clone({
-//       setHeaders: {
-//         Authorization: `${this._auth.getToken()}`
-//       }
-//     });
-// return next.handle(request);
+// function getAccessToken(): string | null {
+//   try {
+//     const raw = localStorage.getItem('tokens');
+//     if (!raw) return null;
+//     const obj = JSON.parse(raw);
+//     return obj?.accessToken ?? null;
+//   } catch {
+//     return null;
 //   }
 // }
+
+// export const authInterceptor: HttpInterceptorFn = (req, next) => {
+//   const token = getAccessToken();
+//   if (!token) return next(req);
+
+//   const authReq = req.clone({
+//     setHeaders: { Authorization: `Bearer ${token}` }
+//   });
+
+//   return next(authReq);
+// };
