@@ -23,7 +23,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="title" class="form-label">Tour Title *</label>
+                            <label for="title" class="form-label required">Tour Title *</label>
                             <input type="text" id="title" formControlName="title" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'title')" placeholder="Enter tour title">
                             <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'title')">
@@ -32,7 +32,7 @@
                         </div>
 
                               <div class="form-group">
-                            <label for="duration_days" class="form-label">Duration (days) *</label>
+                            <label for="duration_days" class="form-label required">Duration (days) *</label>
                             <input type="number" id="duration_days" formControlName="duration_days" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'duration_days')" placeholder="Enter duration in days">
                             <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'duration_days')">
@@ -54,7 +54,7 @@
                         </div>
                         
          <div class="form-group">
-                            <label for="destination_ids" class="form-label">Destinations *</label>
+                            <label for="destination_ids" class="form-label required">Destinations *</label>
                             <select id="destination_ids" formControlName="destination_ids" class="form-control" multiple
                                 [class.error]="isFieldInvalid(tourForm, 'destination_ids')">
                                 <option *ngFor="let destination of destinations" [ngValue]="destination.id">
@@ -71,7 +71,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="category" class="form-label">Category *</label>
+                            <label for="category" class="form-label required">Category *</label>
                             <select id="category" formControlName="category" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'category')">
                                 <option [ngValue]="null">Select Category</option>
@@ -85,7 +85,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="price_per_person" class="form-label">Price per Person(without flight) *</label>
+                            <label for="price_per_person" class="form-label required">Price per Person(without flight) *</label>
                             <input type="number" id="price_per_person" formControlName="price_per_person"
                                 class="form-control" [class.error]="isFieldInvalid(tourForm, 'price_per_person')"
                                 placeholder="Enter price">
@@ -105,7 +105,7 @@
                         </div>
 
                            <div class="form-group">
-                            <label for="price_currency" class="form-label">Currency *</label>
+                            <label for="price_currency" class="form-label required">Currency *</label>
                             <input type="text" id="price_currency" formControlName="price_currency" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'price_currency')" placeholder="e.g., INR">
                             <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'price_currency')">
@@ -126,7 +126,7 @@
                             </div>
                         </div>
                           <div class="form-group">
-                            <label for="map_embed_url" class="form-label">Map URL</label>
+                            <label for="map_embed_url" class="form-label ">Map URL</label>
                             <input type="text" id="map_embed_url" formControlName="map_embed_url" class="form-control"
                                 placeholder="Enter map URL">
                         </div>
@@ -169,7 +169,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="departure_airport" class="form-label">Departure Airport *</label>
+                            <label for="departure_airport" class="form-label required">Departure Airport *</label>
                             <input type="text" id="departure_airport" formControlName="departure_airport" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'departure_airport')" placeholder="e.g., Noi Bai International Airport">
                             <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'departure_airport')">
@@ -178,7 +178,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="arrival_airport" class="form-label">Arrival Airport *</label>
+                            <label for="arrival_airport" class="form-label required">Arrival Airport *</label>
                             <input type="text" id="arrival_airport" formControlName="arrival_airport" class="form-control"
                                 [class.error]="isFieldInvalid(tourForm, 'arrival_airport')" placeholder="e.g., Da Nang International Airport">
                             <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'arrival_airport')">
@@ -189,7 +189,7 @@
 
                            <div class="form-row">
                             <div class="form-group">
-                                <label for="available_from" class="form-label">Available From *</label>
+                                <label for="available_from" class="form-label required">Available From *</label>
                                 <input type="date" id="available_from" formControlName="available_from" class="form-control"
                                     [class.error]="isFieldInvalid(tourForm, 'available_from')">
                                 <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_from')">
@@ -198,7 +198,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="available_to" class="form-label">Available To *</label>
+                                <label for="available_to" class="form-label required">Available To *</label>
                                 <input type="date" id="available_to" formControlName="available_to" class="form-control"
                                     [class.error]="isFieldInvalid(tourForm, 'available_to')">
                                 <div class="error-message" *ngIf="isFieldInvalid(tourForm, 'available_to')">
@@ -247,6 +247,12 @@
                                 At least one departure is required for group tours.
                             </div>
                         </div>
+                        <div class="error-message"
+     *ngIf="tourForm.get('category')?.value === 'group' 
+            && tourForm.get('departures')?.invalid 
+            && tourForm.get('departures')?.touched">
+  At least one departure is required for group tours.
+</div>
                     </div>
 
                     <div class="form-section">
@@ -268,7 +274,7 @@
 
                     <div class="form-row single-column">
                         <div class="form-group">
-                            <label for="description" class="form-label">Description *</label>
+                            <label for="description" class="form-label required">Description *</label>
                             <textarea id="description" formControlName="description" class="form-control form-textarea"
                                 [class.error]="isFieldInvalid(tourForm, 'description')" placeholder="Describe the tour..."
                                 rows="4"></textarea>
@@ -291,13 +297,13 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="inclusions" class="form-label">Inclusions</label>
+                            <label for="inclusions" class="form-label required">Inclusions</label>
                             <textarea id="inclusions" formControlName="inclusions" class="form-control form-textarea"
                                 placeholder="List inclusions, one per line..." rows="4"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="exclusions" class="form-label">Exclusions</label>
+                            <label for="exclusions" class="form-label required">Exclusions</label>
                             <textarea id="exclusions" formControlName="exclusions" class="form-control form-textarea"
                                 placeholder="List exclusions, one per line..." rows="4"></textarea>
                         </div>
@@ -305,7 +311,7 @@
 
                     <div class="form-row single-column">
                         <div class="form-group">
-                            <label for="complementaries" class="form-label">Complementaries</label>
+                            <label for="complementaries" class="form-label required">Complementaries</label>
                             <textarea id="complementaries" formControlName="complementaries" class="form-control form-textarea"
                                 placeholder="List complementaries, one per line..." rows="4"></textarea>
                         </div>
@@ -321,13 +327,13 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="highlights" class="form-label">Highlights</label>
+                            <label for="highlights" class="form-label required">Highlights</label>
                             <textarea id="highlights" formControlName="highlights" class="form-control form-textarea"
                                 placeholder="List highlights, one per line..." rows="4"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="packing_list" class="form-label">Packing List</label>
+                            <label for="packing_list" class="form-label required">Packing List</label>
                             <textarea id="packing_list" formControlName="packing_list" class="form-control form-textarea"
                                 placeholder="List packing items, one per line..." rows="4"></textarea>
                         </div>
@@ -632,6 +638,10 @@
                             <i class="fas fa-trash"></i> Remove
                         </button>
                     </div>
+                    <div class="error-message"
+     *ngIf="tourForm.get('itinerary')?.invalid && tourForm.get('itinerary')?.touched">
+  At least one itinerary day is required.
+</div>
                 </div>
 
                 <!-- Room Types Section -->

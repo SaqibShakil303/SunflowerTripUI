@@ -1,6 +1,7 @@
 export interface Location {
   id?: number;
   destination_id?: number;
+   destination_ids?: number;
   name: string;
   description: string;
   image_url: string;

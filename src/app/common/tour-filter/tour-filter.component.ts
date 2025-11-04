@@ -177,30 +177,30 @@ export class TourFilterComponent implements OnInit {
       // console.log('DEBUG - Parsed destinationId:', destinationId);
       // console.log('DEBUG - Available destinations:', this.destinations);
 
-      if (locationId || destinationId) {
-        // Find destination and location based on IDs
-        if (locationId) {
-          for (const dest of this.destinations) {
-            // console.log('DEBUG - Checking destination:', dest);
-            const loc = dest.locations.find((l: any) => l.id === locationId);
-            // console.log('DEBUG - Found location:', loc);
-            if (loc) {
-              this.selectedDestination = dest;
-              this.selectedLocation = loc;
-              // console.log('DEBUG - Set selectedDestination:', this.selectedDestination);
-              // console.log('DEBUG - Set selectedLocation:', this.selectedLocation);
-              break;
-            }
-          }
-        } else if (destinationId) {
-          this.selectedDestination = this.destinations.find(d => d.id === destinationId) || null;
-          this.selectedLocation = null;
-          // console.log('DEBUG - Set selectedDestination (destination only):', this.selectedDestination);
-        }
+      // if (locationId || destinationId) {
+      //   // Find destination and location based on IDs
+      //   if (locationId) {
+      //     for (const dest of this.destinations) {
+      //       // console.log('DEBUG - Checking destination:', dest);
+      //       const loc = dest.locations.find((l: any) => l.id === locationId);
+      //       // console.log('DEBUG - Found location:', loc);
+      //       if (loc) {
+      //         this.selectedDestination = dest;
+      //         this.selectedLocation = loc;
+      //         // console.log('DEBUG - Set selectedDestination:', this.selectedDestination);
+      //         // console.log('DEBUG - Set selectedLocation:', this.selectedLocation);
+      //         break;
+      //       }
+      //     }
+      //   } else if (destinationId) {
+      //     this.selectedDestination = this.destinations.find(d => d.id === destinationId) || null;
+      //     this.selectedLocation = null;
+      //     // console.log('DEBUG - Set selectedDestination (destination only):', this.selectedDestination);
+      //   }
 
-        // Trigger search with current filters
-        this.searchTours();
-      }
+      //   // Trigger search with current filters
+      //   this.searchTours();
+      // }
     });
   }
 
@@ -361,7 +361,7 @@ export class TourFilterComponent implements OnInit {
         this.budgetRange = [...this.defaultBudgetRange];
         break;
     }
-    this.applyFilters();
+    // this.applyFilters();
   }
 
   searchTours() {
@@ -396,7 +396,7 @@ export class TourFilterComponent implements OnInit {
 
     // Add date if selected
     if (this.selectedDate) {
-      queryParams.available_from = this.selectedDate.toISOString().split('T')[0];
+      // queryParams.available_from = this.selectedDate.toISOString().split('T')[0];
       queryParams.available_to = this.selectedDate.toISOString().split('T')[0];
     }
 
@@ -408,9 +408,9 @@ export class TourFilterComponent implements OnInit {
     });
 
     // Also emit the payload for backward compatibility  
-    const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object') 
-      ? this.selectedLocation.id 
-      : '';
+    // const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object') 
+    //   ? this.selectedLocation.id 
+    //   : '';
 
     const payload = {
       destination_id: this.selectedDestination?.id || '',
@@ -419,9 +419,9 @@ export class TourFilterComponent implements OnInit {
       max_price: this.budgetRange[1],
       min_duration: this.durationRange[0],
       max_duration: this.durationRange[1],
-      available_from: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
+      // available_from: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
       available_to: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
-      location: locationId
+      // location: locationId
     };
     this.stateSvc.setFilter({
       durationRange: this.durationRange,
@@ -429,7 +429,7 @@ export class TourFilterComponent implements OnInit {
       selectedDate: this.selectedDate,
       selectedCategory: this.selectedCategory,
       selectedDestination: this.selectedDestination,
-      selectedLocation: this.selectedLocation
+      // selectedLocation: this.selectedLocation
     });
     this.searchTriggered.emit(payload);
   }
@@ -440,7 +440,7 @@ export class TourFilterComponent implements OnInit {
     this.selectedLocation = null;
     // console.log('DEBUG - selectedLocation reset to null');
     // this.searchTours();
-  }
+  } 
 
   onCategoryChange() {
     // this.searchTours();

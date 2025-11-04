@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
+// import { HttpClientModule } from '@angular/common/http';
 import { Destination } from '../../../models/destination.model';
 import { DestinationNav, DestinationService } from '../../../services/destination/destination.service';
 import { TourService } from '../../../services/tours/tour.service';
@@ -13,7 +13,7 @@ import { StatePersistenceService } from '../../../services/state-persistence/sta
 @Component({
   selector: 'app-add-tour',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './add-tour.component.html',
   styleUrls: ['./add-tour.component.scss']
 })
@@ -42,7 +42,7 @@ private imageFiles: { [key: string]: File } = {}; // optional, if you ever need 
   ngOnInit(): void {
     this.tourForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+')]],
+      slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+$')]],
       destination_ids: [[], [Validators.required, Validators.minLength(1)]], // Changed to array for multi-select
       location_ids: [[]],
       duration_days: [1, [Validators.required, Validators.min(1), Validators.max(30)]],
@@ -94,11 +94,14 @@ private imageFiles: { [key: string]: File } = {}; // optional, if you ever need 
       is_featured: [true],
       is_customizable: [true],
       photos: this.fb.array([]),
-      itinerary: this.fb.array([], Validators.required),
+      itinerary: this.fb.array([], this.atLeastOneItemValidator()),
       room_types: this.fb.array([]),
       reviews: this.fb.array([])
     });
      this.imagePreview = this.tourForm.get('image_url')?.value || null;
+const categoryCtrl = this.tourForm.get('category');
+  const departuresArray = this.tourForm.get('departures') as FormArray;
+
 
     const savedTourState = this.stateService.tour;
     if (savedTourState && Object.keys(savedTourState).length > 0) {
@@ -111,6 +114,18 @@ private imageFiles: { [key: string]: File } = {}; // optional, if you ever need 
     this.tourForm.get('destination_ids')?.valueChanges.subscribe(destinationIds => {
       this.updateAvailableLocations(destinationIds);
     });
+
+     const applyDeparturesRequirement = (cat: string) => {
+    if (cat === 'group') {
+      departuresArray.setValidators(this.atLeastOneItemValidator());
+    } else {
+      departuresArray.clearValidators();
+    }
+    departuresArray.updateValueAndValidity();
+  };
+
+  applyDeparturesRequirement(categoryCtrl?.value);
+  categoryCtrl?.valueChanges.subscribe(val => applyDeparturesRequirement(val));
   }
 
   get departures(): FormArray<FormGroup> {
@@ -137,6 +152,7 @@ private imageFiles: { [key: string]: File } = {}; // optional, if you ever need 
     this.tourForm.patchValue({
       title: savedState.title || '',
       slug: savedState.slug || '',
+      destination_id: savedState.destination_ids[0], // Updated for multi-select
       destination_ids: savedState.destination_ids || [], // Updated for multi-select
       location_ids: savedState.location_ids || [],
       duration_days: savedState.duration_days || 1,
@@ -285,6 +301,7 @@ onImageChange(event: Event, controlName: 'image_url' | 'photos', index?: number)
   loadDestinations(): void {
     this.destinationService.getNamesAndLocations().subscribe({
       next: (destinations) => {
+        console.log('Destinations loaded:', destinations);
         this.destinations = destinations;
         this.cdr.detectChanges();
       },
@@ -485,25 +502,94 @@ removeItem(array: FormArray<FormGroup>, index: number, arrayName: string): void 
         }
       });
     } else {
-      Object.keys(this.tourForm.controls).forEach(key => {
-        const control = this.tourForm.get(key);
-        if (control instanceof FormArray) {
-          control.controls.forEach((c: any) => {
-            Object.keys(c.controls).forEach(subKey => {
-              c.get(subKey)?.markAsTouched();
-            });
-          });
-        } else {
-          control?.markAsTouched();
-        }
-      });
-      this.snackBar.open('Please fill all required fields correctly', 'Close', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
+  this.markAllAsTouchedDeep(this.tourForm);
+  this.tourForm.updateValueAndValidity();
+
+  // Optional: derive a more helpful message
+  const invalids = this.getInvalidFieldsList();
+  const msg = invalids.length
+    ? `Please fix: ${invalids.slice(0, 6).join(', ')}${invalids.length > 6 ? '…' : ''}`
+    : 'Please fill all required fields correctly';
+
+  this.snackBar.open(msg, 'Close', {
+    duration: 4000,
+    panelClass: ['error-snackbar']
+  });
+        this.scrollToFirstInvalid();
       this.cdr.detectChanges();
     }
   }
+private getInvalidFieldsList(): string[] {
+  const labels = (k: string) => this.getFieldLabel(k);
+  const out: string[] = [];
+
+  const walk = (ctrl: any, path: string[] = []) => {
+    if (ctrl instanceof FormGroup) {
+      Object.keys(ctrl.controls).forEach(k => walk(ctrl.controls[k], [...path, k]));
+    } else if (ctrl instanceof FormArray) {
+      if (ctrl.invalid && ctrl.touched && ctrl.length === 0) {
+        out.push(labels(path[path.length - 1] || ''));
+      }
+      ctrl.controls.forEach((c: any, i: number) => walk(c, [...path, `${path[path.length - 1]}[${i}]`]));
+    } else {
+      if (ctrl.invalid && (ctrl.dirty || ctrl.touched)) {
+        const key = path[path.length - 1] || '';
+        out.push(labels(key));
+      }
+    }
+  };
+
+  walk(this.tourForm);
+  // de-duplicate and keep order
+  return [...new Set(out)].filter(Boolean);
+}
+
+// Require at least one item in a FormArray
+private atLeastOneItemValidator() {
+  return (control: any) => {
+    if (!control || !Array.isArray(control.value)) return { required: true };
+    return control.value.length > 0 ? null : { required: true };
+  };
+}
+
+// Mark all controls touched — including empty arrays
+private markAllAsTouchedDeep(group: FormGroup | FormArray) {
+  if (group instanceof FormGroup) {
+    Object.values(group.controls).forEach(ctrl => {
+      if (ctrl instanceof FormGroup || ctrl instanceof FormArray) {
+        this.markAllAsTouchedDeep(ctrl);
+      } else {
+        ctrl.markAsTouched();
+        ctrl.updateValueAndValidity({ onlySelf: true });
+      }
+    });
+  } else if (group instanceof FormArray) {
+    if (group.length === 0) {
+      // critical: mark the array itself so array-level errors show
+      group.markAsTouched();
+      group.updateValueAndValidity();
+    } else {
+      group.controls.forEach(ctrl => {
+        if (ctrl instanceof FormGroup || ctrl instanceof FormArray) {
+          this.markAllAsTouchedDeep(ctrl);
+        } else {
+          ctrl.markAsTouched();
+          ctrl.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+}
+
+// Optional: scroll to first invalid control for UX
+private scrollToFirstInvalid() {
+  setTimeout(() => {
+    const el: HTMLElement | null =
+      document.querySelector('.form-control.ng-invalid') ||
+      document.querySelector('.error-message');
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
 
   onCancel(): void {
     this.stateService.setTour(this.tourForm.value);

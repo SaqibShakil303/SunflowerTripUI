@@ -103,7 +103,7 @@ interface TourPayload {
 @Component({
   selector: 'app-edit-tour',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './edit-tour.component.html',
   styleUrls: ['./edit-tour.component.scss']
 })
@@ -596,6 +596,7 @@ removeItem(array: FormArray<FormGroup>, index: number, arrayName: string): void 
       const tourData = {
         id: this.data.tour.id,
         title: formValue.title,
+         destination_id: formValue.destination_ids[0], 
         slug: formValue.slug,
         description: formValue.description,
         price: formValue.price_per_person.toFixed(2),
@@ -710,26 +711,92 @@ removeItem(array: FormArray<FormGroup>, index: number, arrayName: string): void 
         }
       });
     } else {
-      Object.keys(this.tourForm.controls).forEach(key => {
-        const control = this.tourForm.get(key);
-        if (control instanceof FormArray) {
-          control.controls.forEach((c: any) => {
-            Object.keys(c.controls).forEach(subKey => {
-              c.get(subKey)?.markAsTouched();
-            });
-          });
-        } else {
-          control?.markAsTouched();
-        }
-      });
-      this.snackBar.open('Please fill all required fields correctly', 'Close', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
+     
+  this.markAllAsTouchedDeep(this.tourForm);
+  this.tourForm.updateValueAndValidity();
+
+  // Optional: derive a more helpful message
+  const invalids = this.getInvalidFieldsList();
+  const msg = invalids.length
+    ? `Please fix: ${invalids.slice(0, 6).join(', ')}${invalids.length > 6 ? '…' : ''}`
+    : 'Please fill all required fields correctly';
+
+  this.snackBar.open(msg, 'Close', {
+    duration: 4000,
+    panelClass: ['error-snackbar']
+  });
+        this.scrollToFirstInvalid();
       this.cdr.detectChanges();
     }
   }
+private atLeastOneItemValidator() {
+  return (control: any) => {
+    if (!control || !Array.isArray(control.value)) return { required: true };
+    return control.value.length > 0 ? null : { required: true };
+  };
+}
+private getInvalidFieldsList(): string[] {
+  const labels = (k: string) => this.getFieldLabel(k);
+  const out: string[] = [];
 
+  const walk = (ctrl: any, path: string[] = []) => {
+    if (ctrl instanceof FormGroup) {
+      Object.keys(ctrl.controls).forEach(k => walk(ctrl.controls[k], [...path, k]));
+    } else if (ctrl instanceof FormArray) {
+      if (ctrl.invalid && ctrl.touched && ctrl.length === 0) {
+        out.push(labels(path[path.length - 1] || ''));
+      }
+      ctrl.controls.forEach((c: any, i: number) => walk(c, [...path, `${path[path.length - 1]}[${i}]`]));
+    } else {
+      if (ctrl.invalid && (ctrl.dirty || ctrl.touched)) {
+        const key = path[path.length - 1] || '';
+        out.push(labels(key));
+      }
+    }
+  };
+
+  walk(this.tourForm);
+  // de-duplicate and keep order
+  return [...new Set(out)].filter(Boolean);
+}
+// Mark all controls touched — including empty arrays
+private markAllAsTouchedDeep(group: FormGroup | FormArray) {
+  if (group instanceof FormGroup) {
+    Object.values(group.controls).forEach(ctrl => {
+      if (ctrl instanceof FormGroup || ctrl instanceof FormArray) {
+        this.markAllAsTouchedDeep(ctrl);
+      } else {
+        ctrl.markAsTouched();
+        ctrl.updateValueAndValidity({ onlySelf: true });
+      }
+    });
+  } else if (group instanceof FormArray) {
+    if (group.length === 0) {
+      // critical: mark the array itself so array-level errors show
+      group.markAsTouched();
+      group.updateValueAndValidity();
+    } else {
+      group.controls.forEach(ctrl => {
+        if (ctrl instanceof FormGroup || ctrl instanceof FormArray) {
+          this.markAllAsTouchedDeep(ctrl);
+        } else {
+          ctrl.markAsTouched();
+          ctrl.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+}
+
+// Optional: scroll to first invalid control for UX
+private scrollToFirstInvalid() {
+  setTimeout(() => {
+    const el: HTMLElement | null =
+      document.querySelector('.form-control.ng-invalid') ||
+      document.querySelector('.error-message');
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
   onCancel(): void {
     this.dialogRef.close();
   }
