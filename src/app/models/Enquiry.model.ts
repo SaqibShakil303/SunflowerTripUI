@@ -1,11 +1,11 @@
-export interface Enquiry {
-  id: number;
-  tour_id: string;
-  name: string;
-  email: string;
+export class Enquiry {
+  id!: number;
+  tour_id!: string;
+  name!: string;
+  email!: string;
   phone?: string;
   description?: string;
-  created_at: Date | string; // Allow string from API, convert to Date
+  created_at!: Date;// Allow string from API, convert to Date
   isDeleting?: boolean; // Frontend-only
   isExpanded?: boolean; // Frontend-only
 }

@@ -23,12 +23,14 @@ export class Itinerary {
   budget!: string;
   /** Hotel star category: 3 | 4 | 5 */
   hotelCategory!: 3 | 4 | 5;
+  hotel_category?:3 | 4 |5;
   /** Travel type: honeymoon, family, or group */
   travelType!: 'honeymoon' | 'family' | 'group';
+  travel_type?: string;
   /** Occupation of primary traveler */
   occupation!: 'service' | 'business' | 'others';
   /** Additional travel preferences or remarks */
   preferences?: string;
   /** Date and time when the itinerary was created (ISO format) */
-  created_at?: string;
+  created_at?:  string | Date;
 }

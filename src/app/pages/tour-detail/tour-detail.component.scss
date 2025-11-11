@@ -1,4 +1,4 @@
-@import 'mixins';
+@import "mixins";
 
 :root {
   --primary-bg: #0a1828;
@@ -28,35 +28,42 @@
 }
 
 .tour-detail {
-  background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-mid) 50%, var(--primary-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-gradient-start) 0%,
+    var(--primary-gradient-mid) 50%,
+    var(--primary-gradient-end) 100%
+  );
   color: var(--text-light);
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   line-height: 1.7;
   min-height: 100vh;
 
   .hero-section {
     position: relative;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     display: grid;
     align-items: center;
     justify-content: center;
-      /* Increased from 40px for PC */
-// .hero-wrap {
-//     display: grid;
-//     grid-template-columns: minmax(0, 1fr) 400px;
-//     gap: 3rem;
-//     max-width: 1280px;
-//     margin: 0 auto;
-//     padding: 3rem;
-//   }
+    /* Increased from 40px for PC */
+    // .hero-wrap {
+    //     display: grid;
+    //     grid-template-columns: minmax(0, 1fr) 400px;
+    //     gap: 3rem;
+    //     max-width: 1280px;
+    //     margin: 0 auto;
+    //     padding: 3rem;
+    //   }
 
-.hero-wrap{
-  display: flex;
-   margin-top: 70px;
-    padding: 1.5rem;
-}
-   .hero-content { grid-area: content; }
+    .hero-wrap {
+      display: flex;
+      margin-top: 70px;
+      padding: 1.5rem;
+    }
+    .hero-content {
+      grid-area: content;
+    }
     .hero-image {
       position: absolute;
       inset: 0;
@@ -76,20 +83,22 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg,
-          rgba(10, 24, 40, 0.9),
-          rgba(23, 133, 130, 0.7),
-          rgba(76, 215, 208, 0.5));
+      background: linear-gradient(
+        135deg,
+        rgba(10, 24, 40, 0.9),
+        rgba(23, 133, 130, 0.7),
+        rgba(76, 215, 208, 0.5)
+      );
       backdrop-filter: blur(4px);
     }
- .booking-card {
-    grid-area: card;
-    position: sticky;
-    top: 3rem;
-    max-width: 400px;
-    margin-left: auto;
-    width: 100%;
-  }
+    .booking-card {
+      grid-area: card;
+      position: sticky;
+      top: 3rem;
+      max-width: 400px;
+      margin-left: auto;
+      width: 100%;
+    }
     // .container {
     //   position: relative;
     //   display: grid;
@@ -361,7 +370,7 @@
         gap: 2rem;
         padding: 1.5rem;
       }
-      .hero-wrap{
+      .hero-wrap {
         margin-top: 0;
         display: flex;
         flex-direction: column;
@@ -420,6 +429,7 @@
   }
 
   .container {
+    position: relative;
     max-width: 1280px;
     margin: 2rem auto;
     padding: 0 1rem;
@@ -473,7 +483,7 @@
       letter-spacing: 0.8px;
 
       &::after {
-        content: '';
+        content: "";
         display: block;
         width: 4rem;
         height: 4px;
@@ -717,7 +727,7 @@
               position: relative;
 
               &:before {
-                content: '✦';
+                content: "✦";
                 position: absolute;
                 left: 0;
                 color: var(--accent-color);
@@ -775,7 +785,7 @@
       margin-left: 2rem;
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         left: 0;
         top: 0;
@@ -791,7 +801,7 @@
         margin-bottom: 1.5rem;
 
         &::before {
-          content: '';
+          content: "";
           position: absolute;
           left: -12px;
           top: 1.5rem;
@@ -838,7 +848,8 @@
             .toggle-icon {
               width: 28px;
               height: 28px;
-              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234cd7d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>') no-repeat center;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234cd7d0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>')
+                no-repeat center;
               transition: transform 0.3s ease;
               flex-shrink: 0;
 
@@ -851,7 +862,8 @@
           .day-description {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
+            transition: max-height 0.4s ease, opacity 0.4s ease,
+              padding 0.4s ease;
             opacity: 0;
             padding: 0;
 
@@ -1069,7 +1081,6 @@
   }
 
   .tab-content {
-
     .overview-section,
     .inclusions-section,
     .highlights-section,
@@ -1082,7 +1093,21 @@
     }
   }
 }
-
+@media (max-width: 1050px) {
+  .hero-section {
+    min-height: 65vh !important;
+  }
+}
+@media (max-width: 900px) {
+  .hero-section {
+    min-height: 65vh !important;
+  }
+}
+@media (max-width: 780px) {
+  .hero-section {
+    min-height: 80vh !important;
+  }
+}
 @media (max-width: 768px) {
   .hero-section {
     min-height: 60vh;
@@ -1125,7 +1150,6 @@
   }
 
   .tab-content {
-
     .overview-section,
     .inclusions-section,
     .highlights-section,
@@ -1302,7 +1326,6 @@
   }
 
   .tab-content {
-
     .overview-section,
     .inclusions-section,
     .highlights-section,
@@ -1391,6 +1414,12 @@
   }
 }
 
+@media (max-width: 395px) {
+  .hero-section {
+    min-height: 130vh !important;
+  }
+}
+
 @media print {
   .booking-card {
     position: static;
@@ -1424,7 +1453,6 @@
   }
 
   .booking-card {
-
     .btn-outline,
     .btn-primary {
       border-width: 3px;

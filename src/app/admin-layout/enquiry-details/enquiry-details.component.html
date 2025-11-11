@@ -3,7 +3,7 @@
     <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">Enquiry-Details Management</h1>
-        <p class="page-description">Manage travel itineraries and bookings</p>
+        <p class="page-description">Manage travel Enquiries with details</p>
     </div>
 
     <!-- Error Message -->
@@ -124,6 +124,35 @@
                                             <span class="detail-value">{{ itinerary.duration }} days</span>
                                         </div>
                                     </div>
+                                    <br>
+                                           <div class="details-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Budget:</span>
+                                            <span class="detail-value">{{ itinerary.budget }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Hotel rating </span>
+                                            <span class="detail-value">{{ itinerary.hotel_category }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Travel Type</span>
+                                            <span class="detail-value">{{ itinerary.travel_type }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Occupation</span>
+                                            <span class="detail-value">{{ itinerary.occupation}}</span>
+                                        </div>
+                                           <div class="detail-item">
+                                            <span class="detail-label">Created Date</span>
+                                        <span class="date-text">{{ formatDate(itinerary.created_at) }}</span>
+                                        <span class="time-text">{{ formatTime(itinerary.created_at) }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Preferences</span>
+                                            <p class="detail-value">{{ itinerary.preferences }}</p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -137,8 +166,8 @@
             <div class="no-itineraries">
                 <i class="fas fa-clipboard-list no-itineraries-icon"></i>
                 <h3>No Itineraries Found</h3>
-                <p *ngIf="searchTerm">No itineraries match your search criteria.</p>
-                <p *ngIf="!searchTerm">No itineraries have been created yet.</p>
+                <p *ngIf="searchTerm">No Enquiries match your search criteria.</p>
+                <p *ngIf="!searchTerm">No Enquiries have been created yet.</p>
                 <button class="btn btn-primary" (click)="clearSearch()" *ngIf="searchTerm">
                     Clear Search
                 </button>
@@ -148,7 +177,7 @@
         <!-- Pagination -->
         <div class="pagination-container" *ngIf="filteredItineraries.length > pageSize">
             <div class="pagination-info">
-                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredItineraries.length }} itineraries
+                Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of {{ filteredItineraries.length }} Enquiries
             </div>
             <div class="pagination-controls">
                 <button class="btn btn-sm pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
@@ -191,7 +220,7 @@
                 <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
                 <button class="btn btn-danger" (click)="confirmDelete()">
                     <i class="fas fa-trash"></i>
-                    Delete Itinerary
+                    Delete Enquiry
                 </button>
             </div>
         </div>

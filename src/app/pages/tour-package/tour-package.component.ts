@@ -61,14 +61,14 @@ export class TourPackageComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const filters = {
         destination_id: params['destination'] || '',
-        location: params['location'] || '',
+        // location: params['location'] || '',
         category: params['category'] || '',
-        fromCity: params['fromCity'] || '',
+        // fromCity: params['fromCity'] || '',
         min_price: params['min_price'] ? +params['min_price'] : '',
         max_price: params['max_price'] ? +params['max_price'] : '',
         min_duration: params['min_duration'] ? +params['min_duration'] : '',
         max_duration: params['max_duration'] ? +params['max_duration'] : '',
-        available_from: params['available_from'] || '',
+        // available_from: params['available_from'] || '',
         available_to: params['available_to'] || ''
       };
       this.handleSearch(filters);
@@ -86,14 +86,14 @@ export class TourPackageComponent implements OnInit {
     // Update URL query parameters to reflect current filters
     const queryParams = {
       destination: filters.destination_id || null,
-      location: filters.location || null,
+      // location: filters.location || null,
       category: filters.category || null,
-      fromCity: filters.fromCity || null,
+      // fromCity: filters.fromCity || null,
       min_price: filters.min_price || null,
       max_price: filters.max_price || null,
       min_duration: filters.min_duration || null,
       max_duration: filters.max_duration || null,
-      available_from: filters.available_from || null,
+      // available_from: filters.available_from || null,
       available_to: filters.available_to || null
     };
 

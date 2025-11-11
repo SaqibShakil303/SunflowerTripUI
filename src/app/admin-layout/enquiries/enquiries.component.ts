@@ -35,7 +35,7 @@ export class EnquiriesComponent implements OnInit {
       next: (data) => {
         this.enquiries = data.map((enquiry: any) => ({
           ...enquiry,
-          created_at: enquiry.createdDate ? new Date(enquiry.created_at) : new Date(),
+          // created_at: enquiry.createdDate ? new Date(enquiry.created_at) : new Date(),
           isDeleting: false,
           isExpanded: false
         }));

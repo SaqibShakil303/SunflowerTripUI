@@ -102,8 +102,8 @@ export class EnquiryDetailsComponent implements OnInit {
           valueB = new Date(b.date).getTime();
           break;
         case 'created_at':
-          valueA = new Date(a.created_at ?? '').getTime();
-          valueB = new Date(b.created_at ?? '').getTime();
+         valueA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      valueB = b.created_at ? new Date(b.created_at).getTime() : 0;
           break;
         default:
           valueA = a.email.toLowerCase();
@@ -194,8 +194,26 @@ export class EnquiryDetailsComponent implements OnInit {
    * Generate CSV content
    */
   private generateCSV(): string {
-    const headers = ['Serial Number', 'Name', 'Phone','Email', 'Destination', 'Travelers', 'Children', 'Child Ages', 'Duration', 'Travel Date', 'Created At'];
-    const csvRows = [];
+    const headers = [
+      'Serial Number',
+      'Name',
+      'Phone',
+      'Email',
+      'Destination',
+      'Travelers',
+      'Children',
+      'Child Ages',
+      'Duration',
+      'Travel Date',
+      'Created At',
+      'Budget',
+      'Hotel Category',
+      'Travel Type',
+      'occupation',
+      'Preferences'
+    ];
+
+    const csvRows: string[] = [];
 
     // Add headers
     csvRows.push(headers.join(','));
@@ -213,14 +231,23 @@ export class EnquiryDetailsComponent implements OnInit {
         `"${this.formatChildAges(itinerary.childAges ?? [])}"`,
         itinerary.duration,
         `"${this.formatDate(itinerary.date)}"`,
-        `"${this.formatDate(itinerary.created_at ?? '')} ${this.formatTime(itinerary.created_at ?? '')}"`
+        `"${this.formatDate(itinerary.created_at)} ${this.formatTime(itinerary.created_at)}"`,
+        `"${itinerary.budget}"`,
+        `"${itinerary.hotel_category}"`,
+        `"${itinerary.travel_type}"`,
+        `"${itinerary.occupation}"`,
+        `"${itinerary.preferences}"`
       ];
+
       csvRows.push(row.join(','));
     });
 
     return csvRows.join('\n');
   }
 
+
+
+  
   /**
    * Delete itinerary (show confirmation modal)
    */
@@ -271,25 +298,34 @@ export class EnquiryDetailsComponent implements OnInit {
   /**
    * Format date for display
    */
-  formatDate(date: string): string {
+  formatDate(date: string | Date | null | undefined): string {
+    if (!date) return '';                               // no value
+
+    const d = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(d.getTime())) return '';                  // invalid date
+
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'short',
       day: '2-digit'
-    }).format(new Date(date));
+    }).format(d);
   }
 
   /**
    * Format time for display
    */
-  formatTime(date: string): string {
+  formatTime(date: string | Date | null | undefined): string {
+    if (!date) return '';
+
+    const d = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(d.getTime())) return '';
+
     return new Intl.DateTimeFormat('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true
-    }).format(new Date(date));
+    }).format(d);
   }
-
   /**
    * Format child ages for display
    */

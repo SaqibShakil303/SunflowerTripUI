@@ -22,7 +22,21 @@ $font-heading: 'Playfair Display', serif;
   background-color: $warm-white;
   min-height: 100vh;
   font-family: $font-body;
-  
+   .date-text {
+                  display: block;
+                  font-size: 1rem;
+                  color: $dark-brown;
+                  font-weight: 500;
+                  white-space: nowrap;
+                }
+                
+                .time-text {
+                  display: block;
+                  font-size: 0.85rem;
+                  color: $warm-gray;
+                  margin-top: 0.2rem;
+                  white-space: nowrap;
+                }
   .page-header {
     margin-bottom: 2rem;
     

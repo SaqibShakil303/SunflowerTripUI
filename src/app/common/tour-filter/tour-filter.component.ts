@@ -42,10 +42,10 @@ export class TourFilterComponent implements OnInit {
     // Close dropdowns on resize to prevent positioning issues
     this.closeAllDropdowns();
   }
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscapeKey(event: KeyboardEvent) {
-    this.closeAllDropdowns();
-  }
+  // @HostListener('document:keydown.escape', ['$event'])
+  // onEscapeKey(event: KeyboardEvent) {
+  //   this.closeAllDropdowns();
+  // }
 
   // City & Destination
   fromCity: string = 'Kolkata';
@@ -370,7 +370,7 @@ export class TourFilterComponent implements OnInit {
 
     // Add destination or location ID (same logic as header)
     if (this.selectedLocation && typeof this.selectedLocation === 'object' && this.selectedLocation.id) {
-      queryParams.location = this.selectedLocation.id;
+      // queryParams.location = this.selectedLocation.id;
     } else if (this.selectedDestination && this.selectedDestination.id) {
       queryParams.destination = this.selectedDestination.id;
     }
@@ -437,7 +437,7 @@ export class TourFilterComponent implements OnInit {
   onDestinationChange() {
     // console.log('DEBUG - onDestinationChange called');
     // console.log('DEBUG - selectedDestination after change:', this.selectedDestination);
-    this.selectedLocation = null;
+    // this.selectedLocation = null;
     // console.log('DEBUG - selectedLocation reset to null');
     // this.searchTours();
   } 
