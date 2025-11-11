@@ -1,0 +1,108 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="fas fa-plus-circle"></i>
+        Add New FAQ
+      </h3>
+      <button class="modal-close" (click)="onCancel()" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <!-- modal body  -->
+    <div class="modal-body">
+      <form [formGroup]="faqForm" (ngSubmit)="onSubmit()" class="faq-form">
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Question
+          </h4>
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="question" class="form-label">Question *</label>
+              <input
+                type="text"
+                id="title"
+                formControlName="question"
+                class="form-control"
+                [class.error]="isFieldInvalid(faqForm, 'question')"
+                placeholder="Enter faq question"
+              />
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(faqForm, 'question')"
+              >
+                {{ getFieldError(faqForm, "question") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="answer" class="form-label">Answer *</label>
+              <textarea
+                id="answer"
+                formControlName="answer"
+                class="form-control form-textarea"
+                [class.error]="isFieldInvalid(faqForm, 'answer')"
+                placeholder="Enter answer..."
+                rows="4"
+              ></textarea>
+              <div class="form-help">
+                {{ faqForm.get("answer")?.value?.length || 0 }}/500 characters
+              </div>
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(faqForm, 'answer')"
+              >
+                {{ getFieldError(faqForm, "answer") }}
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="form-row">
+            <div class="form-group">
+              <label for="category" class="form-label">Category *</label>
+
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(faqForm, 'category')"
+              >
+                {{ getFieldError(faqForm, "category") }}
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </form>
+    </div>
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="clearForm()"
+        [disabled]="isSubmitting"
+      >
+        Clear Form
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        [disabled]="isSubmitting"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onSubmit()"
+        [disabled]="isSubmitting"
+      >
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
+        {{ isSubmitting ? "Adding..." : "Add Faq" }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { TripLeadsComponent } from './trip-leads/trip-leads.component';
 import { EnquiryDetailsComponent } from './enquiry-details/enquiry-details.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { JobsComponent } from './jobs/jobs.component';
+import { FaqComponent } from './faq/faq.component';
 
 // import { DestinationFormComponent } from './destination-management/destination-form/destination-form.component';
 
@@ -25,18 +26,42 @@ const routes: Routes = [
   //   data: { mode: 'edit' }
   // },
   {
-    path: '', component: AdminLayoutComponent, children: [
+    path: '',
+    component: AdminLayoutComponent,
+    children: [
       { path: 'users', component: UsersComponent },
       { path: 'enquiries', component: EnquiriesComponent },
       { path: 'bookings', component: BookingsComponent },
       { path: 'contacts', component: ContactsComponent },
-      { path: 'destinations', loadChildren: () => import('./destinations/destinations.module').then(m => m.DestinationsModule) },
-      { path: 'locations', loadChildren: () => import('./locations/locations.module').then(m => m.LocationsModule) },
-      { path: 'tours', loadChildren: () => import('./tours/tours.module').then(m => m.ToursModule) },
+      {
+        path: 'destinations',
+        loadChildren: () =>
+          import('./destinations/destinations.module').then(
+            (m) => m.DestinationsModule
+          ),
+      },
+      {
+        path: 'locations',
+        loadChildren: () =>
+          import('./locations/locations.module').then((m) => m.LocationsModule),
+      },
+      {
+        path: 'tours',
+        loadChildren: () =>
+          import('./tours/tours.module').then((m) => m.ToursModule),
+      },
       { path: 'enquiry-details', component: EnquiryDetailsComponent },
       { path: 'trip-leads', component: TripLeadsComponent },
-      { path: 'jobs', loadChildren: () => import('./jobs/jobs.module').then(m => m.JobsModule) },
-    ]
+      {
+        path: 'jobs',
+        loadChildren: () =>
+          import('./jobs/jobs.module').then((m) => m.JobsModule),
+      },
+      {
+        path: 'faqs',
+        component: FaqComponent,
+      },
+    ],
   },
   //   {
   //   path: 'destinations-admin',
@@ -49,6 +74,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AdminLayoutRoutingModule { }
+export class AdminLayoutRoutingModule {}

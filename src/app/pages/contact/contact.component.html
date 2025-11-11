@@ -156,7 +156,7 @@
       <h2>Frequently Asked Questions</h2>
       <div
         class="faq-item"
-        *ngFor="let faq of faqs"
+        *ngFor="let faq of newFaqs()"
         (click)="toggleFaq(faq)"
         [class.active]="faq.isOpen"
       >
