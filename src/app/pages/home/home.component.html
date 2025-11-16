@@ -44,6 +44,7 @@
       <!-- </div> -->
     </section>
     <app-tours></app-tours>
+    
     <!-- <button (click)="openTripPlanner()">Plan My Trip</button> -->
   </header>
 </section>
@@ -51,6 +52,17 @@
 <!-- Main content components -->
 <!-- <app-testimonials *ngIf="isTestimonialsLoaded"></app-testimonials> -->
 <app-destinations></app-destinations>
+    <section class="cta-section">
+      <div class="cta-content">
+        <h3>Ready for Your Next Adventure?</h3>
+        <p>
+          Let our travel experts help you plan the perfect getaway tailored
+          to your preferences and budget. Enjoy exclusive deals and personalized
+          service.
+        </p>
+        <a  (click)="openTripPlanner()" class="cta-btn">Plan Your Trip Now</a>
+      </div>
+    </section>
 <app-services *ngIf="isTestimonialsLoaded"></app-services>
 <app-why-us *ngIf="isTestimonialsLoaded"></app-why-us>
 <!-- <app-chat-widget></app-chat-widget> -->
