@@ -9,6 +9,11 @@ import { Destination } from '../../models/destination.model';
 import { DestinationService } from '../../services/destination/destination.service';
 import { Router, RouterLink } from '@angular/router';
 import { Faq, FaqService } from '../../services/faq/faq.service';
+import {
+  Article,
+  ArticleService,
+} from '../../services/article/article.service';
+
 
 @Component({
   selector: 'app-travel-guide',
@@ -28,52 +33,53 @@ export class TravelGuideComponent implements OnInit {
   filteredDestinations: Destination[] = [];
   displayedDestinations: Destination[] = [];
   faqs = signal<Faq[]>([]);
-  travelTips = [
-    {
-      id: 1,
-      title: 'How to Pack Light for 2-Week Trips',
-      summary:
-        'Learn the art of efficient packing with these pro tips that will save space and stress...',
-      image:
-        'https://images.pexels.com/photos/1057637/pexels-photo-1057637.jpeg?auto=compress&cs=tinysrgb&w=500',
-      date: 'May 5, 2025',
-      readTime: '5 min read',
-      url: '/travel-tips/packing-light',
-    },
-    {
-      id: 2,
-      title: 'Visa-free Countries for Indian Travelers',
-      summary:
-        'Discover beautiful destinations where Indian passport holders can travel without visa hassles...',
-      image:
-        'https://images.pexels.com/photos/208701/pexels-photo-208701.jpeg?auto=compress&cs=tinysrgb&w=500',
-      date: 'April 28, 2025',
-      readTime: '7 min read',
-      url: '/travel-tips/visa-free-countries',
-    },
-    {
-      id: 3,
-      title: 'Budget Travel Guide for Southeast Asia',
-      summary:
-        'Explore the beauty of Southeast Asia without breaking the bank with these practical tips...',
-      image:
-        'https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg?auto=compress&cs=tinysrgb&w=500',
-      date: 'April 15, 2025',
-      readTime: '8 min read',
-      url: '/travel-tips/budget-southeast-asia',
-    },
-    {
-      id: 4,
-      title: 'Travel Photography Tips for Beginners',
-      summary:
-        'Capture stunning vacation memories with these simple photography techniques...',
-      image:
-        'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg?auto=compress&cs=tinysrgb&w=500',
-      date: 'April 8, 2025',
-      readTime: '6 min read',
-      url: '/travel-tips/photography-basics',
-    },
-  ];
+    articles = signal<Article[]>([]);
+  // travelTips = [
+  //   {
+  //     id: 1,
+  //     title: 'How to Pack Light for 2-Week Trips',
+  //     summary:
+  //       'Learn the art of efficient packing with these pro tips that will save space and stress...',
+  //     image:
+  //       'https://images.pexels.com/photos/1057637/pexels-photo-1057637.jpeg?auto=compress&cs=tinysrgb&w=500',
+  //     date: 'May 5, 2025',
+  //     readTime: '5 min read',
+  //     url: '/travel-tips/packing-light',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Visa-free Countries for Indian Travelers',
+  //     summary:
+  //       'Discover beautiful destinations where Indian passport holders can travel without visa hassles...',
+  //     image:
+  //       'https://images.pexels.com/photos/208701/pexels-photo-208701.jpeg?auto=compress&cs=tinysrgb&w=500',
+  //     date: 'April 28, 2025',
+  //     readTime: '7 min read',
+  //     url: '/travel-tips/visa-free-countries',
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Budget Travel Guide for Southeast Asia',
+  //     summary:
+  //       'Explore the beauty of Southeast Asia without breaking the bank with these practical tips...',
+  //     image:
+  //       'https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg?auto=compress&cs=tinysrgb&w=500',
+  //     date: 'April 15, 2025',
+  //     readTime: '8 min read',
+  //     url: '/travel-tips/budget-southeast-asia',
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Travel Photography Tips for Beginners',
+  //     summary:
+  //       'Capture stunning vacation memories with these simple photography techniques...',
+  //     image:
+  //       'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg?auto=compress&cs=tinysrgb&w=500',
+  //     date: 'April 8, 2025',
+  //     readTime: '6 min read',
+  //     url: '/travel-tips/photography-basics',
+  //   },
+  // ];
 
   popularTags = [
     'Beach Vacations',
@@ -98,12 +104,14 @@ export class TravelGuideComponent implements OnInit {
   constructor(
     private destinationService: DestinationService,
     private faqService: FaqService,
-    private router: Router
+    private router: Router,
+    private articleService: ArticleService,
   ) {}
 
   ngOnInit(): void {
     this.loadDestinations();
     this.loadFaqs();
+        this.loadArticles();
   }
 
   loadDestinations(): void {
@@ -135,6 +143,24 @@ export class TravelGuideComponent implements OnInit {
     });
   }
 
+  loadArticles(): void {
+    this.articleService.getPublishedArticle().subscribe({
+      next: (data: any) => {
+        const newArticles = data.data.map((article: Article) => {
+          return {
+            ...article,
+            timeToRead: this.getTimeToRead(article.content),
+            summary: `${article.content.slice(0, 70)}...`,
+            published_at: this.convertToIndianTime(
+              article.published_at as string
+            ),
+          };
+        });
+        this.articles.set(newArticles);
+      },
+      error: (err) => console.log('failed to fetch published articles:: ', err),
+    });
+  }
   updateDisplayedDestinations(): void {
     const endIndex =
       this.initialDestinations +
@@ -231,5 +257,27 @@ export class TravelGuideComponent implements OnInit {
   searchByTag(tag: string): void {
     this.searchQuery = tag;
     this.performSearch();
+  }
+   convertToIndianTime(isoString: string) {
+    const date = new Date(isoString);
+
+    const formatted = new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }).format(date);
+
+    const [d, t] = formatted.split(', ');
+    return `${d.replaceAll('/', '-')} ${t.toUpperCase()}`;
+  }
+
+  getTimeToRead(content: string) {
+    const words = content.trim().split(/\s+/).length;
+    const minutes = Math.ceil(words / 200); // average reading speed
+    return `${minutes} min read`;
   }
 }

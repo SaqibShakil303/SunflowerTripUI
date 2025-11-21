@@ -1,10 +1,11 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user/user.service';
 import { tap, catchError, of, timeout,  } from 'rxjs';
 import { formatInTimeZone } from 'date-fns-tz';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-users',
@@ -32,8 +33,12 @@ export class UsersComponent implements OnInit {
   showDeleteModal: boolean = false;
   userToDelete: UserModel | null = null;
 
-constructor(private userService: UserService, @Inject(PLATFORM_ID) private platformId: Object) {}
-
+constructor(
+  private userService: UserService, 
+  @Inject(PLATFORM_ID) private platformId: Object, 
+  private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -42,7 +47,7 @@ constructor(private userService: UserService, @Inject(PLATFORM_ID) private platf
   loadUsers(): void {
     this.userService.getAllUsers().pipe( timeout(8000),
       tap((users) => {
-        console.log('API Response:', users);
+        // console.log('API Response:', users);
         this.users = users.map(user => ({
           ...user,
           createdAt: user.createdAt ? new Date(user.createdAt) : undefined
@@ -61,7 +66,7 @@ constructor(private userService: UserService, @Inject(PLATFORM_ID) private platf
    * Apply search, sort, and pagination
    */
   applyFiltersAndSort(): void {
-    console.log('Users before filtering:', this.users);
+    // console.log('Users before filtering:', this.users);
     // Apply search filter
     if (this.searchTerm.trim()) {
       this.filteredUsers = this.users.filter(user =>
@@ -150,7 +155,7 @@ constructor(private userService: UserService, @Inject(PLATFORM_ID) private platf
    */
   refreshUsers(): void {
     this.loadUsers();
-    console.log('Users refreshed');
+    // console.log('Users refreshed');
   }
 
   /**
@@ -173,7 +178,7 @@ exportUsers(): void {
     document.body.removeChild(link);
   }
 
-  console.log('Users exported');
+  // console.log('Users exported');
 }
 
 
@@ -218,14 +223,25 @@ exportUsers(): void {
         next: () => {
           this.users = this.users.filter(u => u.id !== this.userToDelete!.id);
           this.showDeleteModal = false;
+          if(this.userToDelete) this.userToDelete.isDeleting = false;
           this.userToDelete = null;
+           this.snackBar.open('User deleted successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+          });
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error deleting user:', error);
           this.userToDelete!.isDeleting = false;
           this.showDeleteModal = false;
           this.userToDelete = null;
-          alert('Failed to delete user. Please try again.');
+          this,this.cancelDelete()
+          // alert('Failed to delete user. Please try again.');
+        },
+        complete: () =>{
+          this.loadUsers();
+          this.cancelDelete();
         }
       });
     }

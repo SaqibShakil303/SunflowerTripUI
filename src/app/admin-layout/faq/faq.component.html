@@ -92,7 +92,7 @@
                   </button>
                   <button
                     class="btn btn-danger btn-sm delete-btn"
-                    (click)="deleteFaq(faq)"
+                    (click)="confirmDeletePrompt(faq)"
                     [disabled]="faq.isDeleting"
                     [title]="'Delete ' + (faq.question || 'N/A')"
                   >

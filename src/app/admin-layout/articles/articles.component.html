@@ -1,0 +1,343 @@
+<div class="article-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Articles Management</h1>
+    <p class="page-description">Manage articles</p>
+  </div>
+
+  <!-- Controls Section -->
+  <div class="controls-section">
+    <div class="search-bar">
+      <i class="fas fa-search search-icon"></i>
+      <input
+        type="text"
+        placeholder="Search articles..."
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="handleSearch()"
+      />
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-refresh" (click)="refreshArticles()">
+        <i class="fas fa-sync-alt"></i>
+        Refresh
+      </button>
+      <button class="btn btn-primary" (click)="openAddDialog()">
+        <i class="fas fa-plus-circle"></i>
+        Add Article
+      </button>
+    </div>
+  </div>
+
+  <!-- articles table  -->
+  <div class="table-container">
+    <div class="table-header">
+      <h3 class="table-title">
+        <i class="fas fa-newspaper"></i>
+        All Articles ({{ filteredArticles().length }})
+      </h3>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="articles-table">
+        <thead>
+          <tr>
+            <th class="col-serial">Sl No.</th>
+            <th class="col-cover">Cover</th>
+            <th class="col-title">Title</th>
+            <th class="col-content">Content</th>
+            <th class="col-status">Status</th>
+            <th class="col-author">Author</th>
+                <th class="col-status">Meta Title</th>
+            <th class="col-author">Meta Description</th>
+            <th class="col-category">Category</th>
+            <th class="col-published">Published At</th>
+            <th class="col-created">Created At</th>
+            <th class="col-updated">Updated At</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <ng-container
+            *ngFor="
+              let article of paginatedArticles();
+              let i = index;
+              trackBy: getArticleId
+            "
+          >
+            <tr class="article-row" [class.deleting]="article.isDeleting">
+              <td class="col-serial" data-label="Sl No.">
+                <span class="serial-number">{{ getSerialNumber(i) }}</span>
+              </td>
+
+              <td class="col-cover" data-label="Cover">
+                <div class="cover-wrapper">
+                  <img
+                    *ngIf="article.cover_image; else noCover"
+                    [src]="article.cover_image"
+                    [alt]="article.title"
+                    class="cover-image"
+                  />
+                  <ng-template #noCover>
+                    <div class="cover-placeholder">N/A</div>
+                  </ng-template>
+                </div>
+              </td>
+
+              <td class="col-title" data-label="Title">
+                <span class="title-text">{{ article?.title || "N/A" }}</span>
+              </td>
+
+              <td class="col-content" data-label="Content">
+                <!-- <span class="content-text">{{ truncate(article?.content, 140) }}</span> -->
+                <button
+                  class="btn btn-sm btn-primary"
+                  (click)="showContent(article)"
+                >
+                  <i
+                    class="fas"
+                    [ngClass]="
+                      article.showMore ? 'fa-chevron-up' : 'fa-chevron-down'
+                    "
+                  ></i>
+                  <span class="btn-info">{{
+                    article.showMore ? "Hide" : "Show"
+                  }}</span>
+                </button>
+              </td>
+
+              <td class="col-status" data-label="Status">
+                <div class="status-badges">
+                  <span
+                    class="badge"
+                    [ngClass]="statusBadgeClass(article.status)"
+                  >
+                    {{ article.status || "N/A" }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="col-author" data-label="Author">
+                <span class="author-text">{{ article?.author || "N/A" }}</span>
+              </td>
+
+              <td class="col-category" data-label="Category">
+                <span class="category-text">{{
+                  article?.category || "N/A"
+                }}</span>
+              </td>
+
+                  <td class="col-status" data-label="meta_title">
+                <div class="status-badges">
+                  <span
+                    class="badge"
+                    [ngClass]="statusBadgeClass(article.meta_title)"
+                  >
+                    {{ article.status || "N/A" }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="col-author" data-label="meta_description">
+                <span class="author-text">{{ article?.meta_description || "N/A" }}</span>
+              </td>
+
+              <td class="col-category" data-label="Category">
+                <span class="category-text">{{
+                  article?.category || "N/A"
+                }}</span>
+              </td>
+
+              <td class="col-published" data-label="Published At">
+                <span class="date-text">
+                  {{
+                    article?.published_at
+                      ? (article.published_at | date : "medium")
+                      : "—"
+                  }}
+                </span>
+              </td>
+
+              <td class="col-created" data-label="Created At">
+                <span class="date-text">
+                  {{
+                    article?.created_at
+                      ? (article.created_at | date : "medium")
+                      : "—"
+                  }}
+                </span>
+              </td>
+
+              <td class="col-updated" data-label="Updated At">
+                <span class="date-text">
+                  {{
+                    article?.updated_at
+                      ? (article.updated_at | date : "medium")
+                      : "—"
+                  }}
+                </span>
+              </td>
+
+              <td class="col-actions" data-label="Actions">
+                <div class="actions-wrapper">
+                  <button
+                    class="btn btn-warning btn-sm edit-btn"
+                    (click)="openEditDialog(article)"
+                    [title]="'Edit ' + (article.title || 'N/A')"
+                  >
+                    <i class="fas fa-edit"></i>
+                    <span class="btn-text">Edit</span>
+                  </button>
+
+                  <button
+                    class="btn btn-danger btn-sm delete-btn"
+                    (click)="confirmDeletePrompt(article)"
+                    [disabled]="article.isDeleting"
+                    [title]="'Delete ' + (article.title || 'N/A')"
+                  >
+                    <i
+                      class="fas fa-spinner fa-spin"
+                      *ngIf="article.isDeleting"
+                    ></i>
+                    <i
+                      class="fas fa-regular fa-trash"
+                      *ngIf="!article.isDeleting"
+                    ></i>
+                    <span class="btn-text">{{
+                      article.isDeleting ? "Deleting..." : "Delete"
+                    }}</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="article.showMore">
+              <td colspan="11" class="drop-container" data-label="content">
+                <div class="drop-content">
+                  <div class="details-section">
+                    <div>
+                      <h4 class="section-title">Title</h4>
+                      <div class="content-text">{{ article.title }}</div>
+                    </div>
+                    <div>
+                      <h4 class="section-title">Content</h4>
+                      <div class="content-text">{{ article.content }}</div>
+                    </div>
+                  </div>
+                  <div class="grid">
+                    <div class="details-label-container">
+                      <h4 class="">Author</h4>
+                      <div class="content-text">{{ article.author }}</div>
+                    </div>
+                    <div
+                      *ngIf="article.status === 'published'"
+                      class="details-label-container"
+                    >
+                      <h4 class="">Published at</h4>
+                      <div class="content-text">{{ article.published_at }}</div>
+                    </div>
+                    <div
+                      *ngIf="article.status !== 'published'"
+                      class="details-label-container"
+                    >
+                      <h4 class="">Status</h4>
+                      <div class="content-text">{{ article.status }}</div>
+                    </div>
+                    <div class="details-label-container">
+                      <h4 class="">Created at</h4>
+                      <div class="content-text">{{ article.created_at }}</div>
+                    </div>
+                    <div class="details-label-container">
+                      <h4 class="">Updated at</h4>
+                      <div class="content-text">{{ article.updated_at }}</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <div
+        class="empty-state"
+        *ngIf="!isLoading && filteredArticles().length === 0"
+      >
+        No articles found.
+      </div>
+
+      <div class="loading" *ngIf="isLoading">
+        <i class="fas fa-spinner fa-spin"></i> Loading...
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="pagination-container"
+      *ngIf="filteredArticles().length > pageSize"
+    >
+      <div class="pagination-info">
+        Showing {{ getStartIndex() + 1 }} to {{ getEndIndex() }} of
+        {{ filteredArticles().length }} articles
+      </div>
+      <div class="pagination-controls">
+        <button
+          class="btn btn-sm pagination-btn"
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+        >
+          <i class="fas fa-chevron-left"></i>
+          Previous
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="btn btn-sm page-btn"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          class="btn btn-sm pagination-btn"
+          (click)="nextPage()"
+          [disabled]="currentPage === getTotalPages()"
+        >
+          Next
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Confirm Delete</h3>
+      <button class="modal-close" (click)="cancelDelete()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <p>Are you sure you want to delete the article:</p>
+      <strong>{{ articleToDelete?.title || "N/A" }}</strong>
+      <p class="warning-text">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+      <button class="btn btn-danger" (click)="confirmDelete()">
+        <i class="fas fa-trash"></i>
+        Delete Article
+      </button>
+    </div>
+  </div>
+</div>

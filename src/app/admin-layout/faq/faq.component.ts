@@ -108,7 +108,7 @@ export class FaqComponent implements OnInit {
     dialogRef.afterClosed().subscribe({ complete: () => this.loadFaqs() });
   }
 
-  deleteFaq(faq: Faq): void {
+    confirmDeletePrompt(faq: Faq): void  {
     this.faqToDelete = faq;
     this.showDeleteModal = true;
   }
@@ -119,7 +119,7 @@ export class FaqComponent implements OnInit {
 
       this.faqService.deleteFaq(this.faqToDelete.id).subscribe({
         next: () => {
-          this.snackBar.open('FAQ added successfully', 'Close', {
+          this.snackBar.open('FAQ deleted successfully', 'Close', {
             duration: 3000,
             panelClass: ['success-snackbar'],
           });

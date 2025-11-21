@@ -1,0 +1,248 @@
+<div class="newsletter-admin">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="fa-solid fa-envelope-open-text"></i>
+      Newsletter Subscribers
+    </h1>
+    <p class="page-description">
+      Manage your email subscribers, update their status, and keep your
+      travel community list clean and up to date.
+    </p>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-section">
+    <div class="filter-group">
+      <label class="filter-label">
+        Status:
+        <select
+          [(ngModel)]="statusFilter"
+          (change)="applyFilter()"
+          class="filter-select"
+        >
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="unsubscribed">Unsubscribed</option>
+          <option value="bounced">Bounced</option>
+          <option value="spam">Spam</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="action-buttons">
+      <button
+        class="btn btn-refresh btn-sm"
+        (click)="loadSubscribers()"
+        [disabled]="loading"
+      >
+        <i class="fa-solid fa-rotate"></i>
+        <span>Refresh</span>
+      </button>
+
+      <button class="btn btn-primary btn-sm" (click)="openAddModal()">
+        <i class="fa-solid fa-plus"></i>
+        <span>Add Subscriber</span>
+      </button>
+    </div>
+  </div>
+
+  <p *ngIf="error" class="error-message-top">{{ error }}</p>
+
+  <!-- Table -->
+  <div class="table-container">
+    <div class="table-header">
+      <h2 class="table-title">
+        <i class="fa-solid fa-list"></i>
+        Subscribers List
+      </h2>
+      <span class="table-meta"
+        >Total: {{ subscribers.length }} | Showing:
+        {{ filteredSubscribers.length }}</span
+      >
+    </div>
+
+    <div class="table-wrapper">
+      <table class="subscribers-table">
+        <thead>
+          <tr>
+            <th class="col-serial">#</th>
+            <th class="col-email">Email</th>
+            <th class="col-name">Name</th>
+            <th class="col-date">Subscribed At</th>
+            <th class="col-status">Status</th>
+            <th class="col-verified">Verified</th>
+            <th class="col-source">Source</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let sub of filteredSubscribers; index as i"
+            class="subscriber-row"
+          >
+            <td class="col-serial">
+              <span class="serial-number">{{ i + 1 }}</span>
+            </td>
+            <td class="col-email">
+              <span class="email-text">{{ sub.email }}</span>
+            </td>
+            <td class="col-name">
+              <span class="name-text">{{ sub.name || '-' }}</span>
+            </td>
+            <td class="col-date">
+              {{ sub.subscribed_at | date: 'short' }}
+            </td>
+            <td class="col-status">
+              <span
+                class="badge"
+                [ngClass]="{
+                  'badge-success': sub.status === 'active',
+                  'badge-inactive': sub.status !== 'active'
+                }"
+              >
+                {{ sub.status }}
+              </span>
+            </td>
+            <td class="col-verified">
+              <span
+                class="badge"
+                [ngClass]="{
+                  'badge-success': sub.is_verified,
+                  'badge-inactive': !sub.is_verified
+                }"
+              >
+                {{ sub.is_verified ? 'Yes' : 'No' }}
+              </span>
+            </td>
+            <td class="col-source">
+              <span class="source-chip">{{ sub.source }}</span>
+            </td>
+            <td class="col-actions">
+              <div class="actions-wrapper">
+                <button
+                  class="btn btn-info btn-sm"
+                  type="button"
+                  (click)="openEditModal(sub)"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                  <span class="btn-text">Edit</span>
+                </button>
+                <button
+                  class="btn btn-danger btn-sm"
+                  type="button"
+                  (click)="delete(sub)"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                  <span class="btn-text">Delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="!loading && !filteredSubscribers.length">
+            <td colspan="8" class="empty-state">
+              No subscribers found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fa-solid fa-envelope-circle-check"></i>
+          {{ isEditMode ? 'Edit Subscriber' : 'Add Subscriber' }}
+        </h3>
+        <button class="modal-close" type="button" (click)="closeModal()">
+          ✕
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form
+          #f="ngForm"
+          (ngSubmit)="saveSubscriber(f)"
+          class="newsletter-form"
+        >
+          <div class="form-section">
+            <h4 class="section-title">
+              <i class="fa-solid fa-user"></i>
+              Subscriber Details
+            </h4>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label required">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  [(ngModel)]="modalForm.email"
+                  [readonly]="isEditMode"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  [(ngModel)]="modalForm.name"
+                  placeholder="Subscriber name (optional)"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Status</label>
+                <select
+                  class="form-control"
+                  name="status"
+                  [(ngModel)]="modalForm.status"
+                >
+                  <option value="active">Active</option>
+                  <option value="unsubscribed">Unsubscribed</option>
+                  <option value="bounced">Bounced</option>
+                  <option value="spam">Spam</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Verified</label>
+                <select
+                  class="form-control"
+                  name="is_verified"
+                  [(ngModel)]="modalForm.is_verified"
+                >
+                  <option [ngValue]="1">Yes</option>
+                  <option [ngValue]="0">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeModal()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="f.invalid">
+              {{ isEditMode ? 'Save Changes' : 'Add Subscriber' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

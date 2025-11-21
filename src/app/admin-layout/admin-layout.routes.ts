@@ -9,8 +9,6 @@ import { BookingsComponent } from './bookings/bookings.component';
 import { TripLeadsComponent } from './trip-leads/trip-leads.component';
 import { EnquiryDetailsComponent } from './enquiry-details/enquiry-details.component';
 import { ContactsComponent } from './contacts/contacts.component';
-import { JobsComponent } from './jobs/jobs.component';
-import { FaqComponent } from './faq/faq.component';
 
 // import { DestinationFormComponent } from './destination-management/destination-form/destination-form.component';
 
@@ -59,10 +57,25 @@ const routes: Routes = [
       },
       {
         path: 'faqs',
-        component: FaqComponent,
+        loadChildren: () =>
+          import('./faq/faq.module')
+        .then(m => m.FaqModule)
       },
+      {
+        path: 'articles',
+        loadChildren: () =>
+          import('./articles/articles.module')
+        .then((m) => m.ArticleModule)
+      },
+      {
+   path: 'newsletter',
+  loadChildren: () =>
+    import('./newsletter-admin/newsletter.module')
+      .then(m => m.NewsletterModule)
+}
     ],
   },
+      
   //   {
   //   path: 'destinations-admin',
   //   loadChildren: () =>

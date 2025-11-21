@@ -84,21 +84,21 @@
       <div class="travel-tips">
         <h2>Travel Tips & Articles</h2>
 
-        <div class="tip-card" *ngFor="let tip of travelTips">
+        <div class="tip-card" *ngFor="let article of articles()">
           <div class="tip-img">
-            <img [src]="tip.image" [alt]="tip.title" />
+            <img [src]="article.cover_image" [alt]="article.title" />
           </div>
           <div class="tip-content">
-            <h3>{{ tip.title }}</h3>
+            <h3>{{ article.title }}</h3>
             <div class="tip-meta">
-              <span>{{ tip.date }}</span>
-              <span>{{ tip.readTime }}</span>
+              <span>{{ article.published_at }}</span>
+              <span>{{ article.timeToRead }}</span>
             </div>
-            <p>{{ tip.summary }}</p>
+            <p>{{ article.summary }}</p>
             <a
               href="javascript:void(0)"
               class="read-more"
-              (click)="readArticle(tip)"
+              (click)="readArticle(articles)"
               >Read More</a
             >
           </div>

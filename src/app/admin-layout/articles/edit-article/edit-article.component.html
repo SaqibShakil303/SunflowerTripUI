@@ -1,0 +1,201 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <i class="fas fa-edit"></i>
+        Edit Article
+      </h3>
+      <button class="modal-close" (click)="onCancel()" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- modal body  -->
+    <div class="modal-body">
+      <form
+        [formGroup]="articleForm"
+        (ngSubmit)="onSubmit()"
+        class="article-form"
+      >
+        <div class="form-section">
+          <h4 class="section-title">
+            <i class="fas fa-file-alt"></i>
+            Article Details
+          </h4>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="title" class="form-label">Title *</label>
+              <input
+                id="title"
+                type="text"
+                formControlName="title"
+                class="form-control"
+                maxlength="{{ TITLE_MAX }}"
+                placeholder="Enter article title"
+                [class.error]="isFieldInvalid(articleForm, 'title')"
+              />
+              <div class="form-help">
+                {{ articleForm.get("title")?.value?.length || 0 }}/{{
+                  TITLE_MAX
+                }}
+              </div>
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(articleForm, 'title')"
+              >
+                {{ getFieldError(articleForm, "title") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="content" class="form-label">Content *</label>
+              <textarea
+                id="content"
+                formControlName="content"
+                class="form-control form-textarea"
+                placeholder="Enter article content..."
+                rows="8"
+                [class.error]="isFieldInvalid(articleForm, 'content')"
+              ></textarea>
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(articleForm, 'content')"
+              >
+                {{ getFieldError(articleForm, "content") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row two-columns">
+            <div class="form-group">
+              <label for="status" class="form-label">Status *</label>
+              <select id="status" formControlName="status" class="form-control">
+                <option *ngFor="let s of statuses" [value]="s">
+                  {{ s | titlecase }}
+                </option>
+              </select>
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(articleForm, 'status')"
+              >
+                {{ getFieldError(articleForm, "status") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="author" class="form-label">Author *</label>
+              <input
+                id="author"
+                type="text"
+                formControlName="author"
+                class="form-control"
+                placeholder="Author name"
+                maxlength="{{ AUTHOR_MAX }}"
+                [class.error]="isFieldInvalid(articleForm, 'author')"
+              />
+              <div
+                class="error-message"
+                *ngIf="isFieldInvalid(articleForm, 'author')"
+              >
+                {{ getFieldError(articleForm, "author") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="cover_image" class="form-label">Cover image</label>
+              <input
+                id="cover_image"
+                type="text"
+                formControlName="cover_image"
+                class="form-control"
+                [class.error]="isFieldInvalid(articleForm, 'cover_image')"
+                placeholder="Enter image url (optional)"
+              />
+            </div>
+          </div>
+
+          <div class="form-row single-column">
+            <div class="form-group">
+              <label for="category" class="form-label">Category</label>
+              <input
+                id="category"
+                type="text"
+                formControlName="category"
+                class="form-control"
+                placeholder="Category (optional)"
+              />
+            </div>
+          </div>
+                <div class="form-row two-column">
+            <div class="form-group">
+  <label for="meta_title" class="form-label">meta title</label>
+              <input
+                id="author"
+                type="text"
+                class="form-control"
+                formControlName="meta_title"
+                [class.error]="isFieldInvalid(articleForm, 'meta_title')"
+           maxlength="{{ META_TITLE_MAX }}"
+                placeholder="META title"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid(articleForm, 'meta_title')">
+                {{ getFieldError(articleForm, "meta_title") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="meta_description" class="form-label">meta description</label>
+              <input
+                id="meta_description"
+                type="text"
+                class="form-control"
+                formControlName="author"
+                [class.error]="isFieldInvalid(articleForm, 'meta_description')"
+                      maxlength="{{ META_DES_MAX }}"
+                placeholder="META description"
+              />
+              <div class="error-message" *ngIf="isFieldInvalid(articleForm, 'meta_description')">
+                {{ getFieldError(articleForm, "meta_description") }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="clearForm()"
+        [disabled]="isSubmitting"
+      >
+        Clear Form
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        [disabled]="isSubmitting"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onSubmit()"
+        [disabled]="isSubmitting"
+      >
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
+        {{ isSubmitting ? "Saving..." : "Save Changes" }}
+      </button>
+    </div>
+  </div>
+</div>

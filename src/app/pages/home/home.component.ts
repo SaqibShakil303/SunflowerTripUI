@@ -20,6 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TripPlannerComponent } from '../../common/trip-planner/trip-planner.component';
 import { TripPlannerService } from '../../services/TripPlanner/trip-planner.service';
 import { DestinationsComponent } from '../../components/destinations/destinations.component';
+import { NewsletterComponent } from '../../components/newsletter/newsletter.component';
 
 @Component({
   selector: 'app-home',
@@ -37,7 +38,8 @@ import { DestinationsComponent } from '../../components/destinations/destination
     MapComponent,
     WhyUsComponent,
     TourFilterComponent,
-    DestinationsComponent
+    DestinationsComponent,
+    NewsletterComponent
 ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
