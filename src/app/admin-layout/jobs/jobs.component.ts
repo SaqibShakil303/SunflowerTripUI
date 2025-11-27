@@ -215,6 +215,7 @@ export class JobsComponent implements OnInit {
 
   // Refresh jobs
   refreshJobs(): void {
+    this.searchTerm = '';
     this.loadData();
   }
 

@@ -43,9 +43,9 @@ export class NewsletterAdminComponent implements OnInit {
     this.error = '';
 
     this.newsletterService.getSubscribers().subscribe({
-      next: (subs) => {
+  next: (subs: any) => {
         this.loading = false;
-        this.subscribers = subs;
+ this.subscribers = subs.data;
         this.applyFilter();
       },
       error: (err) => {
@@ -161,7 +161,7 @@ export class NewsletterAdminComponent implements OnInit {
     } else {
       // ADD
       this.newsletterService
-        .subscribe(this.modalForm.email, this.modalForm.name)
+       .subscribe(this.modalForm.email, this.modalForm.name, this.modalForm.is_verified, this.modalForm.status )
         .subscribe({
           next: (res: any) => {
             // backend returns { message, subscriber }

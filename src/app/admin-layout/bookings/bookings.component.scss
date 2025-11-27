@@ -9,7 +9,8 @@ $warm-white: #FDF6E3;
 $warm-gray: #6c757d;   // deepened for contrast
 $dark-brown: #1b1b1b;  // force near-black for readability
 $danger-red: #DC3545;
-$info-blue: #0d6efd;
+$success-green: #28A745;
+$info-blue: #17A2B8;
 
 // ===== Fonts =====
 $font-body: 'Forum', serif;
@@ -267,32 +268,67 @@ $font-heading: 'Playfair Display', serif;
 
 // ===== Buttons =====
 .btn {
-  padding: .5rem 1rem; border: none; border-radius: 6px;
-  font-family: $font-body; font-size: .9rem; font-weight: 600;
-  cursor: pointer; transition: .2s ease; display: inline-flex; align-items: center; gap: .4rem;
-
-  &:disabled { opacity: .6; cursor: not-allowed; }
-
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
   &.btn-primary {
     background: linear-gradient(135deg, $saffron, $turmeric-yellow);
-    color: #fff;
-    &:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(244,164,96,.28); }
+    color: white;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(244, 164, 96, 0.3);
+    }
   }
+  
   &.btn-secondary {
-    background: #6c757d; color: #fff;
-    &:hover:not(:disabled) { background: darken(#6c757d, 5%); }
+    background: #6C757D;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: darken(#6C757D, 10%);
+    }
   }
+  
   &.btn-danger {
-    background: $danger-red; color: #fff;
-    &:hover:not(:disabled) { background: darken($danger-red, 6%); }
+    background: $danger-red;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: darken($danger-red, 10%);
+      transform: translateY(-1px);
+    }
   }
-  &.btn-refresh, &.btn-info {
-    background: $info-blue; color: #fff;
-    &:hover:not(:disabled) { background: darken($info-blue, 6%); }
+  
+  &.btn-refresh {
+    background: $info-blue;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: darken($info-blue, 10%);
+    }
   }
-  &.btn-sm { padding: .32rem .6rem; font-size: .8rem; i { font-size: .8rem; } }
+  
+  &.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
 }
-
 // ===== Modal =====
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,.5);

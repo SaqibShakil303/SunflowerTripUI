@@ -263,6 +263,7 @@ openImageViewer(location: LocationModel): void {
 
   // Refresh locations
   refreshLocations(): void {
+    this.searchTerm = '';
     this.loadData();
   }
 

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Enquiry } from '../../models/Enquiry.model';
 import { BookingsService } from '../../services/bookings/bookings.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-enquiries',
@@ -24,7 +25,7 @@ export class EnquiriesComponent implements OnInit {
   enquiryToDelete: Enquiry | null = null;
   errorMessage: string | null = null; // For displaying errors
 
-  constructor(private bookingService: BookingsService) {}
+  constructor(private bookingService: BookingsService,private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadEnquiries();
@@ -64,6 +65,13 @@ export class EnquiriesComponent implements OnInit {
         this.applyFilters();
         this.cancelDelete();
         this.errorMessage = null;
+
+        
+        this.snackBar.open('User deleted successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+          });
+          this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = err.message || 'Failed to delete enquiry';
@@ -110,7 +118,7 @@ export class EnquiriesComponent implements OnInit {
       filtered = filtered.filter(enquiry =>
         enquiry.name.toLowerCase().includes(term) ||
         enquiry.email.toLowerCase().includes(term) ||
-        enquiry.tour_id.toLowerCase().includes(term)
+       enquiry.tour_id.toString().toLowerCase().includes(term)
       );
     }
 
@@ -220,6 +228,7 @@ export class EnquiriesComponent implements OnInit {
   }
 
   refreshEnquiries(): void {
+    this.searchTerm = '';
     this.loadEnquiries();
   }
 

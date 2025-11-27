@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookingsService } from '../../services/bookings/bookings.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-bookings',
@@ -27,7 +28,7 @@ export class BookingsComponent implements OnInit {
   showDeleteModal = false;
   bookingToDelete: any | null = null;
 
-  constructor(private bookingService: BookingsService) {}
+  constructor(private bookingService: BookingsService, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadBookings();
@@ -76,6 +77,11 @@ export class BookingsComponent implements OnInit {
         this.bookings = this.bookings.filter((b) => b !== this.bookingToDelete);
         this.applyFilters();
         this.cancelDelete();
+         this.snackBar.open('User deleted successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+          });
+          this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Delete failed', err);
@@ -252,6 +258,7 @@ export class BookingsComponent implements OnInit {
   }
 
   refreshBookings(): void {
+    this.searchTerm = '';
     this.loadBookings();
   }
 

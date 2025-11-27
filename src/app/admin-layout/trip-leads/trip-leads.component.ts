@@ -222,6 +222,7 @@ export class TripLeadsComponent implements OnInit {
   }
 
   refreshTripLeads(): void {
+     this.searchTerm = '';
     this.loadTripLeads();
   }
 

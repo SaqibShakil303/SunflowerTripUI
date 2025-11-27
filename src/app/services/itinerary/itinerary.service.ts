@@ -57,4 +57,7 @@ export class ItineraryService {
   deleteItinerary(id: number): Observable<any> {
     return this.http.delete(`${this.APIurl}/Itinerary/DeleteItinerary/${id}`);
   }
+    sendItinerary(id: number, formData: any): Observable<any>  {
+    return this.http.post(`${this.APIurl}/Itinerary/send-itinerary-to-customer/${id}`, formData);
+  }
 }

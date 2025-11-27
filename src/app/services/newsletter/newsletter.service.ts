@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments.dev';
+import { isValid } from 'date-fns';
 
 export interface NewsletterSubscriber {
   id: number;
@@ -22,13 +23,13 @@ export class NewsletterService {
   constructor(private http: HttpClient) {}
 
   // Public: user subscribe
-  subscribe(email: string, name?: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/subscribe`, { email, name });
+ subscribe(email: string, name?: string, is_verified?: 0 | 1, status?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/subscribe`, { email, name, is_verified, status });
   }
 
   // Admin: list all
   getSubscribers(): Observable<NewsletterSubscriber[]> {
-    return this.http.get<NewsletterSubscriber[]>(`${this.apiUrl}`);
+return this.http.get<NewsletterSubscriber[]>(`${this.apiUrl}/subscribers`);
   }
 
   // Admin: update

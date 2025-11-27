@@ -89,12 +89,20 @@
                                 <span class="date-text">{{ formatDate(itinerary.date) }}</span>
                             </td>
                             <td class="col-actions">
-                                <div class="actions-wrapper">
-                                    <button class="btn btn-danger btn-sm delete-btn" (click)="deleteItinerary(itinerary)" [disabled]="itinerary.isDeleting" [title]="'Delete ' + itinerary.email">
-                                        <i class="fas fa-spinner fa-spin" *ngIf="itinerary.isDeleting"></i>
-                                        <i class="fas fa-trash" *ngIf="!itinerary.isDeleting"></i>
-                                        <span class="btn-text">{{ itinerary.isDeleting ? 'Deleting...' : 'Delete' }}</span>
-                                    </button>
+                                <div class="btn-container">
+                                    <div class="actions-wrapper">
+                                        <button class="btn btn-primary btn-sm delete-btn" (click)="sendItinerary(itinerary)" [disabled]="itinerary.isSending" [title]="'Send Itinerary to ' + itinerary.email">
+                                            <!-- <i class="fas fa-spinner fa-spin" *ngIf="itinerary.isSending"></i> -->
+                                            <i class="fas fa-envelope" *ngIf="!itinerary.isSending"></i>
+                                        </button>
+                                    </div>
+                                    <div class="actions-wrapper">
+                                        <button class="btn btn-danger btn-sm delete-btn" (click)="deleteItinerary(itinerary)" [disabled]="itinerary.isDeleting" [title]="'Delete ' + itinerary.email">
+                                            <i class="fas fa-spinner fa-spin" *ngIf="itinerary.isDeleting"></i>
+                                            <i class="fas fa-trash" *ngIf="!itinerary.isDeleting"></i>
+                                            <!-- <span class="btn-text">{{ itinerary.isDeleting ? 'Deleting...' : 'Delete' }}</span> -->
+                                        </button>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -150,6 +158,17 @@
                                         <div class="detail-item">
                                             <span class="detail-label">Preferences</span>
                                             <p class="detail-value">{{ itinerary.preferences }}</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary"
+                                                (click)="sendItinerary(itinerary)"
+                                                [disabled]="itineraryToBeSent?.isSending"
+                                            >
+                                                <i class="fas fa-envelope"></i>
+                                                Send Itinerary
+                                            </button>
                                         </div>
 
                                     </div>
@@ -224,5 +243,128 @@
                 </button>
             </div>
         </div>
+    </div>
+
+     <!-- send itinerary email Modal -->
+    <div class="modal-overlay" *ngIf="showSendItineraryModal" (click)="cancelSendItinerary()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Send Itinerary
+                </h3>
+                <button class="modal-close" (click)="cancelSendItinerary()" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+             <!-- modal body  -->
+            <div class="modal-body">
+                <form [formGroup]="itineraryForm" (ngSubmit)="onSubmit()" class="send-itinerary-form">
+                    <div class="form-section">
+                        <input type="hidden" name="customerName">
+                        <input type="hidden" name="destination">
+                        <input type="hidden" name="phone">
+                        <div class="form-row single-column">
+                            <div class="form-group">
+                            <label for="email" class="form-label">Email *</label>
+                            <input
+                                readonly
+                                type="email"
+                                id="email"
+                                formControlName="email"
+                                class="form-control"
+                                [class.error]="isFieldInvalid(itineraryForm, 'email')"
+                                placeholder=""
+                            />
+                            <div
+                                class="error-message"
+                                *ngIf="isFieldInvalid(itineraryForm, 'email')"
+                            >
+                                {{ getFieldError(itineraryForm, "email") }}
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row single-column">
+                            <div class="form-group">
+                            <label for="confirmEmail" class="form-label">Confirm Email *</label>
+                            <input
+                                type="email"
+                                id="email"
+                                formControlName="confirmEmail"
+                                class="form-control"
+                                [class.error]="isFieldInvalid(itineraryForm, 'confirmEmail')"
+                                placeholder="Enter confirm email address"
+                            />
+                            
+                            <div
+                                class="error-message"
+                                *ngIf="isFieldInvalid(itineraryForm, 'confirmEmail')"
+                            >
+                                {{ getFieldError(itineraryForm, "confirmEmail") }}
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row single-column">
+                            <div class="form-group">
+                            <label for="itineraryFile" class="form-label">Itinerary *</label>
+                            <input
+                                type="file"
+                                id="itineraryFile"
+                                formControlName="itineraryFile"
+                                class="form-control"
+                                [class.error]="isFieldInvalid(itineraryForm, 'itineraryFile')"
+                                accept="application/pdf"
+                                (change)="handleFileUpload($event)"
+                            />
+                            <div
+                                class="error-message"
+                                *ngIf="isFieldInvalid(itineraryForm, 'itineraryFile')"
+                            >
+                                {{ getFieldError(itineraryForm, "itineraryFile") }}
+                            </div>
+                            <div *ngIf="selectedFile">
+                                <p>
+                                    <strong>Selected File: </strong>
+                                    <span class="file-link" (click)="openPreview()">{{ selectedFile.name }}</span>
+                                </p>
+                            </div>
+                            <!-- PDF Preview Modal -->
+                            <div class="preview-modal" *ngIf="showPreview">
+                                <div class="preview-content">
+                                    <button class="close-btn" (click)="closePreview()"><i class="fas fa-times"></i></button>
+
+                                    <iframe [src]="pdfUrl" width="100%" height="500px"></iframe>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="cancelSendItinerary()"
+                    [disabled]="itineraryToBeSent?.isSending"
+                >
+                    Cancel
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="onSubmit()"
+                    [disabled]="itineraryToBeSent?.isSending"
+                >
+                    <i class="fas fa-spinner fa-spin" *ngIf="itineraryToBeSent?.isSending"></i>
+                    <i class="fas fa-envelope" *ngIf="!itineraryToBeSent?.isSending"></i>
+                    {{ itineraryToBeSent?.isSending ? "Sending..." : "Send" }}
+                </button>
+            </div>
+         </div>
     </div>
 </div>

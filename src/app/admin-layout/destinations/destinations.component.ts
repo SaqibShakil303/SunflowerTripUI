@@ -122,7 +122,7 @@ export class DestinationsComponent implements OnInit {
           bValue = b.name;
       }
 
-      const comparison = aValue.localeCompare(bValue);
+      const comparison = aValue?.localeCompare(bValue);
       return this.sortOrder === 'asc' ? comparison : -comparison;
     });
 

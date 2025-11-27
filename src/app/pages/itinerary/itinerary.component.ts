@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -11,6 +11,8 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil, timeout } from 'rxjs/operators';
 import { NavbarComponent } from "../../common/navbar/navbar.component";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-itinerary',
@@ -42,6 +44,9 @@ export class ItineraryComponent implements OnDestroy {
   isLoading = false;
   successMessage = '';
   errorMessage = '';
+    timeoutTime = signal(10);
+  timeoutCountDown = signal(this.timeoutTime());
+
   private destroy$ = new Subject<void>();
 isBengali = false;
   get childAges(): FormArray {
@@ -51,7 +56,9 @@ isBengali = false;
   constructor(
     private fb: FormBuilder,
     private itineraryService: ItineraryService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+        private snackBar: MatSnackBar,
+    private router: Router,
   ) {
     this.itineraryForm = this.fb.group({
       name: ['', Validators.required],
@@ -110,15 +117,29 @@ this.itineraryForm.get('children')!.valueChanges
       takeUntil(this.destroy$)
     ).subscribe({
       next: (response) => {
-        this.successMessage = 'Your plan has been submitted successfully!';
+       this.snackBar.open(`Success! A Confirmation Email has been sent to your email, Please check.`, 'Close', {
+          duration: 10000,
+          panelClass: ['success-snackbar'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+        this.cdr.detectChanges();
         this.resetForm();
         this.isSubmitted = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
-        this.errorMessage = err.name === 'TimeoutError'
-          ? 'Request timed out. Please try again.'
-          : 'Failed to submit your plan. Please try again.';
+         this.snackBar.open(
+          'Failed to send your form: ' + (err.error?.message || 'Unknown error'),
+          'Close',
+          {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          }
+        );
+        this.cdr.detectChanges();
         this.cdr.markForCheck();
       },
       complete: () => {

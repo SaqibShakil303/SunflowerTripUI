@@ -7,8 +7,8 @@
       <p>Share your vision, and we’ll craft a personalized itinerary just for you</p>
     </div>
     <div class="form-wrapper" [@fadeInUp]>
-      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
-<div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+      <!-- <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+<div class="success-message" *ngIf="successMessage">{{ successMessage }}</div> -->
       <form [formGroup]="itineraryForm" (ngSubmit)="onSubmit()">
         <div class="form-grid">
           <div class="form-group">

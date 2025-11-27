@@ -154,6 +154,7 @@ constructor(
    * Refresh users data
    */
   refreshUsers(): void {
+     this.searchTerm = '';
     this.loadUsers();
     // console.log('Users refreshed');
   }

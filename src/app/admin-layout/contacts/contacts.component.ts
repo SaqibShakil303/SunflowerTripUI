@@ -228,6 +228,7 @@ export class ContactsComponent implements OnInit {
   }
 
   refreshContacts(): void {
+     this.searchTerm = '';
     this.loadContacts();
   }
 

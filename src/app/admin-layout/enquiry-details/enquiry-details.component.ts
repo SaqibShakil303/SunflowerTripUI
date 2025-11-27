@@ -1,29 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItineraryService } from '../../services/itinerary/itinerary.service';
 import { Itinerary } from '../../models/itinerary.model';
 import { catchError, of, tap, timeout } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 // Extend interface to include isDeleting and showDetails
 interface ExtendedItinerary extends Itinerary {
   isDeleting?: boolean;
+  isSending?: boolean;
   showDetails?: boolean;
 }
 
 @Component({
   selector: 'app-enquiry-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './enquiry-details.component.html',
   styleUrl: './enquiry-details.component.scss'
 })
 export class EnquiryDetailsComponent implements OnInit {
+  itineraryForm!: FormGroup;
   // Data properties
   itineraries: ExtendedItinerary[] = [];
   filteredItineraries: ExtendedItinerary[] = [];
   paginatedItineraries: ExtendedItinerary[] = [];
   error: string | null = null;
+  selectedFile: any | null = null;
+  pdfUrl: SafeResourceUrl | null = null;
+  showPreview: boolean = false
 
   // Search and filter properties
   searchTerm: string = '';
@@ -38,7 +45,17 @@ export class EnquiryDetailsComponent implements OnInit {
   showDeleteModal: boolean = false;
   itineraryToDelete: ExtendedItinerary | null = null;
 
-  constructor(private itineraryService: ItineraryService) {}
+  // send itinerary Modal properties
+  showSendItineraryModal: boolean = false;
+  itineraryToBeSent: ExtendedItinerary | null = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private itineraryService: ItineraryService, 
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.loadItineraries();
@@ -165,8 +182,9 @@ export class EnquiryDetailsComponent implements OnInit {
    * Refresh itineraries data
    */
   refreshItineraries(): void {
+    this.searchTerm = '';
     this.loadItineraries();
-    console.log('Itineraries refreshed');
+    // console.log('Itineraries refreshed');
   }
 
   /**
@@ -245,7 +263,172 @@ export class EnquiryDetailsComponent implements OnInit {
     return csvRows.join('\n');
   }
 
+   isFieldInvalid(control: FormGroup | FormArray, fieldName: string): boolean {
+      const field = control.get(fieldName);
+      return !!(field && field.invalid && (field.dirty || field.touched));
+    }
 
+    getFieldError(control: FormGroup | FormArray, fieldName: string): string {
+    const field = control.get(fieldName);
+    if (field?.errors) {
+      if (field.errors['required'])
+        return `${this.getFieldLabel(fieldName)} is required`;
+      if (field.errors['minlength'])
+        return `${this.getFieldLabel(fieldName)} must have at least ${
+          field.errors['minlength'].requiredLength
+        } selection(s)`;
+      if (field.errors['maxlength'])
+        return `${this.getFieldLabel(fieldName)} must not exceed ${
+          field.errors['maxlength'].requiredLength
+        } characters`;
+      if (field.errors['min'])
+        return `${this.getFieldLabel(fieldName)} must be at least ${
+          field.errors['min'].min
+        }`;
+      if (field.errors['max'])
+        return `${this.getFieldLabel(fieldName)} must not exceed ${
+          field.errors['max'].max
+        }`;
+      if (field.errors['pattern'])
+        return `${this.getFieldLabel(
+          fieldName
+        )} must contain only lowercase letters, numbers, and hyphens`;
+      if (field.errors['invalidType'])
+        return 'Please select a valid image (PNG, JPG, JPEG, or WebP)';
+      if (field.errors['readError']) return 'Error reading the image file';
+    }
+    return '';
+  }
+
+   private getFieldLabel(fieldName: string): string {
+    const labels: { [key: string]: string } = {
+      email: 'email',
+      confirmEmail: 'confirmEmail',
+      itineraryFile: 'itineraryFile',
+    };
+    return (
+      labels[fieldName] ||
+      fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+    );
+  }
+
+
+  sendItinerary(itinerary: ExtendedItinerary):void {
+    this.itineraryToBeSent = itinerary;
+    this.showSendItineraryModal = true;
+
+    if(this.showSendItineraryModal) {
+      this.itineraryForm = this.fb.group({
+        customerName: this.itineraryToBeSent.name,
+        destination: this.itineraryToBeSent.destination,
+        phone: this.itineraryToBeSent.phone,
+        email: [
+          this.itineraryToBeSent.email,
+          [
+            Validators.required, 
+          ],
+        ],
+        confirmEmail: [
+          '',
+          [
+            Validators.required,
+          ],
+        ],
+        itineraryFile: [null, [Validators.required]]
+      });
+    }
+  }
+
+  cancelSendItinerary(): void {
+    if (this.itineraryToBeSent) {
+      this.itineraryToBeSent.isSending = false;
+    }
+    this.showSendItineraryModal = false;
+    this.itineraryToBeSent = null;
+    this.pdfUrl = null;
+    this.selectedFile = null;
+    this.showPreview = false;
+  }
+
+  onSubmit() {
+    if(this.itineraryForm.valid){
+      this.confirmSend()
+    } else {
+      if(this.itineraryToBeSent !== null) this.itineraryToBeSent.isSending = false;
+    }
+  }
+
+  handleFileUpload(event: any) {
+  const file = event.target.files[0];
+
+    if (file) {
+      this.selectedFile = file;
+      // Create PDF Preview URL
+      const blobUrl = URL.createObjectURL(file);
+      // FIX: sanitize blob URL
+      this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
+    }
+  }
+
+  confirmSend(): void {
+    if(this.itineraryToBeSent !== null && typeof this.itineraryToBeSent.id === 'number') {
+      const formData = new FormData();
+      formData.append('email', this.itineraryForm.get('email')?.value);
+      formData.append('confirmEmail', this.itineraryForm.get('confirmEmail')?.value);
+      formData.append('itineraryFile', this.selectedFile); // IMPORTANT
+      formData.append('customerName', this.itineraryForm.get('customerName')?.value);
+      formData.append('destination', this.itineraryForm.get('destination')?.value);
+      formData.append('phone', this.itineraryForm.get('phone')?.value);
+      this.itineraryToBeSent.isSending = true;
+      this.itineraryService.sendItinerary(this.itineraryToBeSent.id, formData).subscribe({
+        next: () => {
+          this.snackBar.open('Itinerary send successfully', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+          });
+          
+          this.itineraryToBeSent = null;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.snackBar.open(
+            'Failed to send itinerary: ' + (err.error?.message || 'Unknown error'),
+            'Close',
+            {
+              duration: 5000,
+              panelClass: ['error-snackbar'],
+            }
+          );
+          this.itineraryToBeSent = null;
+          this.cdr.detectChanges();
+          this.cancelSendItinerary();
+        },
+        complete: () => {
+          this.itineraryToBeSent = null;
+          this.cdr.detectChanges();
+          this.cancelSendItinerary();
+          // this.loadItineraries();
+        }
+      })
+    } else {
+      this.snackBar.open(
+            'Failed to send itinerary: Unknown error',
+            'Close',
+            {
+              duration: 5000,
+              panelClass: ['error-snackbar'],
+            }
+          );
+    }
+  }
+
+  openPreview() {
+  this.showPreview = true;
+}
+
+closePreview() {
+  this.showPreview = false;
+}
 
   
   /**
