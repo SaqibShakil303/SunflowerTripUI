@@ -68,12 +68,12 @@ export class TourFilterComponent implements OnInit {
   // Filter
   dropdownOpen = false;
   durationRange: number[] = [2, 18];
-  budgetRange: number[] = [10000, 125000];
+   budgetRange: number[] = [10000, 500000];
   filterChips: { label: string; type: string }[] = [];
 
   // Default values for comparison
   private readonly defaultDurationRange: number[] = [2, 18];
-  private readonly defaultBudgetRange: number[] = [10000, 125000];
+   private readonly defaultBudgetRange: number[] = [10000, 500000];
 
   constructor(
     private destSvc: DestinationService,
@@ -143,7 +143,7 @@ export class TourFilterComponent implements OnInit {
     if (saved) {
       this.durationRange = saved.durationRange || this.durationRange;
       this.budgetRange = saved.budgetRange || this.budgetRange;
-      this.selectedDate = saved.selectedDate ? new Date(saved.selectedDate) : this.selectedDate;
+      // this.selectedDate = saved.selectedDate ? new Date(saved.selectedDate) : this.selectedDate;
       this.selectedCategory = saved.selectedCategory || this.selectedCategory;
       this.selectedDestination = saved.selectedDestination || this.selectedDestination;
       this.selectedLocation = saved.selectedLocation || this.selectedLocation;
@@ -172,6 +172,12 @@ export class TourFilterComponent implements OnInit {
 
       const locationId = params['location'] ? +params['location'] : null;
       const destinationId = params['destination'] ? +params['destination'] : null;
+ const dateParam = params['available_to'];
+      if (dateParam) {
+        this.selectedDate = new Date(dateParam);
+      } else {
+        this.selectedDate = null; // ensure no auto-selection
+      }
 
       // console.log('DEBUG - Parsed locationId:', locationId);
       // console.log('DEBUG - Parsed destinationId:', destinationId);
@@ -426,7 +432,7 @@ export class TourFilterComponent implements OnInit {
     this.stateSvc.setFilter({
       durationRange: this.durationRange,
       budgetRange: this.budgetRange,
-      selectedDate: this.selectedDate,
+      // selectedDate: this.selectedDate,
       selectedCategory: this.selectedCategory,
       selectedDestination: this.selectedDestination,
       // selectedLocation: this.selectedLocation

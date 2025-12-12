@@ -134,7 +134,7 @@
         <div class="applied-chips" *ngIf="filterChips.length > 0">
           <div *ngFor="let chip of filterChips" class="chip">
             {{ chip.label }}
-            <span class="close-btn" (click)="removeFilter(chip.type, chip.label)">×</span>
+            <button class="close-btn" (click)="removeFilter(chip.type, chip.label)">×</button>
           </div>
         </div>
         <div *ngIf="dropdownOpen" class="filter-flyout" (click)="$event.stopPropagation()">

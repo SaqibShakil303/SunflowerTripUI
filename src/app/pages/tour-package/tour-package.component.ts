@@ -33,6 +33,7 @@ export class TourPackageComponent implements OnInit {
   categories: string[] = [];
   loading = false;
   error: string | null = null;
+previousParams: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,31 +60,38 @@ export class TourPackageComponent implements OnInit {
 
     // Handle query params for pre-applied filters
     this.route.queryParams.subscribe(params => {
-      const filters = {
-        destination_id: params['destination'] || '',
-        // location: params['location'] || '',
-        category: params['category'] || '',
-        // fromCity: params['fromCity'] || '',
-        min_price: params['min_price'] ? +params['min_price'] : '',
-        max_price: params['max_price'] ? +params['max_price'] : '',
-        min_duration: params['min_duration'] ? +params['min_duration'] : '',
-        max_duration: params['max_duration'] ? +params['max_duration'] : '',
-        // available_from: params['available_from'] || '',
-        available_to: params['available_to'] || ''
-      };
-      this.handleSearch(filters);
+      if (JSON.stringify(params) === JSON.stringify(this.previousParams)) {
+      return; // prevent loop
+    }
+
+    this.previousParams = params;
+    const filters = this.mapParamsToFilters(params);
+    this.handleSearch(filters, false); // ⬅️ don't update URL here
     });
+  }
+
+  mapParamsToFilters(params: any) {
+  return {
+    destination_id: params['destination'] || '',
+    category: params['category'] || '',
+    min_price: params['min_price'] ? +params['min_price'] : '',
+    max_price: params['max_price'] ? +params['max_price'] : '',
+    min_duration: params['min_duration'] ? +params['min_duration'] : '',
+    max_duration: params['max_duration'] ? +params['max_duration'] : '',
+    available_to: params['available_to'] || ''
+  };
   }
   formatPrice(price: string | number): string {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     return numPrice.toLocaleString('en-IN');
   }
 
-  handleSearch(filters: any) {
+  handleSearch(filters: any,updateUrl = true) {
     this.loading = true;
     this.error = null;
 // console.log('Applying filters:', filters);
     // Update URL query parameters to reflect current filters
+     if(updateUrl) {
     const queryParams = {
       destination: filters.destination_id || null,
       // location: filters.location || null,
@@ -103,7 +111,7 @@ export class TourPackageComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true
     });
-
+  }
     this.toursSvc.getFilteredTours(filters).subscribe({
       next: (data) => {
         this.tours = data;
