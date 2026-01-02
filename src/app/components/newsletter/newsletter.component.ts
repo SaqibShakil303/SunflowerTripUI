@@ -15,7 +15,7 @@ export class NewsletterComponent {
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
-emailSubscribe: string = '';
+
   constructor(
     private fb: FormBuilder,
     private newsletterService: NewsletterService
@@ -48,21 +48,5 @@ emailSubscribe: string = '';
         console.error('Newsletter subscribe failed:', err);
       }
     });
-  }
-
-  
-  subscribeNewsletter(): void {
-    if (this.validateEmail(this.emailSubscribe)) {
-      console.log('Subscribing email:', this.emailSubscribe);
-      this.emailSubscribe = '';
-      alert('Thank you for subscribing to our newsletter!');
-    } else {
-      alert('Please enter a valid email address.');
-    }
-  }
-
-  validateEmail(email: string): boolean {
-    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return re.test(email);
   }
 }

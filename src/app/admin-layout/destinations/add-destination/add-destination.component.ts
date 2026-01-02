@@ -44,6 +44,8 @@ export class AddDestinationComponent implements OnInit {
       language: ['', [Validators.required, Validators.minLength(3)]],
       time_zone: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+        meta_title: [''],
+      meta_description: [''],
       locations: this.fb.array([]),
       attractions: this.fb.array([]),
       ethnicities: this.fb.array([]),
@@ -177,7 +179,9 @@ export class AddDestinationComponent implements OnInit {
           currency: formValue.currency,
           language: formValue.language,
           time_zone: formValue.time_zone,
-          description: formValue.description
+          description: formValue.description,
+           meta_title: formValue.meta_title,
+          meta_description: formValue.meta_description
         },
         locations: formValue.locations.map((loc: Location) => ({
           name: loc.name,
@@ -258,7 +262,9 @@ export class AddDestinationComponent implements OnInit {
       currency: '',
       language: '',
       time_zone: '',
-      description: ''
+      description: '',
+      meta_title:'',
+      meta_description:''
     });
     this.locations.clear();
     this.attractions.clear();
@@ -316,7 +322,9 @@ export class AddDestinationComponent implements OnInit {
       time_zone: 'Time zone',
       description: 'Description',
       name: 'Location name',
-      rating: 'Rating'
+      rating: 'Rating',
+      meta_title: 'META title',
+      meta_description: 'META description'
     };
     return labels[fieldName] || fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
   }
@@ -355,7 +363,9 @@ export class AddDestinationComponent implements OnInit {
       currency: savedState.currency || '',
       language: savedState.language || '',
       time_zone: savedState.time_zone || '',
-      description: savedState.description || ''
+      description: savedState.description || '',
+      meta_title: savedState.meta_title || '',
+      meta_description :savedState.meta_description ||''
     });
 
     // Restore FormArray fields

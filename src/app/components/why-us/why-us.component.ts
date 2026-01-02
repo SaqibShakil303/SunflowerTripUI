@@ -46,6 +46,26 @@ export class WhyUsComponent implements AfterViewInit {
       AOS.init({ duration: 800, once: true });
       setTimeout(() => this.initSwiper(), 100); // Slight delay for DOM readiness
     }
+
+    // apply scroll animations
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.isIntersecting ? entry.target.classList.add("visible") : null;
+        
+      });
+    },
+    { threshold: 0.2, rootMargin: "0px 0px -100px 0px" }
+    );
+
+    document.querySelectorAll(".appear-from-bottom").forEach(el => {
+      observer.observe(el);
+    });
+    document.querySelectorAll(".appear-from-left").forEach(el => {
+      observer.observe(el);
+    });
+    document.querySelectorAll(".appear-from-right").forEach(el => {
+      observer.observe(el);
+    });
   }
 
   private initSwiper(): void {

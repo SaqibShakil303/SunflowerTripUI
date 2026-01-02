@@ -39,10 +39,10 @@ import { NewsletterComponent } from '../../components/newsletter/newsletter.comp
     WhyUsComponent,
     TourFilterComponent,
     DestinationsComponent,
-    NewsletterComponent
-],
+    NewsletterComponent,
+  ],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements AfterViewInit {
   searchTerm: string = '';
@@ -73,7 +73,7 @@ export class HomeComponent implements AfterViewInit {
       width: '300px',
       panelClass: 'trip-modal-panel',
       disableClose: false,
-      backdropClass: 'blur-backdrop'
+      backdropClass: 'blur-backdrop',
     });
   }
 
@@ -113,31 +113,57 @@ export class HomeComponent implements AfterViewInit {
       error: () => {
         this.searchResults = [];
         this.searching = false;
-      }
+      },
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     setTimeout(() => {
       this.isTestimonialsLoaded = true;
     }, 3000);
+
+    // slow down video playback speed
+    const video = document.getElementById('bg-video') as HTMLVideoElement;
+    if (video) {
+      video.playbackRate = 1;
+    }
+
+    // apply animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.isIntersecting ? entry.target.classList.add('visible') : null;
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -100px 0px' }
+    );
+
+    document.querySelectorAll('.appear-from-bottom').forEach((el) => {
+      observer.observe(el);
+    });
+    document.querySelectorAll('.appear-from-left').forEach((el) => {
+      observer.observe(el);
+    });
+    document.querySelectorAll('.appear-from-right').forEach((el) => {
+      observer.observe(el);
+    });
   }
 
   handleSearch(filters: any) {
-     if (filters.mode === 'flights') {
-    this.router.navigate(['/flights'], { queryParams: filters });
-    return;
-  }
+    if (filters.mode === 'flights') {
+      this.router.navigate(['/flights'], { queryParams: filters });
+      return;
+    }
     const queryParams: any = {};
 
     if (filters.fromCity) queryParams.fromCity = filters.fromCity;
     if (filters.destination) queryParams.destination = filters.destination;
     if (filters.location) queryParams.location = filters.location;
     if (filters.category) queryParams.category = filters.category;
-    if (filters.departureDate) queryParams.departure = new Date(filters.departureDate).toISOString();
+    if (filters.departureDate)
+      queryParams.departure = new Date(filters.departureDate).toISOString();
     if (filters.totalAdults) queryParams.adults = filters.totalAdults;
     if (filters.totalChildren) queryParams.children = filters.totalChildren;
     if (filters.rooms) queryParams.rooms = filters.rooms;

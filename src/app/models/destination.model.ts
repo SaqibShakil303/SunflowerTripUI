@@ -58,6 +58,8 @@ export class Destination {
   title!: string;
   slug?: string;
   description!: string;
+  meta_title?: string;
+  meta_description?: string;
   image_url!: string;
   best_time_to_visit!: string;
   weather!: string;

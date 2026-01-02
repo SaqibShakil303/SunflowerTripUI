@@ -1,19 +1,29 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { CommonModule, ViewportScroller } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { DestinationService } from '../../services/destination/destination.service';
 import { TourService } from '../../services/tours/tour.service';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
-import { FlightsService, Airport } from '../../services/flights/flights.service';
+import {
+  FlightsService,
+  Airport,
+} from '../../services/flights/flights.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-tour-filter',
   standalone: true,
   imports: [CommonModule, FormsModule, ClickOutsideDirective],
   templateUrl: './tour-filter.component.html',
-  styleUrl: './tour-filter.component.scss'
+  styleUrl: './tour-filter.component.scss',
 })
 export class TourFilterComponent implements OnInit {
   @Output() searchTriggered = new EventEmitter<any>();
@@ -68,12 +78,12 @@ export class TourFilterComponent implements OnInit {
   // Filter
   dropdownOpen = false;
   durationRange: number[] = [2, 18];
-   budgetRange: number[] = [10000, 500000];
+  budgetRange: number[] = [10000, 500000];
   filterChips: { label: string; type: string }[] = [];
 
   // Default values for comparison
   private readonly defaultDurationRange: number[] = [2, 18];
-   private readonly defaultBudgetRange: number[] = [10000, 500000];
+  private readonly defaultBudgetRange: number[] = [10000, 500000];
 
   constructor(
     private destSvc: DestinationService,
@@ -81,7 +91,8 @@ export class TourFilterComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private flightsSvc: FlightsService,
-    private stateSvc: StatePersistenceService
+    private stateSvc: StatePersistenceService,
+    private viewportScroller: ViewportScroller
   ) {
     this.initializeCalendar();
   }
@@ -91,51 +102,79 @@ export class TourFilterComponent implements OnInit {
   }
 
   // AUTOCOMPLETE HANDLERS
-  onAirportType(which: 'from'|'to') {
+  onAirportType(which: 'from' | 'to') {
     clearTimeout(this.airportTimer);
     this.airportTimer = setTimeout(() => {
-      const q = which==='from' ? this.fromAirportText : this.toAirportText;
+      const q = which === 'from' ? this.fromAirportText : this.toAirportText;
       if (!q || q.trim().length < 2) {
-        if (which==='from') this.fromOptions = []; else this.toOptions = [];
+        if (which === 'from') this.fromOptions = [];
+        else this.toOptions = [];
         return;
       }
-      this.flightsSvc.airports(q, true).subscribe(list => {
-        if (which==='from') this.fromOptions = list; else this.toOptions = list;
+      this.flightsSvc.airports(q, true).subscribe((list) => {
+        if (which === 'from') this.fromOptions = list;
+        else this.toOptions = list;
       });
     }, 250);
   }
 
-  pickAirport(which: 'from'|'to', a: Airport) {
-    if (which==='from') {
+  pickAirport(which: 'from' | 'to', a: Airport) {
+    if (which === 'from') {
       this.fromAirportText = `${a.city || a.name} (${a.iata})`;
-      this.fromIATA = a.iata; this.fromOptions = [];
+      this.fromIATA = a.iata;
+      this.fromOptions = [];
     } else {
       this.toAirportText = `${a.city || a.name} (${a.iata})`;
-      this.toIATA = a.iata; this.toOptions = [];
+      this.toIATA = a.iata;
+      this.toOptions = [];
     }
   }
 
   trackByIata = (_: number, a: Airport) => a.iata;
 
   // SEARCH FLIGHTS → navigate to /flights with query params
-  searchFlights(){
-    const from = this.fromIATA || (this.fromAirportText?.trim().length===3 ? this.fromAirportText.trim().toUpperCase() : '');
-    const to   = this.toIATA   || (this.toAirportText?.trim().length===3 ? this.toAirportText.trim().toUpperCase() : '');
+  searchFlights() {
+    const from =
+      this.fromIATA ||
+      (this.fromAirportText?.trim().length === 3
+        ? this.fromAirportText.trim().toUpperCase()
+        : '');
+    const to =
+      this.toIATA ||
+      (this.toAirportText?.trim().length === 3
+        ? this.toAirportText.trim().toUpperCase()
+        : '');
     if (!from || !to || !this.departDate) return;
 
     this.router.navigate(['/flights'], {
       queryParams: {
-        from, to,
+        from,
+        to,
         depart: this.departDate,
         ...(this.returnDate ? { ret: this.returnDate } : {}),
-        adults: this.adults, children: this.children, infants: this.infants,
-        cabin: this.cabin, nonStop: this.nonStop, currency: 'INR'
-      }
+        adults: this.adults,
+        children: this.children,
+        infants: this.infants,
+        cabin: this.cabin,
+        nonStop: this.nonStop,
+        currency: 'INR',
+      },
     });
 
     // optional emit if parent listens:
-    this.searchTriggered.emit({ mode:'flights', from, to, depart:this.departDate, ret:this.returnDate,
-      adults:this.adults, children:this.children, infants:this.infants, cabin:this.cabin, nonStop:this.nonStop, currency:'INR' });
+    this.searchTriggered.emit({
+      mode: 'flights',
+      from,
+      to,
+      depart: this.departDate,
+      ret: this.returnDate,
+      adults: this.adults,
+      children: this.children,
+      infants: this.infants,
+      cabin: this.cabin,
+      nonStop: this.nonStop,
+      currency: 'INR',
+    });
   }
 
   ngOnInit() {
@@ -145,7 +184,8 @@ export class TourFilterComponent implements OnInit {
       this.budgetRange = saved.budgetRange || this.budgetRange;
       // this.selectedDate = saved.selectedDate ? new Date(saved.selectedDate) : this.selectedDate;
       this.selectedCategory = saved.selectedCategory || this.selectedCategory;
-      this.selectedDestination = saved.selectedDestination || this.selectedDestination;
+      this.selectedDestination =
+        saved.selectedDestination || this.selectedDestination;
       this.selectedLocation = saved.selectedLocation || this.selectedLocation;
     }
     this.destSvc.getDestinationNames().subscribe({
@@ -155,24 +195,48 @@ export class TourFilterComponent implements OnInit {
         // console.log('DEBUG - Loaded destinations:', data);
         this.initializeFiltersFromQueryParams();
       },
-      error: (err) => console.error('Failed loading destinations', err)
+      error: (err) => console.error('Failed loading destinations', err),
     });
 
     this.toursSvc.getCategories().subscribe({
       next: (data) => {
         this.categories = data;
       },
-      error: (err) => console.error('Failed loading categories', err)
+      error: (err) => console.error('Failed loading categories', err),
+    });
+  }
+
+  ngAfterViewInit() {
+    // apply animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.isIntersecting ? entry.target.classList.add('visible') : null;
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    document.querySelectorAll('.appear-from-bottom').forEach((el) => {
+      observer.observe(el);
+    });
+    document.querySelectorAll('.appear-from-left').forEach((el) => {
+      observer.observe(el);
+    });
+    document.querySelectorAll('.appear-from-right').forEach((el) => {
+      observer.observe(el);
     });
   }
 
   initializeFiltersFromQueryParams() {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       // console.log('DEBUG - Query params received:', params);
 
       const locationId = params['location'] ? +params['location'] : null;
-      const destinationId = params['destination'] ? +params['destination'] : null;
- const dateParam = params['available_to'];
+      const destinationId = params['destination']
+        ? +params['destination']
+        : null;
+      const dateParam = params['available_to'];
       if (dateParam) {
         this.selectedDate = new Date(dateParam);
       } else {
@@ -220,7 +284,7 @@ export class TourFilterComponent implements OnInit {
 
   generateCalendarDays() {
     this.calendarDays = {};
-    [this.currentMonth, this.nextMonth].forEach(month => {
+    [this.currentMonth, this.nextMonth].forEach((month) => {
       const key = this.getMonthKey(month);
       this.calendarDays[key] = this.calculateDaysForMonth(month);
     });
@@ -251,14 +315,30 @@ export class TourFilterComponent implements OnInit {
   }
 
   prevMonth() {
-    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
-    this.nextMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() - 1,
+      1
+    );
+    this.nextMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
     this.generateCalendarDays();
   }
 
   nextMonths() {
-    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
-    this.nextMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
+    this.nextMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
     this.generateCalendarDays();
   }
 
@@ -324,13 +404,19 @@ export class TourFilterComponent implements OnInit {
 
   validateDurationRange() {
     if (this.durationRange[0] > this.durationRange[1]) {
-      [this.durationRange[0], this.durationRange[1]] = [this.durationRange[1], this.durationRange[0]];
+      [this.durationRange[0], this.durationRange[1]] = [
+        this.durationRange[1],
+        this.durationRange[0],
+      ];
     }
   }
 
   validateBudgetRange() {
     if (this.budgetRange[0] > this.budgetRange[1]) {
-      [this.budgetRange[0], this.budgetRange[1]] = [this.budgetRange[1], this.budgetRange[0]];
+      [this.budgetRange[0], this.budgetRange[1]] = [
+        this.budgetRange[1],
+        this.budgetRange[0],
+      ];
     }
   }
 
@@ -339,20 +425,30 @@ export class TourFilterComponent implements OnInit {
 
     const chips: { label: string; type: string }[] = [];
 
-    if (this.durationRange[0] !== this.defaultDurationRange[0] ||
-      this.durationRange[1] !== this.defaultDurationRange[1]) {
-      chips.push({ label: `${this.durationRange[0]}-${this.durationRange[1]} nights`, type: 'duration' });
+    if (
+      this.durationRange[0] !== this.defaultDurationRange[0] ||
+      this.durationRange[1] !== this.defaultDurationRange[1]
+    ) {
+      chips.push({
+        label: `${this.durationRange[0]}-${this.durationRange[1]} nights`,
+        type: 'duration',
+      });
     }
-    if (this.budgetRange[0] !== this.defaultBudgetRange[0] ||
-      this.budgetRange[1] !== this.defaultBudgetRange[1]) {
-      chips.push({ label: `₹${this.budgetRange[0].toLocaleString()}-₹${this.budgetRange[1].toLocaleString()}`, type: 'budget' });
+    if (
+      this.budgetRange[0] !== this.defaultBudgetRange[0] ||
+      this.budgetRange[1] !== this.defaultBudgetRange[1]
+    ) {
+      chips.push({
+        label: `₹${this.budgetRange[0].toLocaleString()}-₹${this.budgetRange[1].toLocaleString()}`,
+        type: 'budget',
+      });
     }
 
     this.filterChips = chips;
 
     this.displayedFilters = {
       duration: this.durationRange,
-      budget: this.budgetRange
+      budget: this.budgetRange,
     };
 
     this.searchTours();
@@ -367,15 +463,20 @@ export class TourFilterComponent implements OnInit {
         this.budgetRange = [...this.defaultBudgetRange];
         break;
     }
-    // this.applyFilters();
+    this.applyFilters();
   }
 
   searchTours() {
+    const scrollY = window.scrollY;
     // Build query parameters object like header component does
     const queryParams: any = {};
 
     // Add destination or location ID (same logic as header)
-    if (this.selectedLocation && typeof this.selectedLocation === 'object' && this.selectedLocation.id) {
+    if (
+      this.selectedLocation &&
+      typeof this.selectedLocation === 'object' &&
+      this.selectedLocation.id
+    ) {
       // queryParams.location = this.selectedLocation.id;
     } else if (this.selectedDestination && this.selectedDestination.id) {
       queryParams.destination = this.selectedDestination.id;
@@ -387,15 +488,19 @@ export class TourFilterComponent implements OnInit {
     }
 
     // Add budget range if different from default
-    if (this.budgetRange[0] !== this.defaultBudgetRange[0] ||
-      this.budgetRange[1] !== this.defaultBudgetRange[1]) {
+    if (
+      this.budgetRange[0] !== this.defaultBudgetRange[0] ||
+      this.budgetRange[1] !== this.defaultBudgetRange[1]
+    ) {
       queryParams.min_price = this.budgetRange[0];
       queryParams.max_price = this.budgetRange[1];
     }
 
     // Add duration range if different from default
-    if (this.durationRange[0] !== this.defaultDurationRange[0] ||
-      this.durationRange[1] !== this.defaultDurationRange[1]) {
+    if (
+      this.durationRange[0] !== this.defaultDurationRange[0] ||
+      this.durationRange[1] !== this.defaultDurationRange[1]
+    ) {
       queryParams.min_duration = this.durationRange[0];
       queryParams.max_duration = this.durationRange[1];
     }
@@ -410,12 +515,12 @@ export class TourFilterComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParams,
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
     });
 
-    // Also emit the payload for backward compatibility  
-    // const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object') 
-    //   ? this.selectedLocation.id 
+    // Also emit the payload for backward compatibility
+    // const locationId = (this.selectedLocation && typeof this.selectedLocation === 'object')
+    //   ? this.selectedLocation.id
     //   : '';
 
     const payload = {
@@ -426,7 +531,9 @@ export class TourFilterComponent implements OnInit {
       min_duration: this.durationRange[0],
       max_duration: this.durationRange[1],
       // available_from: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
-      available_to: this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '',
+      available_to: this.selectedDate
+        ? this.selectedDate.toISOString().split('T')[0]
+        : '',
       // location: locationId
     };
     this.stateSvc.setFilter({
@@ -438,6 +545,12 @@ export class TourFilterComponent implements OnInit {
       // selectedLocation: this.selectedLocation
     });
     this.searchTriggered.emit(payload);
+    // restore scroll after navigation completes
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        window.scrollTo({ top: scrollY, behavior: 'auto' });
+      });
   }
 
   onDestinationChange() {
@@ -446,7 +559,7 @@ export class TourFilterComponent implements OnInit {
     // this.selectedLocation = null;
     // console.log('DEBUG - selectedLocation reset to null');
     // this.searchTours();
-  } 
+  }
 
   onCategoryChange() {
     // this.searchTours();
@@ -461,7 +574,7 @@ export class TourFilterComponent implements OnInit {
     return date.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'short',
-      year: 'numeric'
+      year: 'numeric',
     });
   }
 
@@ -493,85 +606,96 @@ export class TourFilterComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
-      replaceUrl: true
+      replaceUrl: true,
     });
 
     this.searchTours();
   }
 
   private toYYMMDD(dateISO: string) {
-  // dateISO is 'YYYY-MM-DD' coming from <input type="date">
-  if (!dateISO) return '';
-  const [y, m, d] = dateISO.split('-');
-  return `${y.slice(2)}${m.padStart(2,'0')}${d.padStart(2,'0')}`; // YYMMDD
-}
-
-private normalizeIata(s: string) {
-  // Use the picked IATA if available; otherwise 3-char manual entry
-  const t = (s || '').trim().toUpperCase();
-  return t.length === 3 ? t : '';
-}
-
-private mapCabin(c: 'ECONOMY'|'PREMIUM_ECONOMY'|'BUSINESS'|'FIRST'): string {
-  switch (c) {
-    case 'PREMIUM_ECONOMY': return 'premiumeconomy';
-    case 'BUSINESS':        return 'business';
-    case 'FIRST':           return 'first';
-    default:                return 'economy';
-  }
-}
-
-/** Open Skyscanner with pre-filled search (no API required) */
-redirectToSkyscanner() {
-  const from = this.fromIATA || this.normalizeIata(this.fromAirportText);
-  const to   = this.toIATA   || this.normalizeIata(this.toAirportText);
-  if (!from || !to || !this.departDate) {
-    // optionally show a toast: "Please select valid airports and a date"
-    return;
+    // dateISO is 'YYYY-MM-DD' coming from <input type="date">
+    if (!dateISO) return '';
+    const [y, m, d] = dateISO.split('-');
+    return `${y.slice(2)}${m.padStart(2, '0')}${d.padStart(2, '0')}`; // YYMMDD
   }
 
-  const depart = this.toYYMMDD(this.departDate);
-  const ret    = this.returnDate ? this.toYYMMDD(this.returnDate) : '';
+  private normalizeIata(s: string) {
+    // Use the picked IATA if available; otherwise 3-char manual entry
+    const t = (s || '').trim().toUpperCase();
+    return t.length === 3 ? t : '';
+  }
 
-  const domain = 'https://www.skyscanner.co.in';
-  const path = ret ? `/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${depart}/${ret}/`
-                   : `/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${depart}/`;
+  private mapCabin(
+    c: 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST'
+  ): string {
+    switch (c) {
+      case 'PREMIUM_ECONOMY':
+        return 'premiumeconomy';
+      case 'BUSINESS':
+        return 'business';
+      case 'FIRST':
+        return 'first';
+      default:
+        return 'economy';
+    }
+  }
 
-  const params = new URLSearchParams({
-    adults: String(this.adults || 1),          // required
-    // children / infants are optional; only include if > 0
-    ...(this.children > 0 ? { children: String(this.children) } : {}),
-    ...(this.infants  > 0 ? { infants:  String(this.infants) }  : {}),
-    cabinclass: this.mapCabin(this.cabin),
-    preferdirects: String(!!this.nonStop),
-    currency: 'INR',
-    market: 'IN',
-    locale: 'en-GB',
-  });
+  /** Open Skyscanner with pre-filled search (no API required) */
+  redirectToSkyscanner() {
+    const from = this.fromIATA || this.normalizeIata(this.fromAirportText);
+    const to = this.toIATA || this.normalizeIata(this.toAirportText);
+    if (!from || !to || !this.departDate) {
+      // optionally show a toast: "Please select valid airports and a date"
+      return;
+    }
 
-  const url = `${domain}${path}?${params.toString()}`;
-  window.open(url, '_blank'); // or window.location.href = url;
-}
+    const depart = this.toYYMMDD(this.departDate);
+    const ret = this.returnDate ? this.toYYMMDD(this.returnDate) : '';
 
+    const domain = 'https://www.skyscanner.co.in';
+    const path = ret
+      ? `/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${depart}/${ret}/`
+      : `/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${depart}/`;
 
-// Add helpers
-get todayISO(): string { return new Date().toISOString().split('T')[0]; }
+    const params = new URLSearchParams({
+      adults: String(this.adults || 1), // required
+      // children / infants are optional; only include if > 0
+      ...(this.children > 0 ? { children: String(this.children) } : {}),
+      ...(this.infants > 0 ? { infants: String(this.infants) } : {}),
+      cabinclass: this.mapCabin(this.cabin),
+      preferdirects: String(!!this.nonStop),
+      currency: 'INR',
+      market: 'IN',
+      locale: 'en-GB',
+    });
 
-swapFromTo() {
-  [this.fromAirportText, this.toAirportText] = [this.toAirportText, this.fromAirportText];
-  [this.fromIATA, this.toIATA] = [this.toIATA, this.fromIATA];
-}
+    const url = `${domain}${path}?${params.toString()}`;
+    window.open(url, '_blank'); // or window.location.href = url;
+  }
 
-inc(field: 'adults'|'children'|'infants') {
-  if (field === 'adults') this.adults = Math.min(9, this.adults + 1);
-  if (field === 'children') this.children = Math.min(8, this.children + 1);
-  if (field === 'infants') this.infants = Math.min(this.adults, this.infants + 1); // 1 infant per adult rule
-}
+  // Add helpers
+  get todayISO(): string {
+    return new Date().toISOString().split('T')[0];
+  }
 
-dec(field: 'adults'|'children'|'infants') {
-  if (field === 'adults') this.adults = Math.max(1, this.adults - 1);
-  if (field === 'children') this.children = Math.max(0, this.children - 1);
-  if (field === 'infants') this.infants = Math.max(0, this.infants - 1);
-}
+  swapFromTo() {
+    [this.fromAirportText, this.toAirportText] = [
+      this.toAirportText,
+      this.fromAirportText,
+    ];
+    [this.fromIATA, this.toIATA] = [this.toIATA, this.fromIATA];
+  }
 
+  inc(field: 'adults' | 'children' | 'infants') {
+    if (field === 'adults') this.adults = Math.min(9, this.adults + 1);
+    if (field === 'children') this.children = Math.min(8, this.children + 1);
+    if (field === 'infants')
+      this.infants = Math.min(this.adults, this.infants + 1); // 1 infant per adult rule
+  }
+
+  dec(field: 'adults' | 'children' | 'infants') {
+    if (field === 'adults') this.adults = Math.max(1, this.adults - 1);
+    if (field === 'children') this.children = Math.max(0, this.children - 1);
+    if (field === 'infants') this.infants = Math.max(0, this.infants - 1);
+  }
 }

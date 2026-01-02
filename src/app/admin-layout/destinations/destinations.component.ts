@@ -62,6 +62,8 @@ export class DestinationsComponent implements OnInit {
           languages: dest.language ? dest.language.split(',').map(l => l.trim()) : [],
           timeZone: dest.time_zone,
           description: dest.description,
+            meta_title:dest.meta_title ,
+  meta_description: dest.meta_description,
           continent: dest.parent_id ? idToTitleMap.get(dest.parent_id) || 'Unknown' : 'Root',
           showDetails: false,
           isDeleting: false

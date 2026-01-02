@@ -6,6 +6,7 @@ $turmeric-yellow: #E9B44C;
 $peacock-blue: #005F73;
 $marigold-orange: #FF8500;
 $warm-white: #FDF6E3;
+$white-muted: #cdcdcd;
 $warm-gray: #8B7355;
 $dark-brown: #3E2723;
 $danger-red: #DC3545;
@@ -135,13 +136,13 @@ $font-heading: 'Playfair Display', serif;
 
       p {
         font-size: 0.9rem;
-        color: $dark-brown;
+        color: $white-muted;
         margin: 0.4rem 0;
         line-height: 1.5;
 
         .detail-label {
           font-weight: 500;
-          color: $warm-gray;
+          color: $dark-brown;
         }
       }
     }

@@ -73,6 +73,8 @@ export class EditDestinationComponent implements OnInit {
       language: ['', [Validators.required, Validators.minLength(3)]],
       time_zone: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+       meta_title: [''],
+      meta_description: [''],
       locations: this.fb.array<FormGroup>([]),
       attractions: this.fb.array<FormGroup>([]),
       ethnicities: this.fb.array<FormGroup>([]),
@@ -102,7 +104,7 @@ export class EditDestinationComponent implements OnInit {
   }
 
   private populateForm(): void {
-    const { id, parent_id, title, image_url, best_time_to_visit, weather, currency, language, time_zone, description, locations, attractions, ethnicities, cuisines, activities } = this.data;
+    const { id, parent_id, title, image_url, best_time_to_visit, weather, currency, language, time_zone, description,meta_title, meta_description, locations, attractions, ethnicities, cuisines, activities } = this.data;
    this.destinationForm.patchValue({
     id: id || null,
     parent_id: parent_id || null,
@@ -113,7 +115,9 @@ export class EditDestinationComponent implements OnInit {
     currency: currency || '',
     language: language || '',
     time_zone: time_zone || '',
-    description: description || ''
+    description: description || '',
+     meta_title: meta_title || '',
+      meta_description: meta_description || '',
   });
 
 // Populate FormArrays
@@ -348,7 +352,9 @@ onImageChange(event: Event, controlName: string, index?: number): void {
       'attractions': 'Attraction',
       'ethnicities': 'Ethnicity',
       'cuisines': 'Cuisine',
-      'activities': 'Activity'
+      'activities': 'Activity',
+      'meta_title': 'META Title',
+      'meta_description':'META description'
     };
     return labels[fieldName] || fieldName;
   }
@@ -372,7 +378,9 @@ onSubmit(): void {
       attractions: formValue.attractions,
       ethnicities: formValue.ethnicities,
       cuisines: formValue.cuisines,
-      activities: formValue.activities
+      activities: formValue.activities,
+       meta_title: formValue.meta_title,
+      meta_description:formValue.meta_description
     };
 
     this.destinationService.updateDestination(formValue.id, updatedDestination).subscribe({

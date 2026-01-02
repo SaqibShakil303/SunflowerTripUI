@@ -1,12 +1,12 @@
 <div class="glass-card faq-section" @listStagger>
-  <h2 @headerAnim>Frequently Asked Questions</h2>
+ <h2 class="appear-from-left" @headerAnim>Frequently Asked Questions</h2>
 
   <div class="faq-item" 
-       *ngFor="let item of faqs" 
+          *ngFor="let item of faqs()" 
        [class.active]="item.isOpen"
        (click)="toggleFaq(item)">
        
-    <div class="faq-question">
+    <div class="faq-question appear-from-right" #faqQuestion>
       {{ item.question }}
     </div>
 

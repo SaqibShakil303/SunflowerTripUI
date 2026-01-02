@@ -1,9 +1,9 @@
-@import 'variables';
-@import 'mixins';
+@import "variables";
+@import "mixins";
 
 .why-us-section {
   position: relative;
-  background-image: url('https://images.unsplash.com/photo-1626198226928-617fc6c6203e?q=80&w=1470');
+  background-image: url("https://images.unsplash.com/photo-1626198226928-617fc6c6203e?q=80&w=1470");
   background-size: cover;
   background-position: center;
   padding: 80px 20px;
@@ -111,81 +111,6 @@
     }
   }
 
-  :host ::ng-deep {
-    .swiper-pagination {
-      position: relative;
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-
-      .swiper-pagination-bullet {
-        width: 12px;
-        height: 12px;
-        background-color: rgba(255, 255, 255, 0.3);
-        opacity: 1;
-        transition: all 0.3s ease;
-        margin: 0 5px;
-        cursor: pointer;
-
-        &-active {
-          background-color: var(--light-pink);
-          transform: scale(1.2);
-          box-shadow: 0 0 10px rgba(178, 223, 219, 0.5);
-        }
-      }
-    }
-
-    .swiper-button {
-      &-next,
-      &-prev {
-        @include glassmorphism(0.2, 8px);
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        background: rgba(255, 255, 255, 0.1);
-
-        &::after {
-          font-size: 18px;
-          color: white;
-          font-weight: bold;
-        }
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: scale(1.1);
-        }
-
-        @media (max-width: 992px) {
-          width: 38px;
-          height: 38px;
-
-          &::after {
-            font-size: 16px;
-          }
-        }
-
-        @media (max-width: 576px) {
-          width: 34px;
-          height: 34px;
-
-          &::after {
-            font-size: 14px;
-          }
-        }
-      }
-
-      &-next {
-        right: 10px;
-      }
-
-      &-prev {
-        left: 10px;
-      }
-    }
-  }
-
   @media (max-width: 576px) {
     .whyus-slider {
       padding: 25px 15px;
@@ -209,4 +134,115 @@
       }
     }
   }
+}
+
+:host ::ng-deep {
+  .swiper-pagination {
+    position: relative;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+
+    .swiper-pagination-bullet {
+      width: 12px;
+      height: 12px;
+      background-color: rgba(255, 255, 255, 0.3);
+      opacity: 1;
+      transition: all 0.3s ease;
+      margin: 0 5px;
+      cursor: pointer;
+
+      &-active {
+        background-color: var(--light-pink);
+        transform: scale(1.2);
+        box-shadow: 0 0 10px rgba(178, 223, 219, 0.5);
+      }
+    }
+  }
+
+  .swiper-button {
+    &-next,
+    &-prev {
+      @include glassmorphism(0.2, 8px);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+
+      &::after {
+        font-size: 18px;
+        color: white;
+        font-weight: bold;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
+
+      @media (max-width: 992px) {
+        width: 38px;
+        height: 38px;
+
+        &::after {
+          font-size: 16px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        width: 34px;
+        height: 34px;
+
+        &::after {
+          font-size: 14px;
+        }
+      }
+    }
+
+    &-next {
+      top: 340px;
+      right: 0;
+    }
+
+    &-prev {
+      left: 0;
+      top: 340px;
+    }
+  }
+}
+
+// animation
+.appear-from-bottom {
+  opacity: 0;
+  transform: scale(0.9) translateY(40px);
+  transition: 0.5s ease-out;
+}
+
+.appear-from-bottom.visible {
+  opacity: 1;
+  transform: scale(1) translate(0);
+}
+
+.appear-from-left {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: 0.8s ease-out;
+}
+
+.appear-from-left.visible {
+  opacity: 1;
+  transform: translate(0);
+}
+
+.appear-from-right {
+  opacity: 0;
+  transform: translateX(100px);
+  transition: 0.8s ease-out;
+}
+
+.appear-from-right.visible {
+  opacity: 1;
+  transform: translate(0);
 }

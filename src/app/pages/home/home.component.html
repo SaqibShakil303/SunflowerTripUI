@@ -7,19 +7,29 @@
         height="100%"
         frameborder="0" -->
       <div class="background-fallback" *ngIf="!videoLoaded"></div>
-      <video class="background-iframe" autoplay muted loop playsinline id="bg-video" (loadeddata)="onVideoLoad()"
-        (error)="onVideoError()">
-        <source src="assets/video/aurora-northern-lights.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div class="video-wrapper">
+        <video
+          class="background-iframe"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadatas"
+          id="bg-video"
+          (loadeddata)="onVideoLoad()"
+          (error)="onVideoError()"
+        >
+          <source src="assets/video/world-tour-bg-optimized.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
 
     <!-- Mobile background -->
     <div class="mobile-only background-fallback"></div>
- <section class="app-header-section">
-   <app-header></app-header>
-
- </section>
+    <section class="app-header-section">
+      <app-header></app-header>
+    </section>
 
     <!-- Hero content -->
     <div class="hero-content">
@@ -38,34 +48,60 @@
       </div>
     </div>
 
-    <section class="tour-filter-section">
-      <!-- <div class="tour-filter-container"> -->
-      <app-tour-filter (searchTriggered)="handleSearch($event)"></app-tour-filter>
-      <!-- </div> -->
-    </section>
-    <app-tours></app-tours>
-    
     <!-- <button (click)="openTripPlanner()">Plan My Trip</button> -->
   </header>
 </section>
 
 <!-- Main content components -->
-<!-- <app-testimonials *ngIf="isTestimonialsLoaded"></app-testimonials> -->
-<app-destinations></app-destinations>
-    <section class="cta-section">
-      <div class="cta-content">
-        <h3>Ready for Your Next Adventure?</h3>
-        <p>
-          Let our travel experts help you plan the perfect getaway tailored
-          to your preferences and budget. Enjoy exclusive deals and personalized
-          service.
-        </p>
-        <a  (click)="openTripPlanner()" class="cta-btn">Plan Your Trip Now</a>
-      </div>
-    </section>
-<app-services *ngIf="isTestimonialsLoaded"></app-services>
-<app-why-us *ngIf="isTestimonialsLoaded"></app-why-us>
-<!-- <app-chat-widget></app-chat-widget> -->
-<app-map></app-map>
-<app-newsletter></app-newsletter>
+<main>
+  <section class="tour-filter-section">
+    <!-- <div class="tour-filter-container"> -->
+    <app-tour-filter (searchTriggered)="handleSearch($event)"></app-tour-filter>
+    <!-- </div> -->
+  </section>
+  <section>
+    <div class="appear-from-left">
+      <app-tours></app-tours>
+    </div>
+  </section>
+  <!-- <app-testimonials *ngIf="isTestimonialsLoaded"></app-testimonials> -->
+  <section>
+    <div class="appear-from-right">
+      <app-destinations></app-destinations>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="cta-content">
+      <h3 class="appear-from-bottom">Ready for Your Next Adventure?</h3>
+      <p class="appear-from-bottom">
+        Let our travel experts help you plan the perfect getaway tailored to
+        your preferences and budget. Enjoy exclusive deals and personalized
+        service.
+      </p>
+      <a (click)="openTripPlanner()" class="cta-btn">Plan Your Trip Now</a>
+    </div>
+  </section>
+  <section>
+    <div>
+      <app-services *ngIf="isTestimonialsLoaded"></app-services>
+    </div>
+  </section>
+  <section>
+    <div>
+      <app-why-us *ngIf="isTestimonialsLoaded"></app-why-us>
+    </div>
+  </section>
+  <!-- <app-chat-widget></app-chat-widget> -->
+  <section>
+    <div>
+      <app-map></app-map>
+    </div>
+  </section>
+  <section>
+    <div>
+      <app-newsletter></app-newsletter>
+    </div>
+  </section>
+</main>
+
 <app-footer></app-footer>

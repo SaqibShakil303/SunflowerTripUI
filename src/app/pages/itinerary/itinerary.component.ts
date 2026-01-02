@@ -44,11 +44,44 @@ export class ItineraryComponent implements OnDestroy {
   isLoading = false;
   successMessage = '';
   errorMessage = '';
-    timeoutTime = signal(10);
+  timeoutTime = signal(10);
   timeoutCountDown = signal(this.timeoutTime());
+  videoLoaded = signal(false);
+
+  
+  onVideoCanPlay() {
+    this.videoLoaded.set(true);
+  }
+  
+  onVideoError(event: Event) {
+    this.videoLoaded.set(false);
+  }
+
+  ngAfterViewInit() {
+    // apply animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.isIntersecting ? entry.target.classList.add('visible') : null;
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    document.querySelectorAll('.appear-from-bottom').forEach((el) => {
+      observer.observe(el);
+    });
+    document.querySelectorAll('.appear-from-left').forEach((el) => {
+      observer.observe(el);
+    });
+    document.querySelectorAll('.appear-from-right').forEach((el) => {
+      observer.observe(el);
+    });
+
+  }
 
   private destroy$ = new Subject<void>();
-isBengali = false;
+  isBengali = false;
   get childAges(): FormArray {
     return this.itineraryForm.get('childAges') as FormArray;
   }
@@ -57,7 +90,7 @@ isBengali = false;
     private fb: FormBuilder,
     private itineraryService: ItineraryService,
     private cdr: ChangeDetectorRef,
-        private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private router: Router,
   ) {
     this.itineraryForm = this.fb.group({
@@ -117,7 +150,7 @@ this.itineraryForm.get('children')!.valueChanges
       takeUntil(this.destroy$)
     ).subscribe({
       next: (response) => {
-       this.snackBar.open(`Success! A Confirmation Email has been sent to your email, Please check.`, 'Close', {
+        this.snackBar.open(`Success! A Confirmation Email has been sent to your email, Please check. (redirecting you to home in ${this.timeoutCountDown()}sec)`, 'Close', {
           duration: 10000,
           panelClass: ['success-snackbar'],
           horizontalPosition: 'center',
@@ -127,9 +160,19 @@ this.itineraryForm.get('children')!.valueChanges
         this.resetForm();
         this.isSubmitted = false;
         this.cdr.markForCheck();
+
+        // todo: countdown not reflecting in ui
+        setInterval(() => {
+          this.timeoutCountDown.set(this.timeoutCountDown() - 1)
+        }, 1000);
+
+        // redirect after 10 sec
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, (this.timeoutTime() * 1000));
       },
       error: (err) => {
-         this.snackBar.open(
+        this.snackBar.open(
           'Failed to send your form: ' + (err.error?.message || 'Unknown error'),
           'Close',
           {

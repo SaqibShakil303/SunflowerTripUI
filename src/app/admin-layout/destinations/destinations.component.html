@@ -129,6 +129,20 @@
                                         <p class="description-text">{{ destination.description }}</p>
                                     </div>
                                 </div>
+
+                                 <div class="details-section">
+                                        <h4 class="section-title">SEO Information</h4>
+                                        <div class="details-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Meta Title:</span>
+                                                <span class="detail-value">{{ destination.meta_title || 'N/A' }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Meta Description:</span>
+                                                <span class="detail-value">{{ destination.meta_description || 'N/A' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                             </td>
                         </tr>
                     </ng-container>

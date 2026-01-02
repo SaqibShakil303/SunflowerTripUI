@@ -1,8 +1,9 @@
-import { Component, ElementRef, Renderer2 } from '@angular/core';
+import { Component, ElementRef, QueryList, Renderer2, signal, ViewChildren } from '@angular/core';
 import {
   trigger, transition, style, animate, query, stagger
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { Faq, FaqService } from '../../services/faq/faq.service';
 
 @Component({
   selector: 'app-faq',
@@ -41,37 +42,45 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class FAQComponent {
- faqs = [
-    {
-      question: 'Can I customize my travel package?',
-      answer: 'Yes, all our packages are fully customizable based on your preferences. Our travel experts will work with you to create a personalized itinerary that suits your interests, budget, and time constraints.',
-      isOpen: false
-    },
-    {
-      question: 'What is your cancellation policy?',
-      answer: 'We offer flexible cancellation depending on the package and timeframe. Generally, cancellations made 30 days before departure receive a full refund, while cancellations between 15-29 days receive a 50% refund. Please check your specific package details for exact terms.',
-      isOpen: false
-    },
-    {
-      question: 'Do you arrange visa assistance?',
-      answer: 'Yes, we provide comprehensive visa assistance including documentation guidance, application form filling, and appointment scheduling for most destinations. Our team keeps updated with the latest visa requirements to ensure a smooth process.',
-      isOpen: false
-    },
-    {
-      question: 'Is travel insurance included in your packages?',
-      answer: 'Basic travel insurance is included in all our international packages. However, we recommend upgrading to our premium insurance options for extended coverage including higher medical benefits, trip cancellation protection, and coverage for adventure activities.',
-      isOpen: false
-    },
-    {
-      question: 'How many people are typically in a group tour?',
-      answer: 'Our standard group tours typically have 8-16 participants to ensure personal attention and comfort. For specialized tours and expeditions, group sizes may vary. Private tours are also available for those seeking a more exclusive experience.',
-      isOpen: false
-    }
-  ];
-  constructor(private renderer: Renderer2, private elRef: ElementRef) {}
+  @ViewChildren('faqQuestion') faqQuestions!: QueryList<ElementRef>;
+ faqs = signal<Faq[]>([])
+  constructor(private renderer: Renderer2, private elRef: ElementRef, private faqService: FaqService) {}
+
+  ngOnInit() {
+    this.faqService.getAllFaqs().subscribe({
+      next: (data: any) => {
+        const newData = data.data?.map((faq: Faq) => {
+          return { ...faq, isOpen: false };
+        });
+        this.faqs.set(newData);
+        console.log(newData);
+      },
+      error: (err) => console.log('Error while fetching all faqs', err),
+      complete: () => console.log('all faqs fetched successfully'),
+    });
+  }
+
+  ngAfterViewInit() {
+    // apply animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.isIntersecting ? entry.target.classList.add('visible') : null;
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    this.faqQuestions.changes.subscribe(() => {
+      this.faqQuestions.forEach((item) => observer.observe(item.nativeElement));
+    });
+
+    // initial render
+    this.faqQuestions.forEach((item) => observer.observe(item.nativeElement));
+  }
 
  toggleFaq(clickedItem: any): void {
-  this.faqs.forEach(item => {
+  this.faqs().forEach(item => {
     item.isOpen = (item === clickedItem) ? !item.isOpen : false;
   });
 }

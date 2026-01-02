@@ -13,8 +13,9 @@
 
     <!-- Navigation Links -->
     <a href="tel:+913335474551">+91 33 3547 4551</a>
+     <a href="tel:+917076421377">+91 7076421377</a>
     <button class="custom-btn" [routerLink]="['/itinerary']"
-      (click)="customizeHoliday(); navigateTo('/itinerary')">Customize My Holiday</button>
+      (click)="customizeHoliday(); navigateTo('/itinerary')">Customize Your Holiday</button>
     <ng-container *ngFor="let group of navGroups">
       <button class="custom-btn nav-btn" 
         (click)="navigateTo(group.items[0].route, group.items[0].queryParams)">

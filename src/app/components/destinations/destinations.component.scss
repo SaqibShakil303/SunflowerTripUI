@@ -3,7 +3,8 @@
 
 .destinations {
   position: relative;
-  padding: 100px 0;
+ padding-top: 1rem;
+  padding-bottom: 7.5rem;
   overflow: hidden;
 
   &::before {
@@ -160,7 +161,7 @@
     margin-bottom: 10px;
     transform: translateY(5px);
     transition: all 0.5s var(--bezier-smooth);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 5px rgba(51, 51, 51, 0.855);
 
     @media (max-width: 576px) {
       font-size: 1.5rem;
@@ -315,11 +316,27 @@
     }
 
     &-next {
-      right: 10px;
+       top: 477px;
+      right: 0;
+      @media (max-width: 992px) {
+        top: 440px;
+      }
+      @media (max-width: 576px) {
+        right: 10px;
+        top: 430px;
+      }
     }
 
     &-prev {
-      left: 10px;
+      top: 477px;
+      left: 0;
+      @media (max-width: 992px) {
+        top: 440px;
+      }
+      @media (max-width: 576px) {
+        left: 10px;
+        top: 430px;
+      }
     }
   }
 }

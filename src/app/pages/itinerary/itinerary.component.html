@@ -1,65 +1,169 @@
 <app-navbar></app-navbar>
 
 <section class="section itinerary" id="itinerary">
+  <div class="desktop-only">
+    <!-- class=""
+        width="100%"
+        height="100%"
+        frameborder="0" -->
+    <div class="background-fallback" *ngIf="!videoLoaded()"></div>
+    <div class="video-wrapper">
+      <video
+        class="background-iframe"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        id="bg-video"
+        (canplay)="onVideoCanPlay()"
+        (error)="onVideoError($event)"
+      >
+        <source
+          src="assets/video/london-eye-optimized.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+  <!-- Mobile background -->
+  <div class="mobile-only background-fallback"></div>
+
   <div class="container">
     <div class="section-title">
-      <h2>Design Your Dream Trip</h2>
-      <p>Share your vision, and we’ll craft a personalized itinerary just for you</p>
+      <h2 class="appear-from-left">Design Your Dream Trip</h2>
+      <p class="appear-from-left" [style.transitionDelay]="'300ms'">
+        Share your vision, and we’ll craft a personalized itinerary just for
+        you.
+      </p>
     </div>
-    <div class="form-wrapper" [@fadeInUp]>
-      <!-- <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
-<div class="success-message" *ngIf="successMessage">{{ successMessage }}</div> -->
+    <div class="form-wrapper appear-from-bottom" [@fadeInUp]>
+      <!-- <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div> -->
+      <!-- <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div> -->
       <form [formGroup]="itineraryForm" (ngSubmit)="onSubmit()">
         <div class="form-grid">
           <div class="form-group">
             <label for="name">Your Name</label>
-            <input id="name" type="text" formControlName="name" placeholder="enter your name" />
-            <span class="error" *ngIf="itineraryForm.get('name')?.invalid && (itineraryForm.get('name')?.touched || isSubmitted)">
-    {{ itineraryForm.get('name')?.hasError('required') ? 'Name is required' : '' }}
-  </span>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="enter your name"
+            />
+            <span
+              class="error"
+              *ngIf="
+                itineraryForm.get('name')?.invalid &&
+                (itineraryForm.get('name')?.touched || isSubmitted)
+              "
+            >
+              {{
+                itineraryForm.get("name")?.hasError("required")
+                  ? "Name is required"
+                  : ""
+              }}
+            </span>
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input id="email" type="email" formControlName="email" placeholder="enter your name@example.com" />
-          <span class="error" *ngIf="itineraryForm.get('email')?.invalid && (itineraryForm.get('email')?.touched || isSubmitted)">
-    {{ itineraryForm.get('email')?.hasError('required') ? 'Email is required' : 'Invalid email' }}
-  </span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="enter your name@example.com"
+            />
+            <span
+              class="error"
+              *ngIf="
+                itineraryForm.get('email')?.invalid &&
+                (itineraryForm.get('email')?.touched || isSubmitted)
+              "
+            >
+              {{
+                itineraryForm.get("email")?.hasError("required")
+                  ? "Email is required"
+                  : "Invalid email"
+              }}
+            </span>
           </div>
           <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input id="phone" type="tel" formControlName="phone" placeholder="+91 your number" />
-             <span class="error" *ngIf="itineraryForm.get('phone')?.invalid && (itineraryForm.get('[phone]')?.touched || isSubmitted)">
-    {{ itineraryForm.get('phone')?.hasError('required') ? 'phone number is required' : 'Invalid phone' }}
-  </span>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="+91 your number"
+            />
+            <span
+              class="error"
+              *ngIf="
+                itineraryForm.get('phone')?.invalid &&
+                (itineraryForm.get('[phone]')?.touched || isSubmitted)
+              "
+            >
+              {{
+                itineraryForm.get("phone")?.hasError("required")
+                  ? "phone number is required"
+                  : "Invalid phone"
+              }}
+            </span>
           </div>
           <div class="form-group">
             <label for="destination">Preferred Destination</label>
-            <input id="destination" type="text" formControlName="destination" placeholder="e.g., Paris, Europe" />
+            <input
+              id="destination"
+              type="text"
+              formControlName="destination"
+              placeholder="e.g., Paris, Europe"
+            />
           </div>
           <div class="form-group">
             <label for="travelers">Number of Travelers</label>
-            <input id="travelers" type="number" formControlName="travelers" min="1" />
+            <input
+              id="travelers"
+              type="number"
+              formControlName="travelers"
+              min="1"
+            />
           </div>
-        <div class="form-group">
-  <label for="children">Number of Children</label>
-  <input id="children" type="number" formControlName="children" min="0" />
-</div>
+          <div class="form-group">
+            <label for="children">Number of Children</label>
+            <input
+              id="children"
+              type="number"
+              formControlName="children"
+              min="0"
+            />
+          </div>
 
-<div class="child-ages-wrapper" *ngIf="childAges.length > 0">
-  <label class="block-label">Enter Children's Ages</label>
-  <div class="child-ages" formArrayName="childAges">
-    <ng-container *ngFor="let ctrl of childAges.controls; let i = index">
-      <div class="form-group">
-        <label [for]="'childAge' + i">Child {{ i + 1 }} Age</label>
-        <input [id]="'childAge' + i" type="number" [formControlName]="i" placeholder="e.g., 5" />
-      </div>
-    </ng-container>
-  </div>
-</div>
+          <div class="child-ages-wrapper" *ngIf="childAges.length > 0">
+            <label class="block-label">Enter Children's Ages</label>
+            <div class="child-ages" formArrayName="childAges">
+              <ng-container
+                *ngFor="let ctrl of childAges.controls; let i = index"
+              >
+                <div class="form-group">
+                  <label [for]="'childAge' + i">Child {{ i + 1 }} Age</label>
+                  <input
+                    [id]="'childAge' + i"
+                    type="number"
+                    [formControlName]="i"
+                    placeholder="e.g., 5"
+                  />
+                </div>
+              </ng-container>
+            </div>
+          </div>
 
           <div class="form-group">
             <label for="duration">Trip Duration (Days)</label>
-            <input id="duration" type="number" formControlName="duration" min="1" />
+            <input
+              id="duration"
+              type="number"
+              formControlName="duration"
+              min="1"
+            />
           </div>
           <div class="form-group">
             <label for="date">Tentative Travel Date</label>
@@ -98,7 +202,7 @@
             <select id="occupation" formControlName="occupation">
               <option value="" disabled>Select Occupation</option>
               <option value="govt-service">Govt. Service</option>
-                <option value="private-service">Private Service</option>
+              <option value="private-service">Private Service</option>
               <option value="business">Business</option>
               <option value="others">Others</option>
             </select>
@@ -107,11 +211,18 @@
 
         <div class="form-group preferences">
           <label for="preferences">Any special request</label>
-          <textarea id="preferences" formControlName="preferences" rows="4" placeholder="Interests, accommodation, dietary needs..."></textarea>
+          <textarea
+            id="preferences"
+            formControlName="preferences"
+            rows="4"
+            placeholder="Interests, accommodation, dietary needs..."
+          ></textarea>
         </div>
 
         <div class="submit-btn">
-          <button type="submit" [disabled]="itineraryForm.invalid || isLoading">{{ isLoading ? 'Submitting...' : 'Submit Your Plan' }}</button>
+          <button type="submit" [disabled]="itineraryForm.invalid || isLoading">
+            {{ isLoading ? "Submitting..." : "Submit Your Plan" }}
+          </button>
         </div>
       </form>
     </div>

@@ -1,41 +1,40 @@
+@import "mixins";
+.faq-section {
+  padding-inline: 5rem;
+  padding-block: 2.25rem;
 
-  @import 'mixins';
-  .faq-section {
-    padding-left: 5rem;
-    padding-right: 5rem;
-    margin-top: 3rem;
+  h2 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
 
-    h2 {
-      color: #fff;
-      font-size: 2rem;
-      margin-bottom: 1rem;
+  .faq-item {
+    @include glass-card;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &.active {
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    .faq-item {
-      @include glass-card;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      cursor: pointer;
-      transition: background 0.3s;
+    .faq-question {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #fff;
+      overflow: hidden;
+    }
 
-      &.active {
-        background: rgba(255, 255, 255, 0.15);
-      }
-
-      .faq-question {
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: #fff;
-      }
-
-      .faq-answer {
-        margin-top: 0.5rem;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
-  animation: fadeIn 0.3s ease-in-out;
-      }
+    .faq-answer {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+      animation: slide-down 0.3s ease-in-out;
+      transition: all;
     }
   }
+}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -46,19 +45,64 @@
     transform: translateY(0);
   }
 }
-  @media (max-width: 768px) {
-    .contact-container {
-      flex-direction: column;
-    }
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
 
-    .contact-info,
-    .contact-form {
-      flex: 1 1 100%;
-    }
+  .contact-info,
+  .contact-form {
+    flex: 1 1 100%;
+  }
 
-    .section-title {
-      h2 {
-        font-size: 2rem;
-      }
+  .section-title {
+    h2 {
+      font-size: 2rem;
     }
   }
+}
+
+// animation
+.appear-from-bottom {
+  opacity: 0;
+  transform: scale(0.9) translateY(40px);
+  transition: 0.5s ease-out;
+}
+
+.appear-from-bottom.visible {
+  opacity: 1;
+  transform: scale(1) translate(0);
+}
+
+.appear-from-left {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: 0.8s ease-out;
+}
+
+.appear-from-left.visible {
+  opacity: 1;
+  transform: translate(0);
+}
+
+.appear-from-right {
+  opacity: 0;
+  transform: translateX(100px);
+  transition: 0.8s ease-out;
+}
+
+.appear-from-right.visible {
+  opacity: 1;
+  transform: translate(0);
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
