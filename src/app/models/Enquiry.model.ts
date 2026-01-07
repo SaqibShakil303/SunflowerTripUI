@@ -1,6 +1,7 @@
 export class Enquiry {
   id!: number;
   tour_id!: string;
+  tour_title?: string;
   name!: string;
   email!: string;
   phone?: string;

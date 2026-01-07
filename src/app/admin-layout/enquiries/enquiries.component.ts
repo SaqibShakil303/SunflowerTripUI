@@ -233,7 +233,7 @@ export class EnquiriesComponent implements OnInit {
   }
 
   exportEnquiries(): void {
-    const headers = ['id', 'tour_id', 'name', 'email', 'phone', 'description', 'created_at'];
+    const headers = ['id', 'tour_id', 'name', 'email', 'phone', 'description', 'tour_title', 'created_at'];
     const rows = this.filteredEnquiries.map(enquiry =>
       headers.map(h => {
         if (h === 'created_at') return `"${this.formatDate(enquiry[h])} ${this.formatTime(enquiry[h])}"`;
