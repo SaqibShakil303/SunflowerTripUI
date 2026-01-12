@@ -1,0 +1,224 @@
+ <app-header></app-header>
+@if(destination()) {
+<main>
+  <div
+    class="hero-container"
+    [style.--hero-image]="'url(' + destination()?.image_url || heroImage + ')'"
+  >
+    <div class="hero-wrapper">
+      <div class="hero-content">
+        <div class="hero-title">
+          <p>
+            Discover the Beauty of
+          </p>
+          <h1>{{ destination()?.title | uppercase }}</h1>
+        </div>
+        <div class="hero-description">
+          <p>
+            {{ destination()?.description }}
+          </p>
+        </div>
+        <div class="quick-facts-container">
+          <div class="quick-facts-item">
+            <div class="quick-facts-item-label">Best time to visit</div>
+            <div class="quick-facts-item-value">
+              {{ destination()?.best_time_to_visit }}
+            </div>
+          </div>
+          <div class="quick-facts-item">
+            <div class="quick-facts-item-label">Weather</div>
+            <div class="quick-facts-item-value">
+              {{ destination()?.weather }}
+            </div>
+          </div>
+          <div class="quick-facts-item">
+            <div class="quick-facts-item-label">Currency</div>
+            <div class="quick-facts-item-value">
+              {{ destination()?.currency }}
+            </div>
+          </div>
+          <div class="quick-facts-item">
+            <div class="quick-facts-item-label">Language</div>
+            <div class="quick-facts-item-value">
+              {{ destination()?.language }}
+            </div>
+          </div>
+          <div class="quick-facts-item">
+            <div class="quick-facts-item-label">Time Zone</div>
+            <div class="quick-facts-item-value">
+              {{ destination()?.time_zone }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="destination-description-container">
+    <div class="destination-description-wrapper">
+      @for(destination of destination()?.locations; track destination.id) {
+      <div class="destination-description-content">
+        <div class="destination-description-text">
+          <h1>{{ destination.name }}</h1>
+          <p>
+            {{ destination.description }}
+          </p>
+        </div>
+        <div class="description-description-img">
+          <img [src]="destination.image_url" [alt]="destination.name" />
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  @if(destination()?.tours?.length) {
+  <div class="top-packages-container">
+    <div class="top-packages-wrapper">
+      <h1>Top Packages</h1>
+      <div class="package-cards-container">
+        <div class="package-cards-wrapper">
+          @for(package of destination()?.tours; track package.id) {
+          <div
+            class="package-card"
+            [style.--package-card-bg-img]="'url(' + package.image_url + ')'"
+          >
+            <div class="package-card-content">
+              <h1 class="package-title">{{ package.title | titlecase }}</h1>
+              <div class="package-info">{{ package.duration_days }}</div>
+              <div class="package-price">{{ package.price | currency:'INR'}}</div>
+            </div>
+            <div class="btn-container">
+              <button class="book-now-btn" (click)="handleBookNow(package.slug)">Book Now</button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <div
+    class="best-attractions-container"
+    [style.--best-attraction-bg-image]="
+      'url(' + bestAttractionPreviewImage() + ')'
+    "
+  >
+    <div class="best-attractions-wrapper">
+      <div class="best-attractions-heading"><h1>Best Attractions</h1></div>
+      <div class="best-attractions-top">
+        <div class="best-attractions-top-text">
+          <h1>Discover the {{ destination()?.title }} in a new way</h1>
+        </div>
+        <!-- image preview  -->
+        <div class="best-attractions-top-img">
+          <img [src]="bestAttractionPreviewImage()" alt="" />
+        </div>
+      </div>
+      <!-- selectable images  -->
+      <div class="best-attractions-bottom">
+        <div class="best-attractions-bottom-img-wrapper">
+          @for(attraction of destination()?.attractions; track attraction.id) {
+          <div
+            class="best-attractions-bottom-img"
+            (click)="handleSelectableImgClick(attraction.image_url)"
+          >
+            <img [src]="attraction.image_url" [alt]="attraction.title" />
+            <span>{{attraction.title}}</span>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ethinic culture section  -->
+  <div class="ethinic-culture-container">
+    <div class="ethinic-culture-wrapper">
+      <div class="ethinic-culture-heading"><h1>Ethinic Culture</h1></div>
+      <div class="ethinic-culture-card-container">
+        @for(ethinicity of destination()?.ethnicities; track ethinicity.id) {
+        <div
+          class="ethinic-culture-card"
+          [style.--ethinic-culture-card-bg-img]="
+            'url(' + ethinicity.image_url + ')'
+          "
+        >
+          <h1>{{ ethinicity.title }}</h1>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- cuisines section  -->
+  <div class="cuisines-container">
+    <div class="cuisines-wrapper">
+      <div class="cuisines-heading"><h1>Cuisines</h1></div>
+      <div class="cuisines-card-container">
+        @for(cuisine of destination()?.cuisines; track cuisine.id) {
+        <div
+          class="cuisines-card"
+          [style.--cuisine-card-bg-img]="'url(' + cuisine.image_url + ')'"
+        >
+          <h1>{{ cuisine.title }}</h1>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- activities section  -->
+  <div class="activities-container">
+    <div class="activities-wrapper">
+      <div class="activities-heading"><h1>Activities</h1></div>
+      <div class="activities-card-container">
+        @for(activity of destination()?.activities; track activity.id) {
+        <div
+          class="activities-card"
+          [style.--activity-card-bg-img]="'url(' + activity.image_url + ')'"
+        >
+          <h1>{{ activity.title | titlecase}}</h1>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <section class="map-container">
+    <h1>Explore in 360°</h1>
+
+    <div class="map-group-container">
+      @for(loc of destination()?.locations; track loc.id;) {
+      <div class="map-item-container">
+        <h1 class="map-location-name">{{ loc.name }}</h1>
+        <iframe
+          [src]="loc.iframe_360 | safeUrl"
+          width="100%"
+          height="400"
+          frameborder="0"
+          allowfullscreen
+        >
+        </iframe>
+      </div>
+      }
+    </div>
+  </section>
+</main>
+} @else {
+<div class="destination-loading-fallback">
+  @if(isDestinationLoading()) {
+  <div class="destination-loading-content">
+    <p>loading...</p>
+  </div>
+  } @if(isDestinationNotFound()) {
+  <div class="destination-not-found-content">
+    <h1>404</h1>
+    <p>No such destination available.</p>
+  </div>
+  }
+</div>
+}
+
+<app-footer></app-footer>

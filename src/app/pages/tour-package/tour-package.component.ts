@@ -134,7 +134,7 @@ export class TourPackageComponent implements OnInit {
 
   handleSearch(filters: any, updateUrl = true) {
     // ✅ capture scroll BEFORE anything changes
-    this.lastScrollY = window.scrollY;
+    // this.lastScrollY = window.scrollY;
     this.loading = true;
     this.error = null;
     // console.log('Applying filters:', filters);
@@ -170,12 +170,12 @@ export class TourPackageComponent implements OnInit {
           this.error = 'No tours found matching your filters.';
         }
         // ✅ RESTORE SCROLL AFTER DOM IS PAINTED
-        requestAnimationFrame(() => {
-          window.scrollTo({
-            top: this.lastScrollY,
-            behavior: 'smooth',
-          });
-        });
+        // requestAnimationFrame(() => {
+        //   window.scrollTo({
+        //     top: this.lastScrollY,
+        //     behavior: 'smooth',
+        //   });
+        // });
       },
       error: (err) => {
         this.error = 'Failed to load tours.';

@@ -120,8 +120,8 @@ export const routes: Routes = [
   //   loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent)
   // }
   {
-    path: 'destination/:title',
-    loadComponent: () => import('./pages/destination-main/destination-main.component').then(m => m.DestinationMainComponent)
+    path: 'destination/:slug',
+    loadComponent: () => import('./pages/destination/destination.component').then(m => m.DestinationComponent)
   },
 
   {
