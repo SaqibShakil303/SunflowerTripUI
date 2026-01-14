@@ -334,6 +334,13 @@ h2._active {
 
 
 // animation 
+
+.appear-from-left,
+.appear-from-right {
+  overflow-x: clip;   // modern
+  width: 100%;
+  max-width: 100%;
+}
 .appear-from-bottom {
   opacity: 0;
   transform: scale(0.9) translateY(40px);
@@ -357,12 +364,21 @@ h2._active {
 }
 
 .appear-from-right {
+    overflow-x: hidden;
+     max-width: 100%;
   opacity: 0;
   transform: translateX(100px);
   transition: 0.8s ease-out;
 }
 
 .appear-from-right.visible {
+    overflow-x: hidden;
   opacity: 1;
   transform: translate(0);
+}
+
+
+@media (max-width: 768px) {
+  .appear-from-left { transform: translateX(-24px); }
+  .appear-from-right { transform: translateX(24px); }
 }
