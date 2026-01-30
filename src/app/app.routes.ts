@@ -34,12 +34,13 @@ import { GroupBrochureComponent } from './pages/group-brochure/group-brochure.co
 import { ServiceComponent } from './pages/services/services.component';
 import { TestimonialComponent } from './pages/testimonials/testimonials.component';
 import { CareersComponent } from './pages/careers/careers.component';
-
+import { CustomerDashboardComponent } from './pages/customer-dashboard/customer-dashboard.component';
+import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
 
 export const routes: Routes = [
-      {
-    path:'customize-planner',
-    component: ItineraryComponent
+  {
+    path: 'customize-planner',
+    component: ItineraryComponent,
   },
   { path: 'itinerary', component: ItineraryComponent },
 
@@ -65,11 +66,11 @@ export const routes: Routes = [
       // { path: 'newsletter', component: NewsletterComponent },
       // { path: 'contact', component: ContactComponent },
       // { path: 'map', component: MapComponent },
-      { path: '', redirectTo: '', pathMatch: 'full' }
-    ]
+      { path: '', redirectTo: '', pathMatch: 'full' },
+    ],
   },
-//   { path: 'booking/success/:bookingId', loadComponent: () => import('./pages/booking-success/booking-success.component').then(m => m.BookingSuccessComponent) },
-// { path: 'booking/cancelled', loadComponent: () => import('./pages/booking-cancelled/booking-cancelled.component').then(m => m.BookingCancelledComponent) },
+  //   { path: 'booking/success/:bookingId', loadComponent: () => import('./pages/booking-success/booking-success.component').then(m => m.BookingSuccessComponent) },
+  // { path: 'booking/cancelled', loadComponent: () => import('./pages/booking-cancelled/booking-cancelled.component').then(m => m.BookingCancelledComponent) },
 
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignUpComponent },
@@ -77,17 +78,50 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [
-      () => inject(AuthService).isAuthenticated() || inject(Router).navigate(['/login']),
-      RoleGuard
+      () =>
+        inject(AuthService).isAuthenticated() ||
+        inject(Router).navigate(['/login']),
+      RoleGuard,
     ],
-    data: { roles: ['user', 'manager', 'admin'] }
+    data: { roles: ['user', 'manager', 'admin'] },
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin-layout/admin-layout.module').then(m => m.AdminLayoutModule),
-    // component: AdminLayoutComponent, 
+    loadChildren: () =>
+      import('./admin-layout/admin-layout.module').then(
+        (m) => m.AdminLayoutModule,
+      ),
+    // component: AdminLayoutComponent,
     canActivate: [RoleGuard],
-    data: { roles: ['admin', 'manager'] }
+    data: { roles: ['admin', 'manager'] },
+  },
+  {
+    path: 'customer-dashboard',
+    loadComponent: () => import('./pages/customer-dashboard/customer-dashboard.component').then(m => m.CustomerDashboardComponent),
+    children: [
+      {
+        path: '', 
+        loadComponent: () => import('./pages/customer-dashboard/trips/trips.component')
+          .then(m => m.TripsComponent)
+      },
+      {
+        path: 'trips', 
+        loadComponent: () => import('./pages/customer-dashboard/trips/trips.component')
+          .then(m => m.TripsComponent)
+      },
+      {
+        path: 'wishlists',
+        loadComponent: () => import('./pages/customer-dashboard/wishlist/wishlist.component')
+          .then(m => m.WishlistComponent)
+      },
+      {
+        path: 'account',
+        loadComponent: () => import('./pages/customer-dashboard/account/account.component')
+          .then(m => m.AccountComponent)
+      }
+    ],
+    canActivate: [RoleGuard],
+    data: { roles: ['user']}
   },
   // {
   //   path:'itinerary-admin',
@@ -97,6 +131,9 @@ export const routes: Routes = [
   // },
 
   { path: 'auth/:provider/callback', component: AuthCallbackComponent },
+    { path: 'sign-in-with/google/oauth2', 
+    loadComponent: () => import('./auth/google-callback/google-callback.component').then(m => m.GoogleCallbackComponent)
+  },
   //  {
   //     path: 'manager',
   //     component: TourPackageComponent,
@@ -108,52 +145,72 @@ export const routes: Routes = [
     component: DashboardComponent,
     // canActivate: [AuthGuard]
     canActivate: [RoleGuard],
-    data: { roles: ['admin'] }
+    data: { roles: ['admin'] },
   },
   {
     path: 'tours/:slug',
-    loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent)
+    loadComponent: () =>
+      import('./pages/tour-detail/tour-detail.component').then(
+        (m) => m.TourDetailComponent,
+      ),
   },
-   { path: 'flights', component: FlightResultsComponent },
+  { path: 'flights', component: FlightResultsComponent },
   //   {
   //   path: 'destinations/:id',
   //   loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent)
   // }
   {
     path: 'destination/:slug',
-    loadComponent: () => import('./pages/destination/destination.component').then(m => m.DestinationComponent)
+    loadComponent: () =>
+      import('./pages/destination/destination.component').then(
+        (m) => m.DestinationComponent,
+      ),
   },
 
   {
     path: 'tours',
-    component: TourPackageComponent
+    component: TourPackageComponent,
   },
   {
     path: 'tour/:slug',
-    component: TourDetailComponent
+    component: TourDetailComponent,
   },
-    { path: 'booking/success/:bookingId',
-       loadComponent: () => import('./pages/booking-success/booking-success.component').then(m => m.BookingSuccessComponent)
-       },
-{ path: 'booking/cancelled', loadComponent: () => import('./pages/booking-cancelled/booking-cancelled.component').then(m => m.BookingCancelledComponent) },
+  {
+    path: 'booking/success/:bookingId',
+    loadComponent: () =>
+      import('./pages/booking-success/booking-success.component').then(
+        (m) => m.BookingSuccessComponent,
+      ),
+  },
+  {
+    path: 'booking/cancelled',
+    loadComponent: () =>
+      import('./pages/booking-cancelled/booking-cancelled.component').then(
+        (m) => m.BookingCancelledComponent,
+      ),
+  },
   // {
   //   path:'customize-planner',
   //   component: CustomPlannerComponent
   // },
   {
     path: 'company-portfolio',
-    component:CompanyPortfolioComponent
+    component: CompanyPortfolioComponent,
   },
   {
-    path:'group-brochure',
-    component: GroupBrochureComponent
-  }, 
+    path: 'group-brochure',
+    component: GroupBrochureComponent,
+  },
   {
-    path:'services', 
-    component: ServiceComponent
-  }, 
+    path: 'services',
+    component: ServiceComponent,
+  },
   {
-    path:'testimonials',
-    component: TestimonialComponent
+    path: 'testimonials',
+    component: TestimonialComponent,
+  },
+  {
+    path: 'verify-email/:token',
+    loadComponent: () => import('./pages/email-verification-page/email-verification-page.component').then(m => m.EmailVerificationPageComponent)
   }
 ];

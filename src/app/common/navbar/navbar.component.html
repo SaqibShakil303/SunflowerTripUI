@@ -24,7 +24,13 @@
     </ng-container>
 
     <ng-container *ngIf="isLoggedIn; else loginSignup">
-      <button class="login logout" (click)="logout()">LOGOUT</button>
+      <!-- <button class="login logout" (click)="logout()">LOGOUT</button> -->
+      <button class="cs-dashboard-btn" (click)="navigateTo('/customer-dashboard/trips')">
+        <div class="customer-icon">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </div>
+      </button>
     </ng-container>
     <ng-template #loginSignup>
       <a routerLink="/login" class="login" (click)="navigateTo('/login')">LOGIN / SIGNUP</a>

@@ -1,0 +1,18 @@
+// google font "Katibeh"
+@import url("https://fonts.googleapis.com/css2?family=Katibeh&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+// google font "Lato"
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+.font-lato {
+  font-family: "Lato", sans-serif;
+}
+.font-katibeh {
+  font-family: "Katibeh", sans-serif;
+}
+h1 {
+  color: #ffffff;
+  font-size: 2.5rem;
+  padding-inline: 1rem;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+}

@@ -1,0 +1,58 @@
+// google font "Katibeh"
+@import url("https://fonts.googleapis.com/css2?family=Katibeh&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+// google font "Lato"
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+.font-lato {
+  font-family: "Lato", sans-serif;
+}
+.font-katibeh {
+  font-family: "Katibeh", sans-serif;
+}
+
+.verify-email-container {
+  min-height: 100dvh;
+  background-image: url("../../../assets/hero/hero-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-color: rgba(0, 0, 0, 0.2);
+  background-blend-mode: darken;
+
+  display: grid;
+  place-items: center;
+
+  padding-inline: 0.375rem;
+
+  .verify-email-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 16px;
+
+    h1, p, .verify-btn {
+      font-family: "Lato", sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+    }
+    p {
+      font-size: 1rem;
+      color: black;
+    }
+
+    .verify-btn {
+      width: max-content;
+      display: block;
+      margin: 0 auto;
+
+      padding-inline: 1rem;
+      padding-block: 0.4rem;
+      background: dodgerblue;
+      color: white;
+      border-radius: 999px;
+    }
+  }
+}

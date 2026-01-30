@@ -19,6 +19,7 @@ export class AuthGuard implements CanActivate {
     if (this.auth.isAuthenticated() && this.auth.hasRole(requiredRoles)) {
       return true;
     }
+    this.auth.logout(); // bug fix: when the user open the website after long time, google auth cors error.
     this.router.navigate(['/login'], { queryParams: { error: 'Unauthorized access' } });
     return false;
   }

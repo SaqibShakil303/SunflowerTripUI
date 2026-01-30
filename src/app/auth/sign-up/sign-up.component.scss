@@ -4,13 +4,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #004d40, #00796b);
+  background-color: rgba(0, 0, 0, 0.375);
   position: relative;
   padding: 20px;
-  background-image: url("https://images.pexels.com/photos/30348504/pexels-photo-30348504/free-photo-of-winter-morning-in-schladming-austria.jpeg?auto=compress&cs=tinysrgb&w=600");
+  background-image: url("../../../assets/hero/travel-planning.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  background-blend-mode: darken;
 }
 
 .auth-container {
@@ -158,6 +159,17 @@
     transition: all 0.3s ease;
     pointer-events: none;
   }
+
+  .err-msg {
+    position: absolute;
+    top: -23px;
+    right: 0;
+    color: rgb(255, 36, 36);
+    font-size: 13px;
+    background-color: white;
+    padding-inline: 4px;
+    border-radius: 3px;
+  }
 }
 
 .password-container {
@@ -218,6 +230,11 @@
 
   &:active {
     transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: auto;
   }
 }
 

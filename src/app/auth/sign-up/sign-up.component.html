@@ -11,29 +11,140 @@
 
     <h2 class="auth-title">Create Account</h2>
 
-    <form (ngSubmit)="onSubmit()">
+    <form #signupform="ngForm" (ngSubmit)="onSubmit(signupform)">
       <div class="custom-input-container">
-        <input id="email" type="email" [(ngModel)]="email" name="email" required placeholder=" " autocomplete="email">
-        <label for="email" [class.filled]="email">Email</label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="user.name"
+          name="name"
+          required
+          placeholder=""
+          autocomplete="name"
+          required
+          pattern="^[A-Za-z]+(?:[.\-]?\s*[A-Za-z]+)*$"
+          #name="ngModel"
+        />
+        <label for="name" [class.filled]="user.name">Name</label>
+        <i class="fa fa-user input-icon"></i>
+        <!-- show error for name element  -->
+        @if(name?.dirty || name?.touched) {
+        @if(name?.errors?.['required']){<span class="err-msg"
+          >*name is required</span
+        >} @if(name?.errors?.['pattern']) {
+        <span class="err-msg">*enter valid name</span> } }
+      </div>
+
+      <div class="custom-input-container">
+        <input
+          id="contact-no"
+          type="text"
+          [(ngModel)]="user.contactNo"
+          name="contactNo"
+          required
+          placeholder=" "
+          autocomplete="contact-no"
+          required
+          pattern="^(?:\+91|91)?[6-9]\d{9}$"
+          #contactNo="ngModel"
+        />
+        <label for="contact-no" [class.filled]="user.contactNo"
+          >Contact No</label
+        >
+        <i class="fa fa-phone input-icon"></i>
+        <!-- show error for contact no element  -->
+        @if(contactNo?.dirty || contactNo?.touched) {
+        @if(contactNo?.errors?.['required']){<span class="err-msg"
+          >*contact no is required</span
+        >} @if(contactNo?.errors?.['pattern']) {
+        <span class="err-msg">*enter valid contact no</span> } }
+      </div>
+
+      <div class="custom-input-container">
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="user.email"
+          name="email"
+          required
+          placeholder=" "
+          autocomplete="email"
+          required
+          pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+          #email="ngModel"
+        />
+        <label for="email" [class.filled]="user.email">Email</label>
         <i class="fa fa-envelope input-icon"></i>
+        <!-- show error for email element  -->
+        @if(email?.dirty || email?.touched) {
+        @if(email?.errors?.['required']){<span class="err-msg"
+          >*email is required</span
+        >} @if(email?.errors?.['pattern']) {
+        <span class="err-msg">*enter valid email</span> } }
       </div>
 
       <div class="custom-input-container password-container">
-        <input id="password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required
-          placeholder=" " autocomplete="new-password">
-        <label for="password" [class.filled]="password">Password</label>
-        <button type="button" class="password-toggle-btn" (click)="togglePasswordVisibility()" tabindex="-1">
-          <i class="fa" [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+        <input
+          id="password"
+          [type]="hidePassword ? 'password' : 'text'"
+          [(ngModel)]="user.password"
+          name="password"
+          required
+          placeholder=" "
+          autocomplete="new-password"
+          #password="ngModel"
+        />
+        <label for="password" [class.filled]="user.password">Password</label>
+        <button
+          type="button"
+          class="password-toggle-btn"
+          (click)="togglePasswordVisibility()"
+          tabindex="-1"
+        >
+          <i
+            class="fa"
+            [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"
+          ></i>
         </button>
+        <!-- show error for password element  -->
+        @if(password?.dirty || password?.touched) {
+        @if(password?.errors?.['required']){<span class="err-msg"
+          >*email is required</span
+        >} }
       </div>
 
       <div class="custom-input-container password-container">
-        <input id="confirmPassword" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="confirmPassword" name="confirmPassword" required
-          placeholder=" " autocomplete="new-password">
-        <label for="confirmPassword" [class.filled]="confirmPassword">Confirm Password</label>
-        <button type="button" class="password-toggle-btn" (click)="togglePasswordVisibility()" tabindex="-1">
-          <i class="fa" [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+        <input
+          id="confirmPassword"
+          [type]="hidePassword ? 'password' : 'text'"
+          [(ngModel)]="user.confirmPassword"
+          name="confirmPassword"
+          required
+          placeholder=" "
+          autocomplete="new-password"
+          #confirmPassword="ngModel"
+        />
+        <label for="confirmPassword" [class.filled]="user.confirmPassword"
+          >Confirm Password</label
+        >
+        <button
+          type="button"
+          class="password-toggle-btn"
+          (click)="togglePasswordVisibility()"
+          tabindex="-1"
+        >
+          <i
+            class="fa"
+            [ngClass]="hidePassword ? 'fa-eye' : 'fa-eye-slash'"
+          ></i>
         </button>
+        <!-- show error for confirm password element  -->
+        @if(confirmPassword?.dirty || confirmPassword?.touched) {
+        @if(confirmPassword?.errors?.['required']){<span class="err-msg"
+          >*email is required</span
+        >} @if(user.password !== user.confirmPassword){<span class="err-msg"
+          >*password didn't match</span
+        >}}
       </div>
 
       <!-- <div class="custom-input-container">
@@ -47,7 +158,7 @@
         <i class="fa fa-user input-icon"></i>
       </div> -->
 
-      <button type="submit" class="submit-btn">
+      <button type="submit" class="submit-btn" [disabled]="signupform.invalid || user.password !== user.confirmPassword">
         Create Account
       </button>
     </form>

@@ -23,6 +23,14 @@ export class UserService {
     );
   }
 
+    getUserByEmail(email: string) {
+    return this.http.get(`${this.apiUrl}/users/${email}`).pipe( timeout(8000), catchError(this.handleError));
+  }
+
+  addContactNo(userId: string, contactNo: string) {
+    return this.http.post(`${this.apiUrl}/users/add-contact-no`, {userId, contactNo}).pipe(timeout(8000), catchError(this.handleError))
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
       let errorMessage = 'An unknown error occurred!';
       if (error.error instanceof ErrorEvent) {

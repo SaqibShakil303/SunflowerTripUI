@@ -66,28 +66,32 @@ export class LoginComponent {
     console.log('Current input type should be:', this.hidePassword ? 'password' : 'text');
   }
 
-  googleLogin() {
-    const redirectUri = `${window.location.origin}/auth/google/callback`;
-    let state: string | undefined;
+  // googleLogin() {
+  //   const redirectUri = `${window.location.origin}/auth/google/callback`;
+  //   let state: string | undefined;
 
-    if (isPlatformBrowser(this.platformId)) {
-      state = Math.random().toString(36).substring(2);
-      sessionStorage.setItem('google_oauth_state', state);
-      console.log('Google redirect_uri:', redirectUri, 'State:', state);
-    } else {
-      console.log('Google redirect_uri:', redirectUri, 'No state (SSR)');
-    }
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     state = Math.random().toString(36).substring(2);
+  //     sessionStorage.setItem('google_oauth_state', state);
+  //     console.log('Google redirect_uri:', redirectUri, 'State:', state);
+  //   } else {
+  //     console.log('Google redirect_uri:', redirectUri, 'No state (SSR)');
+  //   }
 
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${environment.googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=email profile${state ? `&state=${state}` : ''}`;
+  //   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${environment.googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=email profile${state ? `&state=${state}` : ''}`;
 
-    if (isPlatformBrowser(this.platformId)) {
-      window.location.href = authUrl;
-    }
-  }
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     window.location.href = authUrl;
+  //   }
+  // }
 
   truecallerLogin() {
     if (isPlatformBrowser(this.platformId)) {
       window.location.href = environment.truecallerAuthUrl;
     }
+  }
+
+  loginWithGoogle() {
+    this.authService.googleOAuthLogin();
   }
 }
