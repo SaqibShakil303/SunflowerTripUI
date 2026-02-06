@@ -1,0 +1,158 @@
+<h1>Account</h1>
+@if (user) {
+  <div class="customer-details-container">
+    <div class="customer-details-item">
+      <span class="customer-details-item-label">Name: </span
+      ><span class="customer-details-item-value">{{ user?.name || "--" }}</span>
+    </div>
+    <div class="customer-details-item add-contact-form-container">
+      <span class="customer-details-item-label">Contact No: </span>
+      @if (user?.contact_no) {
+        <span class="customer-details-item-value">{{ user?.contact_no }}</span>
+      } @else {
+        <button class="add-contact-no-btn" popovertarget="add-contact-form">
+          Add
+        </button>
+        <div
+          id="add-contact-form"
+          class="add-contact-form-popup"
+          popover="auto"
+        >
+          <h1>Add contact no</h1>
+          <form
+            #addContactForm="ngForm"
+            (ngSubmit)="addContactNo(addContactForm)"
+          >
+            <div class="custom-input-container">
+              <input
+                id="contact-no"
+                type="text"
+                [(ngModel)]="contactNo"
+                name="contactNo"
+                required
+                placeholder=" "
+                autocomplete="contact-no"
+                required
+                pattern="^(?:\+91|91)?[6-9]\d{9}$"
+                #contactNoRef="ngModel"
+              />
+              <label for="contact-no" [class.filled]="user.contactNo"
+                >Contact No</label
+              >
+              <i class="fa fa-phone input-icon"></i>
+              <!-- show error for contact no element  -->
+              @if (contactNoRef?.dirty || contactNoRef?.touched) {
+                @if (contactNoRef?.errors?.["required"]) {
+                  <span class="err-msg">*contact no is required</span>
+                }
+                @if (contactNoRef?.errors?.["pattern"]) {
+                  <span class="err-msg">*enter valid contact no</span>
+                }
+              }
+            </div>
+            <button
+              type="submit"
+              class="contact-no-submit-btn"
+              [disabled]="addContactForm.invalid"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      }
+    </div>
+    <div class="customer-details-item">
+      <span class="customer-details-item-label">Email: </span
+      ><span class="customer-details-item-value">{{ user?.email }}</span>
+    </div>
+    <div class="customer-details-item">
+      <span class="customer-details-item-label">Email Verified: </span
+      ><span
+        class="customer-details-item-value"
+        [class]="user.is_email_verified ? 'chip-yes' : 'chip-no'"
+        >{{ user?.is_email_verified ? "Yes" : "No" }}</span
+      >
+      @if (!user?.is_email_verified) {
+        <!-- <button
+          class="verify-email-btn"
+          popovertarget="email-verify-popup"
+          (click)="sendEmailVerificationLink()"
+        >
+          Verify
+        </button> -->
+        <!-- get email verification link popover  -->
+        <div class="email-verify-popup" id="email-verify-popup" popover>
+          <p>
+            An email will be send to your email
+            <strong>{{ user?.email }}</strong
+            >. Please open the link and click verify button.
+          </p>
+        </div>
+      }
+    </div>
+    <div class="customer-details-item">
+      <span class="customer-details-item-label">Mobile-No Verified: </span
+      ><span
+        class="customer-details-item-value"
+        [class]="user.is_contact_no_verified ? 'chip-yes' : 'chip-no'"
+        >{{ user?.is_contact_no_verified ? "Yes" : "No" }}</span
+      >
+      @if (!user.is_contact_no_verified) {
+        <!-- <button
+          class="verify-contact-no-btn"
+          popovertarget="otp-form-container"
+          (click)="getOtp()"
+          [disabled]="!user.contact_no"
+        >
+          Verify
+        </button> -->
+        <div popover="auto" id="otp-form-container" class="otp-form-container">
+          <h1>OTP Verification</h1>
+          <p>A 4 digit OTP has been send to your registered mobile no.</p>
+          @if (otpResData().message && otpResData().success) {
+            <div>
+              <p
+                class="otp-res-message"
+                [class]="otpResData().success ? 'success' : 'failed'"
+              >
+                {{ otpResData().message | uppercase }}.
+              </p>
+            </div>
+          }
+          @if (otpResData().message && !otpResData().success) {
+            <div>
+              <p
+                class="otp-res-message"
+                [class]="otpResData().success ? 'success' : 'failed'"
+              >
+                {{ otpResData().message | uppercase }}.
+              </p>
+            </div>
+          }
+          <form #otpForm="ngForm" (ngSubmit)="verifyOtp(otpForm)">
+            <div class="otp-input">
+              <ng-otp-input
+                name="otp"
+                [config]="otpConfig"
+                [(ngModel)]="otp"
+                minlength="4"
+                maxlength="4"
+                (onInputChange)="isOtpValid()"
+              ></ng-otp-input>
+            </div>
+            <div class="otp-form-btn-container">
+              <button type="button" class="otp-resend-btn" (click)="getOtp()">Resend OTP</button>
+              <button
+                type="submit"
+                class="otp-submit-btn"
+                [disabled]="disableOtpBtn"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+  </div>
+}

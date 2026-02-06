@@ -1,0 +1,46 @@
+<app-navbar></app-navbar>
+<div class="customer-dashboard">
+  <!-- side nav menu  -->
+  <aside class="side-navbar-container">
+    <section class="side-navbar-section">
+      <div class="avatar-container">
+        <div class="customer-icon"><i class="fas fa-user"></i></div>
+        <div class="customer-greet-text">Hi, Customer</div>
+      </div>
+      <div class="side-navbar-group">
+        <ul class="navbar-menu-list">
+          <li class="navbar-menu-item">
+            <a
+              routerLink="/customer-dashboard/trips"
+              routerLinkActive="active"
+              >Trips</a
+            >
+          </li>
+          <li class="navbar-menu-item">
+            <a
+              routerLink="/customer-dashboard/wishlists"
+              routerLinkActive="active"
+              >Wishlist</a
+            >
+          </li>
+          <li class="navbar-menu-item">
+            <a
+              routerLink="/customer-dashboard/account"
+              routerLinkActive="active"
+              >Account</a
+            >
+          </li>
+        </ul>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </section>
+  </aside>
+  <!-- main route outlet components  -->
+  <main>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<app-footer></app-footer>

@@ -91,7 +91,9 @@ app-header{
   .background-fallback {
     position: absolute;
     inset: 0;
-    background: url('/assets/hero/aurora-sky2.png') no-repeat center center;
+    background: url('/assets/hero/island.jpg') no-repeat center center;
+    background-color: rgba(0, 0, 0, 0.35);
+    background-blend-mode: darken;
     background-size: cover;
     z-index: 0;
   }

@@ -96,6 +96,17 @@ $transition: 0.3s ease;
   position: relative;
 }
 
+.cs-dashboard-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  border-left: 2px solid rgba(255, 255, 255, 0.5);
+  font-weight: bolder;
+  position: relative;
+  span {
+    margin-left: 4px;
+  }
+}
+
+
 .contact-info .logout {
   border: none;
   cursor: pointer;

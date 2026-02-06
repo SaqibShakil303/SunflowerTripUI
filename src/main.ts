@@ -11,6 +11,7 @@ import { AppComponent }                      from './app/app.component';
 import { routes }                            from './app/app.routes';
 import { MatNativeDateModule } from '@angular/material/core';
 import { authInterceptor } from './app/core/auth.interceptor';
+import { OAuthService, provideOAuthClient } from 'angular-oauth2-oidc';
 
 export function tokenGetter() {
   const raw = localStorage.getItem('tokens');
@@ -44,6 +45,10 @@ bootstrapApplication(AppComponent, {
       BrowserAnimationsModule,
       MatNativeDateModule
     ),
+
+    // OAuth service
+    provideOAuthClient(),
+    OAuthService
   ]
 })
 .catch(err => console.error(err));

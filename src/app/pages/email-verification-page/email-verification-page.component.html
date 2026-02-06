@@ -1,0 +1,13 @@
+<div class="verify-email-container">
+  <div class="verify-email-card">
+    <h1>Sunflower Trip</h1>
+    @if (isValid && !isAlreadyVerified) {
+      <p>Click the verify button to verify your email</p>
+      <button class="verify-btn" (click)="verifyEmail()">Verify</button>
+    } @else if (isAlreadyVerified) {
+      <p>Your email is already verified</p>
+    } @else {
+      <p>Token invalid or expired</p>
+    }
+  </div>
+</div>
