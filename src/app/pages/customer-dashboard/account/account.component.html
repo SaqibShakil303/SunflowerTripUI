@@ -73,13 +73,13 @@
         >{{ user?.is_email_verified ? "Yes" : "No" }}</span
       >
       @if (!user?.is_email_verified) {
-        <button
+        <!-- <button
           class="verify-email-btn"
           popovertarget="email-verify-popup"
           (click)="sendEmailVerificationLink()"
         >
           Verify
-        </button>
+        </button> -->
         <!-- get email verification link popover  -->
         <div class="email-verify-popup" id="email-verify-popup" popover>
           <p>
@@ -98,14 +98,14 @@
         >{{ user?.is_contact_no_verified ? "Yes" : "No" }}</span
       >
       @if (!user.is_contact_no_verified) {
-        <button
+        <!-- <button
           class="verify-contact-no-btn"
           popovertarget="otp-form-container"
           (click)="getOtp()"
           [disabled]="!user.contact_no"
         >
           Verify
-        </button>
+        </button> -->
         <div popover="auto" id="otp-form-container" class="otp-form-container">
           <h1>OTP Verification</h1>
           <p>A 4 digit OTP has been send to your registered mobile no.</p>
