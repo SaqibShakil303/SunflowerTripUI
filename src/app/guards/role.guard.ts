@@ -9,6 +9,7 @@ export const RoleGuard: CanActivateFn = (route) => {
   const expectedRoles = route.data['roles'] as string[];
 
   if (!authService.isAuthenticated()) {
+    authService.logout(); // bug fix: when the user open the website after long time, google auth cors error.
     router.navigate(['/login']);
     return false;
   }

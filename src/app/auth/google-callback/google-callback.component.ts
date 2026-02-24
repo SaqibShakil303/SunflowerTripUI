@@ -17,7 +17,7 @@ export class GoogleCallbackComponent implements OnInit {
     if (result$) {
       result$.subscribe((data: any) => {
         this.authService.storeToken(data.tokens, data.userRole, 'google');
-        this.router.navigate(['/customer-dashboard/account']);
+        this.router.navigate(['/customer-dashboard']);
       });
     } else {
       this.router.navigate(['/login']);

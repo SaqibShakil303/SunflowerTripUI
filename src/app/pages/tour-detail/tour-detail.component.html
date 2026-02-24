@@ -362,7 +362,7 @@
   </div>
 </section>
 
-<app-booking-modal [isOpen]="isModalOpen" [formType]="modalFormType" [tour]="tour" (close)="closeModal()"
+<app-booking-modal [isOpen]="isModalOpen" [formType]="modalFormType" [tour]="tour" [userId]="user.id" (close)="closeModal()"
   (onSubmitEnquiry)="handleEnquirySubmit($event)" ></app-booking-modal>
 <!-- (onSubmitBooking)="handleBookingSubmit($event)" -->
 <!-- <app-chat-widget></app-chat-widget> -->

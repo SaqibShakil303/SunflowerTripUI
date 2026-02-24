@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Tour, ItineraryDay } from '../../models/tour.model';
 import { TourService } from '../../services/tours/tour.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -13,6 +13,7 @@ import { BookingsService } from '../../services/bookings/bookings.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DOCUMENT } from '@angular/common';
 import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
+import { AuthService } from '../../services/authService/auth.service';
 @Component({
   selector: 'app-tour-detail',
   standalone: true,
@@ -42,8 +43,11 @@ export class TourDetailComponent implements OnInit {
   openDayIndex: number | null = null;
   isModalOpen = false;
   modalFormType: 'enquiry' | 'booking' = 'enquiry';
+  user: any;
 
   constructor(
+    private router: Router,
+    private authService: AuthService,
     public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private tourService: TourService,
@@ -88,6 +92,8 @@ private setJsonLd(data: object) {                   // ✅ add
       this.loading = false;
       return;
     }
+
+    this.user = this.authService.getUser();
 
     this.tourService.getTourBySlug(slug).subscribe({
       next: (tour) => {
@@ -280,6 +286,10 @@ private setJsonLd(data: object) {                   // ✅ add
   }
 
   openBookingForm(): void {
+    if(!this.authService.isAuthenticated()) {
+      this.router.navigate(["/login"]);
+      return;
+    }
     this.modalFormType = 'booking';
     this.isModalOpen = true;
   }

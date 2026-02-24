@@ -1,0 +1,335 @@
+// google font "Katibeh"
+@import url("https://fonts.googleapis.com/css2?family=Katibeh&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+// google font "Lato"
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+$base-background: #0b0b0e;
+$bg-selected: #191426;
+$text-active: #9061ff;
+$btn-primary: #895bf5;
+$text-secondary: #a5a5ad;
+$text-primary: #ffffff;
+$card-background-100: #131316;
+$card-background-200: #262629;
+$text-gold: #fcc600;
+$text-success: #00ffd9;
+$text-info: #3e81fd;
+$text-danger: #ff5757;
+$success-muted: #2f4f4a;
+$info-muted: #25334e;
+$danger-muted: #442222;
+
+.font-lato {
+  font-family: "Lato", sans-serif;
+}
+.font-katibeh {
+  font-family: "Katibeh", sans-serif;
+}
+
+.text-white {
+  color: #ffffff;
+}
+.text-secondary {
+  color: $text-secondary !important;
+}
+
+.account-container {
+  padding: 1rem;
+  .account-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .account-page-content {
+      line-height: 1;
+
+      .page-title {
+        .title-text {
+          font-size: 28px;
+        }
+      }
+      .page-description {
+        .description-text {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}
+
+.customer-details-container {
+  padding-inline: 1rem;
+  .customer-details-item {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: 1.75rem;
+    }
+    .customer-details-item-label {
+      color: #d2d2d2;
+      font-family: "Lato", sans-serif;
+    }
+    .customer-details-item-value {
+      color: white;
+      font-family: "Lato", sans-serif;
+    }
+    .customer-details-item-value.chip-yes,
+    .customer-details-item-value.chip-no {
+      background-color: #00cf87;
+      padding-inline: 0.575rem;
+      padding-block: 0.15rem;
+      border-radius: 999px;
+    }
+    .customer-details-item-value.chip-no {
+      background-color: #ff3030;
+    }
+
+    .verify-email-btn,
+    .verify-contact-no-btn,
+    .add-contact-no-btn {
+      font-size: 1rem;
+      font-family: "Lato", sans-serif;
+      padding-inline: 0.575rem;
+      padding-block: 0.15rem;
+      margin-left: 1rem;
+      border-radius: 999px;
+      background-color: #ffffff;
+      color: #4e4e4e;
+      transition: all 0.2s ease-in-out;
+
+      &:hover:not(:disabled) {
+        background-color: #eeeeee;
+      }
+
+      &:disabled {
+        opacity: 0.75;
+        cursor: auto;
+      }
+    }
+
+    .email-verify-popup,
+    .add-contact-form-popup,
+    .otp-form-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      max-width: 450px;
+      padding: 2rem;
+      border: none;
+      outline: none;
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.764);
+      backdrop-filter: blur(16px);
+    }
+  }
+
+  .add-contact-form-container {
+    h1 {
+      color: #3e3e3e;
+      font-size: clamp(1.2rem, 5vw, 1.75rem);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .custom-input-container {
+      position: relative;
+      margin-bottom: 24px;
+
+      input {
+        width: 100%;
+        padding: 16px 50px 16px 18px;
+        background: rgba(255, 255, 255, 0.391);
+        border: 1.5px solid rgba(167, 167, 167, 0.875);
+        border-radius: 12px;
+        font-size: 20px;
+        color: black;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+
+        &::placeholder {
+          color: rgba(0, 0, 0, 0.818);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: rgba(255, 255, 255, 0.6);
+          background: rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        &:valid,
+        &:not(:placeholder-shown) {
+          border-color: rgba(255, 255, 255, 0.4);
+        }
+      }
+
+      label {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(146, 146, 146, 0.876);
+        pointer-events: none;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        font-weight: 400;
+
+        &.filled {
+          top: -8px;
+          left: 14px;
+          font-size: 13px;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.9);
+          background: linear-gradient(135deg, #004d40, #00796b);
+          padding: 2px 8px;
+          border-radius: 4px;
+        }
+      }
+
+      input:focus ~ label,
+      input:valid ~ label,
+      input:not(:placeholder-shown) ~ label {
+        top: -8px;
+        left: 14px;
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        background: linear-gradient(135deg, #004d40, #00796b);
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      .input-icon {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(
+          69,
+          69,
+          69,
+          0.6
+        ) !important; // Ensure email icon color is applied
+        font-size: 18px;
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      .err-msg {
+        position: absolute;
+        top: -23px;
+        right: 0;
+        color: rgb(255, 36, 36);
+        font-size: 13px;
+        background-color: white;
+        padding-inline: 4px;
+        border-radius: 3px;
+      }
+    }
+
+    .contact-no-submit-btn {
+      display: block;
+      margin-left: auto;
+      font-family: "Lato", sans-serif;
+      padding-inline: 1rem;
+      padding-block: 0.5rem;
+      border-radius: 4px;
+
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff6b6b);
+      border-left: 2px solid rgba(255, 255, 255, 0.5);
+      background-size: 200% 200%;
+      background-position: left bottom;
+      font-weight: bolder;
+      color: white;
+      transition: background-position 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background-position: right top;
+      }
+
+      &:disabled {
+        opacity: 0.75;
+        cursor: auto;
+      }
+    }
+  }
+}
+
+.otp-form-container {
+  h1 {
+    color: #3e3e3e;
+    font-size: clamp(1.2rem, 5vw, 1.75rem);
+    text-align: center;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    font-family: "Lato", sans-serif;
+    font-size: 0.8rem;
+  }
+
+  .otp-res-message {
+    text-align: center;
+    font-size: 0.75rem;
+  }
+
+  .otp-res-message.success {
+    color: rgb(0, 128, 100);
+  }
+  .otp-res-message.failed {
+    color: rgb(222, 0, 0);
+  }
+
+  form {
+    display: block;
+    width: 100%;
+  }
+
+  .otp-input {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .otp-form-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+
+    .otp-resend-btn {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      color: dodgerblue;
+      font-family: "Lato", sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .otp-submit-btn {
+      font-family: "Lato", sans-serif;
+      padding-inline: 1rem;
+      padding-block: 0.5rem;
+      border-radius: 4px;
+
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff6b6b);
+      border-left: 2px solid rgba(255, 255, 255, 0.5);
+      background-size: 200% 200%;
+      background-position: left bottom;
+      font-weight: bolder;
+      color: white;
+      transition: background-position 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background-position: right top;
+      }
+
+      &:disabled {
+        opacity: 0.75;
+        cursor: auto;
+      }
+    }
+  }
+}

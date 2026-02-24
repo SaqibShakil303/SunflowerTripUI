@@ -21,7 +21,7 @@ export class BookingModalComponent {
   @Input() isOpen: boolean = false;
   @Input() formType: 'enquiry' | 'booking' = 'enquiry';
   @Input() tour: Tour | null = null;
-    @Input() userId?: number;    
+  @Input() userId?: number;    
   @Output() close = new EventEmitter<void>();
   @Output() onSubmitEnquiry = new EventEmitter<any>();
   @Output() onSubmitBooking = new EventEmitter<any>();
@@ -316,7 +316,7 @@ const guests = Number(this.bookingData.adults) + Number(this.bookingData.childre
   const selectedDep = this.getDepartureByIndex(this.selectedDepartureIndex);
     const createPayload = {
       tourId: this.tour.id,
-      userId: undefined, // pass real user id if you have auth
+      userId: this.userId,
       customer_name: this.bookingData.name,
       customer_email: this.bookingData.email,
       customer_phone: this.bookingData.phone,
