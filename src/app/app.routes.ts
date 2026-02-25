@@ -36,6 +36,7 @@ import { TestimonialComponent } from './pages/testimonials/testimonials.componen
 import { CareersComponent } from './pages/careers/careers.component';
 import { CustomerDashboardComponent } from './pages/customer-dashboard/customer-dashboard.component';
 import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
+import { CustomerDashboardNewComponent } from './pages/customer-dashboard-new/customer-dashboard-new.component';
 
 export const routes: Routes = [
   {
@@ -97,28 +98,24 @@ export const routes: Routes = [
   },
   {
     path: 'customer-dashboard',
-    loadComponent: () => import('./pages/customer-dashboard/customer-dashboard.component').then(m => m.CustomerDashboardComponent),
+    loadComponent: () => import('./pages/customer-dashboard-new/customer-dashboard-new.component').then(m => m.CustomerDashboardNewComponent),
     children: [
       {
-        path: '', 
-        loadComponent: () => import('./pages/customer-dashboard/trips/trips.component')
-          .then(m => m.TripsComponent)
+        path: '',
+        loadComponent: () => import('./pages/customer-dashboard-new/account/account.component').then(m => m.AccountComponent)
       },
       {
-        path: 'trips', 
-        loadComponent: () => import('./pages/customer-dashboard/trips/trips.component')
-          .then(m => m.TripsComponent)
+        path: 'bookings',
+        loadComponent: () => import('./pages/customer-dashboard-new/bookings/bookings.component').then(m => m.BookingsComponent)
+      },
+      {
+        path: 'documents',
+        loadComponent: () => import('./pages/customer-dashboard-new/documents/documents.component').then(m => m.DocumentsComponent)
       },
       {
         path: 'wishlists',
-        loadComponent: () => import('./pages/customer-dashboard/wishlist/wishlist.component')
-          .then(m => m.WishlistComponent)
+        loadComponent: () => import('./pages/customer-dashboard-new/wishlists/wishlists.component').then(m => m.WishlistsComponent)
       },
-      {
-        path: 'account',
-        loadComponent: () => import('./pages/customer-dashboard/account/account.component')
-          .then(m => m.AccountComponent)
-      }
     ],
     canActivate: [RoleGuard],
     data: { roles: ['user']}
