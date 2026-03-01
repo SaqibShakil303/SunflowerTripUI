@@ -1,0 +1,28 @@
+:root{
+  --border-subtle: rgba(255,255,255,0.08);
+}
+
+/* matches your "border-border-subtle" utility expectation */
+.border-border-subtle { border-color: var(--border-subtle); }
+
+/* glass-card effect like screenshot */
+.glass-card{
+  background: radial-gradient(1200px 500px at 50% -20%, rgba(255,255,255,0.08), transparent 60%),
+              rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  backdrop-filter: blur(14px);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.glass-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 26px 70px rgba(0,0,0,0.7);
+}
+
+/* optional: if you use these Tailwind-like color tokens */
+.text-muted-foreground { color: rgba(255,255,255,0.55); }
+.text-foreground { color: rgba(255,255,255,0.92); }
+.bg-muted { background: rgba(255,255,255,0.06); }
+.text-primary { color: #8b5cf6; } /* example purple */
+.bg-primary { background: #8b5cf6; }
+.text-primary-foreground { color: #0b0b0f; }
