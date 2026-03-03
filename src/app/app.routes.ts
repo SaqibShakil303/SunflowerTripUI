@@ -102,6 +102,11 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
+        redirectTo: 'account'
+      },
+      {
+        path: 'account',
         loadComponent: () => import('./pages/customer-dashboard-new/account/account.component').then(m => m.AccountComponent)
       },
       {
