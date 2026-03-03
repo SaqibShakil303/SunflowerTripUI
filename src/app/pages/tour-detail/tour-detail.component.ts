@@ -286,10 +286,6 @@ private setJsonLd(data: object) {                   // ✅ add
   }
 
   openBookingForm(): void {
-    if(!this.authService.isAuthenticated()) {
-      this.router.navigate(["/login"]);
-      return;
-    }
     this.modalFormType = 'booking';
     this.isModalOpen = true;
   }

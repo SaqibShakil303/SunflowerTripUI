@@ -1,0 +1,66 @@
+<div class="password-reset-container">
+  <div class="password-reset-card">
+    <h1>Sunflower Trip</h1>
+    @if (isValid && !isDefaultPasswordUsed) {
+      <form #form="ngForm" (ngSubmit)="resetPassword()">
+        <!-- Email -->
+        <div class="custom-input-container">
+          <input
+            id="email"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            #emailCtrl="ngModel"
+            required
+            email
+            placeholder=" "
+          />
+          <label for="email" [class.filled]="email">Email</label>
+
+          <!-- Email Errors -->
+          <small class="error" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+            <span *ngIf="emailCtrl.errors?.['required']">
+              Email is required
+            </span>
+            <span *ngIf="emailCtrl.errors?.['email']">
+              Please enter a valid email
+            </span>
+          </small>
+        </div>
+
+        <!-- Password -->
+        <div class="custom-input-container password-container">
+          <input
+            id="default-password"
+            type="text"
+            [(ngModel)]="defaultPassword"
+            name="defaultPassword"
+            #passwordCtrl="ngModel"
+            required
+            placeholder=" "
+          />
+          <label for="default-password" [class.filled]="defaultPassword">Password</label>
+
+          <!-- Password Error -->
+          <small
+            class="error"
+            *ngIf="passwordCtrl.invalid && passwordCtrl.touched"
+          >
+            <span *ngIf="passwordCtrl.errors?.['required']">
+              Password is required
+            </span>
+          </small>
+        </div>
+
+        <!-- Button -->
+        <button class="reset-pwd-btn" type="submit" [disabled]="form.invalid">
+          Reset
+        </button>
+      </form>
+    } @else if (isValid && isDefaultPasswordUsed) {
+      <p>Your have already reset your default password.</p>
+    } @else {
+      <p>Token invalid or expired</p>
+    }
+  </div>
+</div>

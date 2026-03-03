@@ -102,6 +102,11 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
+        redirectTo: 'account'
+      },
+      {
+        path: 'account',
         loadComponent: () => import('./pages/customer-dashboard-new/account/account.component').then(m => m.AccountComponent)
       },
       {
@@ -209,5 +214,13 @@ export const routes: Routes = [
   {
     path: 'verify-email/:token',
     loadComponent: () => import('./pages/email-verification-page/email-verification-page.component').then(m => m.EmailVerificationPageComponent)
+  },
+  {
+    path: 'onboard-via-booking-email/:token',
+    loadComponent: () => import('./pages/customer-onboard-via-booking/customer-onboard-via-booking.component').then(m => m.CustomerOnboardViaBookingComponent)
+  },
+  {
+    path: 'reset-password/:token',
+    loadComponent: () => import('./pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
   }
 ];
