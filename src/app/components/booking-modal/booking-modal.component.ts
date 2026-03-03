@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
 import { CheckoutService } from '../../services/checkout/checkout.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 declare var Razorpay: any;
@@ -160,7 +161,7 @@ By paying the booking amount or signing/accepting these Terms (including electro
   ageOptions = Array.from({ length: 12 }, (_, i) => i + 1);
   minDate: string = '';
 selectedDepartureIndex: number | null = null; 
-constructor(private stateSvc: StatePersistenceService,  private checkout: CheckoutService,  private router: Router, @Inject(PLATFORM_ID) private platformId: Object  ) {}
+constructor(private stateSvc: StatePersistenceService,  private checkout: CheckoutService,  private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private snackBar: MatSnackBar  ) {}
   // ---------- helpers ----------
   private getDepartureById(id: number | null) {
     if (!this.tour?.departures || id == null) return undefined;
@@ -409,6 +410,12 @@ console.log('Creating order with payload:', createPayload);
       this.router.navigate(['/booking/cancelled'], { queryParams: { reason: 'start-failed' }});
     } finally {
       this.loading = false;
+      // popup notification 
+      this.snackBar.open('Your Booking created successfully. Please login to your account', 'Close', {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
     }
   }
 
