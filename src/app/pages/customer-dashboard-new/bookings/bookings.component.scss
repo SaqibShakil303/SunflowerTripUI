@@ -594,3 +594,61 @@ $danger-muted: #442222;
     }
   }
 }
+
+.traveller-form-wrapper {
+  margin-top: 14px;
+
+  .traveller-form-info {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .traveller-form-error {
+    margin-bottom: 8px;
+  }
+
+  .traveller-form-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .traveller-row {
+    display: grid;
+    grid-template-columns: 1.3fr 0.6fr;
+    gap: 10px;
+  }
+
+  .traveller-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #1f1f1f;
+    background: #0f0f10;
+    color: #ffffff;
+    font-family: "Lato", sans-serif;
+    font-size: 13px;
+
+    &:focus {
+      outline: none;
+      border-color: $btn-primary;
+    }
+  }
+
+  .traveller-row-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 10px;
+  }
+
+  .traveller-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  @media screen and (max-width: 520px) {
+    .traveller-row {
+      grid-template-columns: 1fr;
+    }
+  }
+}

@@ -5,212 +5,105 @@
         <h1 class="text-white font-lato title-text">My Bookings</h1>
       </div>
       <div class="page-description">
-        <p class="font-lato text-secondary description-text">
-          Manage your trips
-        </p>
+        <p class="font-lato text-secondary description-text">Manage your trips</p>
       </div>
     </div>
     <div class="export-btn-container">
-      <button class="export-btn font-lato text-white">Export</button>
+      <button class="export-btn font-lato text-white" (click)="loadMyBookings()">Refresh</button>
     </div>
   </div>
+
   <div class="bookings-page-navbar">
     <ul class="navbar-list">
-      <li class="navbar-item font-lato active">All</li>
-      <li class="navbar-item font-lato">Upcoming</li>
-      <li class="navbar-item font-lato">Completed</li>
-      <li class="navbar-item font-lato">Cancelled</li>
+      <li class="navbar-item font-lato" [class.active]="activeTab==='all'" (click)="setTab('all')">All</li>
+      <li class="navbar-item font-lato" [class.active]="activeTab==='upcoming'" (click)="setTab('upcoming')">Upcoming</li>
+      <li class="navbar-item font-lato" [class.active]="activeTab==='completed'" (click)="setTab('completed')">Completed</li>
+      <li class="navbar-item font-lato" [class.active]="activeTab==='cancelled'" (click)="setTab('cancelled')">Cancelled</li>
     </ul>
   </div>
+
   <div class="bookings-main-container">
     <div class="tour-list">
-      <div class="tour-card">
+
+      <!-- Loading -->
+      <div *ngIf="isLoadingList" class="text-secondary font-lato" style="padding: 1rem;">
+        Loading bookings...
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="!isLoadingList && listError" class="text-secondary font-lato" style="padding: 1rem;">
+        {{ listError }}
+      </div>
+
+      <!-- Empty -->
+      <div *ngIf="!isLoadingList && !listError && filteredBookings.length === 0"
+           class="text-secondary font-lato" style="padding: 1rem;">
+        No bookings found.
+      </div>
+
+      <!-- Cards -->
+      <div class="tour-card" *ngFor="let b of filteredBookings; trackBy: trackByBookingId">
         <div class="tour-card-content-wrapper">
           <div class="tour-card-text-content">
             <div class="tour-card-label">{{ "tour" | uppercase }}</div>
             <div class="tour-card-value-col-wrapper">
               <div class="tour-card-label-value tour-card-title">
-                {{ "magnificent dubai gateway" | titlecase }}
+                {{ b.tour_title | titlecase }}
               </div>
-              <div
-                class="tour-card-label-value tour-card-order-id text-secondary"
-              >
-                {{ "BK-2025-001" }}
+              <div class="tour-card-label-value tour-card-order-id text-secondary">
+                {{ 'BK-' + b.booking_id }}
               </div>
             </div>
 
             <div class="tour-card-label">{{ "date" | uppercase }}</div>
             <div class="tour-card-label-value tour-card-date">
-              {{ "feb 19, 2026" | titlecase }}
+              {{ b.travel_date | date: 'MMM d, y' }}
             </div>
 
             <div class="tour-card-label">{{ "guests" | uppercase }}</div>
             <div class="tour-card-label-value tour-card-guests">
-              {{ "2 guests" | titlecase }}
+              {{ formatGuests(b.guests) }}
             </div>
 
             <div class="tour-card-label">{{ "price" | uppercase }}</div>
             <div class="tour-card-value-col-wrapper">
               <div class="tour-card-label-value tour-card-price">
-                {{ "299999" | currency: "INR" }}
+                {{ amountInInr(b.total_amount_paise) | currency: "INR" }}
               </div>
-              <div
-                class="tour-card-label-value tour-card-payment-status text-secondary"
-              >
-                {{ "full" | uppercase }}
+              <div class="tour-card-label-value tour-card-payment-status text-secondary">
+                {{ b.payment_status | uppercase }}
               </div>
             </div>
 
             <div class="tour-card-label">{{ "status" | uppercase }}</div>
             <div class="tour-card-label-value tour-card-status">
-              <span class="tour-card-status-badge info font-lato">{{
-                "upcoming" | titlecase
-              }}</span>
+              <span class="tour-card-status-badge font-lato" [ngClass]="statusBadgeClass(b)">
+                {{ statusLabel(b) }}
+              </span>
             </div>
           </div>
+
           <div class="show-card-details-btn-wrapper">
-            <button
-              class="show-card-details-btn"
-              (click)="toggleBookingDetails()"
-            >
+            <button class="show-card-details-btn" (click)="openDetails(b.booking_id)">
               <i class="fas fa-angle-right"></i>
             </button>
           </div>
         </div>
+
         <div class="tour-card-img-content">
-          <img
-            src="../../../../assets/images/luxury/dubai-stunning.jpg"
-            alt=""
-          />
+          <img [src]="b.tour_image_url || '../../../../assets/images/luxury/dubai-stunning.jpg'" alt="" />
         </div>
       </div>
-      <div class="tour-card">
-        <div class="tour-card-content-wrapper">
-          <div class="tour-card-text-content">
-            <div class="tour-card-label">{{ "tour" | uppercase }}</div>
-            <div class="tour-card-value-col-wrapper">
-              <div class="tour-card-label-value tour-card-title">
-                {{ "magnificent dubai gateway" | titlecase }}
-              </div>
-              <div
-                class="tour-card-label-value tour-card-order-id text-secondary"
-              >
-                {{ "BK-2025-001" }}
-              </div>
-            </div>
 
-            <div class="tour-card-label">{{ "date" | uppercase }}</div>
-            <div class="tour-card-label-value tour-card-date">
-              {{ "feb 19, 2026" | titlecase }}
-            </div>
-
-            <div class="tour-card-label">{{ "guests" | uppercase }}</div>
-            <div class="tour-card-label-value tour-card-guests">
-              {{ "2 guests" | titlecase }}
-            </div>
-
-            <div class="tour-card-label">{{ "price" | uppercase }}</div>
-            <div class="tour-card-value-col-wrapper">
-              <div class="tour-card-label-value tour-card-price">
-                {{ "299999" | currency: "INR" }}
-              </div>
-              <div
-                class="tour-card-label-value tour-card-payment-status text-secondary"
-              >
-                {{ "full" | uppercase }}
-              </div>
-            </div>
-
-            <div class="tour-card-label">{{ "status" | uppercase }}</div>
-            <div class="tour-card-label-value tour-card-status">
-              <span class="tour-card-status-badge success font-lato">{{
-                "completed" | titlecase
-              }}</span>
-            </div>
-          </div>
-          <div class="show-card-details-btn-wrapper">
-            <button
-              class="show-card-details-btn"
-              (click)="toggleBookingDetails()"
-            >
-              <i class="fas fa-angle-right"></i>
-            </button>
-          </div>
-        </div>
-        <div class="tour-card-img-content">
-          <img
-            src="../../../../assets/images/luxury/dubai-stunning.jpg"
-            alt=""
-          />
-        </div>
-      </div>
-      <div class="tour-card">
-        <div class="tour-card-content-wrapper">
-          <div class="tour-card-text-content">
-            <div class="tour-card-label">{{ "tour" | uppercase }}</div>
-            <div class="tour-card-value-col-wrapper">
-              <div class="tour-card-label-value tour-card-title">
-                {{ "magnificent dubai gateway" | titlecase }}
-              </div>
-              <div
-                class="tour-card-label-value tour-card-order-id text-secondary"
-              >
-                {{ "BK-2025-001" }}
-              </div>
-            </div>
-
-            <div class="tour-card-label">{{ "date" | uppercase }}</div>
-            <div class="tour-card-label-value tour-card-date">
-              {{ "feb 19, 2026" | titlecase }}
-            </div>
-
-            <div class="tour-card-label">{{ "guests" | uppercase }}</div>
-            <div class="tour-card-label-value tour-card-guests">
-              {{ "2 guests" | titlecase }}
-            </div>
-
-            <div class="tour-card-label">{{ "price" | uppercase }}</div>
-            <div class="tour-card-value-col-wrapper">
-              <div class="tour-card-label-value tour-card-price">
-                {{ "299999" | currency: "INR" }}
-              </div>
-              <div
-                class="tour-card-label-value tour-card-payment-status text-secondary"
-              >
-                {{ "full" | uppercase }}
-              </div>
-            </div>
-
-            <div class="tour-card-label">{{ "status" | uppercase }}</div>
-            <div class="tour-card-label-value tour-card-status">
-              <span class="tour-card-status-badge danger font-lato">{{
-                "cancelled" | titlecase
-              }}</span>
-            </div>
-          </div>
-          <div class="show-card-details-btn-wrapper">
-            <button
-              class="show-card-details-btn"
-              (click)="toggleBookingDetails()"
-            >
-              <i class="fas fa-angle-right"></i>
-            </button>
-          </div>
-        </div>
-        <div class="tour-card-img-content">
-          <img
-            src="../../../../assets/images/luxury/dubai-stunning.jpg"
-            alt=""
-          />
-        </div>
-      </div>
     </div>
   </div>
+
+  <!-- Drawer -->
   @if (showBoookingDetails) {
     <div
       class="booking-details-preview-container"
       [class.open]="showBoookingDetails"
-      (click)="toggleBookingDetails()"
+      (click)="closeDetails()"
     >
       <div
         class="booking-details-preview-wrapper"
@@ -221,127 +114,189 @@
             <h1>Booking Details</h1>
           </div>
           <div class="booking-detail-header-action">
-            <button class="close-btn" (click)="toggleBookingDetails()">
-              &#10005;
-            </button>
+            <button class="close-btn" (click)="closeDetails()">&#10005;</button>
           </div>
         </div>
+
         <div class="booking-details-content">
           <div class="booking-details-content-wrapper">
-            <div class="booking-details-img">
-              <img
-                src="../../../../assets/images/luxury/dubai-stunning.jpg"
-                alt=""
-              />
+
+            <div *ngIf="isLoadingDetails" class="text-secondary font-lato" style="padding: 0.5rem 0;">
+              Loading details...
             </div>
-            <div class="booking-details-data">
-              <div class="booking-details-title">
-                <h1>
-                  {{ "magnificent dubai gateway" | titlecase }}
-                </h1>
-              </div>
-              <div class="booking-details-short-desc">
-                <span class="booking-details-date font-lato">{{
-                  "Feb 21 - Feb 26, 2026" | titlecase
-                }}</span>
-                <span class="booking-details-no-of-guests font-lato">{{
-                  "2 Guests" | titlecase
-                }}</span>
-              </div>
+            <div *ngIf="!isLoadingDetails && detailsError" class="text-secondary font-lato" style="padding: 0.5rem 0;">
+              {{ detailsError }}
             </div>
-            <div class="booking-details-action-wrapper">
-              <button class="booking-details-action-btn invoice-btn">
-                Download Invoice
-              </button>
-              <button class="booking-details-action-btn receipt-btn">
-                View Receipt
-              </button>
-            </div>
-            <div class="booking-details-payment-info-wrapper">
-              <div class="booking-details-payment-status">
-                <span class="label font-lato">Payment Status</span
-                ><span class="value font-lato">{{ "Full" | titlecase }}</span>
+
+            <ng-container *ngIf="!isLoadingDetails && !detailsError && selectedDetails">
+
+              <div class="booking-details-img">
+                <img [src]="drawerImage" alt="" />
               </div>
-              <div class="booking-details-payment-transactions-details-wrapper">
-                <div
-                  class="payment-transaction-item-info bullet payment-received"
-                >
-                  <div class="left-col">
-                    <span class="label font-lato">Payment Received</span
-                    ><span class="payment-transaction-date">{{
-                      "Feb 6, 2026" | titlecase
-                    }}</span>
+
+              <div class="booking-details-data">
+                <div class="booking-details-title">
+                  <h1>{{ drawerTitle | titlecase }}</h1>
+                </div>
+                <div class="booking-details-short-desc">
+                  <span class="booking-details-date font-lato">
+                    {{ selectedDetails.booking.travel_date | date:'MMM d, y' }}
+                  </span>
+                  <span class="booking-details-no-of-guests font-lato">
+                    {{ drawerGuests }}
+                  </span>
+                </div>
+
+                <!-- Optional extras -->
+                <div class="text-secondary font-lato" style="margin-top: 10px; font-size: 13px;"
+                     *ngIf="selectedDetails.booking_details">
+                  <span *ngIf="selectedDetails.booking_details.children">
+                    Children: {{ selectedDetails.booking_details.children }}
+                    <span *ngIf="parseChildAges(selectedDetails.booking_details.child_ages)">
+                      (Ages: {{ parseChildAges(selectedDetails.booking_details.child_ages) }})
+                    </span>
+                  </span>
+                  <span *ngIf="selectedDetails.booking_details.flight_number" style="margin-left: 12px;">
+                    Flight: {{ selectedDetails.booking_details.flight_number }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="booking-details-action-wrapper">
+                <button class="booking-details-action-btn invoice-btn" disabled>
+                  Download Invoice
+                </button>
+                <button class="booking-details-action-btn receipt-btn" disabled>
+                  View Receipt
+                </button>
+              </div>
+
+              <div class="booking-details-payment-info-wrapper">
+                <div class="booking-details-payment-status">
+                  <span class="label font-lato">Payment Status</span>
+                  <span class="value font-lato">{{ selectedDetails.booking.payment_status | titlecase }}</span>
+                </div>
+
+                <div class="booking-details-payment-transactions-details-wrapper">
+                  <!-- For now you don’t have payment timeline API in response; show total only -->
+                  <div class="payment-transaction-item-info total-amount">
+                    <span class="label font-lato text-secondary">Total Amount</span>
+                    <span class="value font-lato">
+                      {{ amountInInr(selectedDetails.booking.total_amount_paise) | currency:'INR' }}
+                    </span>
                   </div>
-                  <span class="value font-lato">{{
-                    "199999" | currency: "INR"
-                  }}</span>
                 </div>
-                <div
-                  class="payment-transaction-item-info bullet payment-failed"
-                >
-                  <div class="left-col">
-                    <span class="label font-lato">Payment Failed</span
-                    ><span class="payment-transaction-date">{{
-                      "Feb 6, 2026" | titlecase
-                    }}</span>
+              </div>
+
+              <!-- Travellers -->
+              <div class="booking-details-guests-info-wrapper">
+                <div class="guests-info-title">
+                  <h1>Travellers</h1>
+                </div>
+
+                <div class="row-group" *ngIf="selectedDetails.travellers?.length; else noTravellers">
+                  <div class="guest-info-row" *ngFor="let t of selectedDetails.travellers">
+                    <span class="guest-name font-lato">{{ t.full_name | titlecase }}</span>
+                    <span class="guest-age font-lato">
+                      {{ t.age ? (t.age + ' years') : '-' }}
+                    </span>
                   </div>
-                  <span class="value font-lato">{{
-                    "199999" | currency: "INR"
-                  }}</span>
                 </div>
-                <div
-                  class="payment-transaction-item-info bullet payment-received"
-                >
-                  <div class="left-col">
-                    <span class="label font-lato">Payment Received</span
-                    ><span class="payment-transaction-date">{{
-                      "Feb 6, 2026" | titlecase
-                    }}</span>
+
+                <ng-template #noTravellers>
+                  <div class="text-secondary font-lato" style="margin-top: 10px;">
+                    No travellers added yet.
                   </div>
-                  <span class="value font-lato">{{
-                    "199999" | currency: "INR"
-                  }}</span>
-                </div>
-                <div class="payment-transaction-item-info total-amount">
-                  <span class="label font-lato text-secondary"
-                    >Total Amount</span
-                  ><span class="value font-lato">{{
-                    "199999" | currency: "INR"
-                  }}</span>
-                </div>
+                </ng-template>
+
+                <!-- Add travellers form -->
+           <div class="traveller-form-wrapper">
+
+  <div class="traveller-form-info text-secondary font-lato">
+    Add traveller details (max {{ selectedDetails.booking.guests }})
+  </div>
+
+  <div *ngIf="saveTravellersError" class="traveller-form-error text-secondary font-lato">
+    {{ saveTravellersError }}
+  </div>
+
+  <div class="traveller-form-rows">
+
+    <div class="traveller-row"
+         *ngFor="let tr of newTravellers; let i = index">
+
+      <input
+        class="traveller-input"
+        placeholder="Full name"
+        [(ngModel)]="newTravellers[i].full_name"
+        name="full_name_{{i}}"
+      />
+
+      <input
+        class="traveller-input"
+        placeholder="Age"
+        type="number"
+        [(ngModel)]="newTravellers[i].age"
+        name="age_{{i}}"
+      />
+
+      <input
+        class="traveller-input"
+        placeholder="Passport Number"
+        [(ngModel)]="newTravellers[i].passport_number"
+        name="passport_number_{{i}}"
+      />
+
+      <input
+        class="traveller-input"
+        placeholder="Email"
+        [(ngModel)]="newTravellers[i].email"
+        name="email_{{i}}"
+      />
+
+      <input
+        class="traveller-input"
+        placeholder="Phone number"
+        [(ngModel)]="newTravellers[i].phone"
+        name="phone_{{i}}"
+      />
+
+      <div class="traveller-row-actions">
+        <button
+          class="export-btn font-lato text-white"
+          type="button"
+          (click)="removeTravellerRow(i)">
+          Remove
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="traveller-form-actions">
+    <button
+      class="booking-details-action-btn receipt-btn"
+      type="button"
+      (click)="addTravellerRow()">
+
+      + Add more
+    </button>
+
+    <button
+      class="booking-details-action-btn invoice-btn"
+      type="button"
+      [disabled]="isSavingTravellers"
+      (click)="saveTravellers()">
+
+      {{ isSavingTravellers ? 'Saving...' : 'Save Travellers' }}
+    </button>
+  </div>
+
+</div>
               </div>
-            </div>
-            <div class="booking-details-guests-info-wrapper">
-              <div class="guests-info-title">
-                <h1>Travellers</h1>
-              </div>
-              <div class="row-group">
-                <div class="guest-info-row">
-                  <span class="guest-name font-lato">{{
-                    "guest one" | titlecase
-                  }}</span>
-                  <span class="guest-age font-lato">{{
-                    "25 years" | titlecase
-                  }}</span>
-                </div>
-                <div class="guest-info-row">
-                  <span class="guest-name font-lato">{{
-                    "guest two" | titlecase
-                  }}</span>
-                  <span class="guest-age font-lato">{{
-                    "27 years" | titlecase
-                  }}</span>
-                </div>
-                <div class="guest-info-row">
-                  <span class="guest-name font-lato">{{
-                    "guest three" | titlecase
-                  }}</span>
-                  <span class="guest-age font-lato">{{
-                    "21 years" | titlecase
-                  }}</span>
-                </div>
-              </div>
-            </div>
+
+            </ng-container>
           </div>
         </div>
       </div>
