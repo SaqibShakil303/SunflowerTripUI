@@ -14,12 +14,10 @@ export const RoleGuard: CanActivateFn = (route) => {
     return false;
   }
 
-  if (!authService.isAuthenticated()) {
-    router.navigate(['/dashboard']);
+  if (expectedRoles && !authService.hasRole(expectedRoles)) {
+    router.navigate(['']);
     return false;
   }
 
   return true;
-
-  
 };
