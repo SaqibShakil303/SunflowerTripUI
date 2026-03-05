@@ -178,7 +178,7 @@
                     <input type="file" accept="image/*,application/pdf" hidden (change)="onPickRequired('passport',$event)" />
                   </label>
 
-                  <label class="btn btn-muted font-lato" *ngIf="docs.required.passport.status!=='not_uploaded'">
+                  <label class="btn btn-muted font-lato" *ngIf="docs.required.passport.status !== 'verified' && docs.required.passport.status !== 'not_uploaded'">
                     {{ docs.required.passport.status==='rejected' ? 'Re-upload' : 'Replace' }}
                     <input type="file" accept="image/*,application/pdf" hidden (change)="onPickRequired('passport',$event)" />
                   </label>
@@ -238,7 +238,7 @@
                     <input type="file" accept="image/*,application/pdf" hidden (change)="onPickRequired('visa',$event)" />
                   </label>
 
-                  <label class="btn btn-muted font-lato" *ngIf="docs.required.visa.status!=='not_uploaded'">
+                  <label class="btn btn-muted font-lato" *ngIf="docs.required.visa.status!=='verified' && docs.required.visa.status!=='not_uploaded'">
                     {{ docs.required.visa.status==='rejected' ? 'Re-upload' : 'Replace' }}
                     <input type="file" accept="image/*,application/pdf" hidden (change)="onPickRequired('visa',$event)" />
                   </label>
@@ -308,7 +308,7 @@
                     <input type="file" accept="image/*,application/pdf" hidden (change)="onPickRequired('id_proof',$event)" />
                   </label>
 
-                  <label class="btn btn-muted font-lato" *ngIf="docs.required.id_proof.status!=='not_uploaded'">
+                  <label class="btn btn-muted font-lato" *ngIf="docs.required.id_proof.status !== 'verified' && docs.required.id_proof.status !== 'not_uploaded'">
                     {{ docs.required.id_proof.status==='rejected' ? 'Re-upload' : 'Replace' }}
                     <input type="file" accept="image/*,application/pdf" hidden (change)="onPickRequired('id_proof',$event)" />
                   </label>

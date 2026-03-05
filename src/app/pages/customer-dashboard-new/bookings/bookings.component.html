@@ -263,7 +263,7 @@
 
       <div class="traveller-row-actions">
         <button
-          class="export-btn font-lato text-white"
+          class="remove-btn font-lato text-white"
           type="button"
           (click)="removeTravellerRow(i)">
           Remove
@@ -276,7 +276,7 @@
 
   <div class="traveller-form-actions">
     <button
-      class="booking-details-action-btn receipt-btn"
+      class="booking-details-action-btn add-btn font-lato"
       type="button"
       (click)="addTravellerRow()">
 
@@ -284,7 +284,7 @@
     </button>
 
     <button
-      class="booking-details-action-btn invoice-btn"
+      class="booking-details-action-btn save-btn font-lato"
       type="button"
       [disabled]="isSavingTravellers"
       (click)="saveTravellers()">
