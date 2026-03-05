@@ -1,21 +1,86 @@
+<div class="space-y-6 documents-shell">
 
+  <!-- Header + Booking/Traveller selection -->
+  <div class="documents-top">
+    <div>
+      <h1 class="text-3xl font-bold text-white tracking-tight">Documents</h1>
+      <p class="text-muted-foreground mt-1">Upload and verify your travel documents.</p>
+    </div>
 
-<div class="space-y-6">
-  <div>
-    <h1 class="text-3xl font-bold text-white tracking-tight">Documents</h1>
-    <p class="text-muted-foreground mt-1">Upload and verify your travel documents.</p>
+    <div class="documents-actions">
+      <button type="button" class="doc-btn" (click)="loadBookings()">Refresh</button>
+    </div>
   </div>
 
-  <!-- Cards grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <!-- Booking selector -->
+  <div class="selector-card">
+    <div class="selector-title text-white">Select Booking</div>
+
+    <div *ngIf="isLoadingBookings" class="text-muted-foreground">Loading bookings...</div>
+    <div *ngIf="!isLoadingBookings && bookingsError" class="text-muted-foreground">{{ bookingsError }}</div>
+
+    <div class="booking-pills" *ngIf="!isLoadingBookings && !bookingsError && bookings.length">
+      <button
+        type="button"
+        class="pill"
+        *ngFor="let b of bookings; trackBy: trackByBookingId"
+        [class.active]="expandedBookingId === b.booking_id"
+        (click)="expandBooking(b.booking_id)"
+      >
+        <span class="pill-title">{{ b.tour_title | titlecase }}</span>
+        <span class="pill-sub text-muted-foreground">
+          BK-{{ b.booking_id }} • {{ b.travel_date | date:'MMM d, y' }}
+        </span>
+      </button>
+    </div>
+
+    <div *ngIf="!isLoadingBookings && !bookingsError && bookings.length === 0" class="text-muted-foreground">
+      No confirmed bookings found.
+    </div>
+
+    <!-- Traveller chips -->
+    <div class="traveller-area" *ngIf="expandedBookingId">
+      <div *ngIf="isLoadingBookingDetails" class="text-muted-foreground">Loading travellers...</div>
+      <div *ngIf="!isLoadingBookingDetails && bookingDetailsError" class="text-muted-foreground">{{ bookingDetailsError }}</div>
+
+      <div *ngIf="!isLoadingBookingDetails && !bookingDetailsError && bookingDetails?.travellers?.length">
+        <div class="selector-title text-white mt-3">Select Traveller</div>
+        <div class="traveller-chips">
+          <button
+            type="button"
+            class="traveller-chip"
+            *ngFor="let t of bookingDetails!.travellers; trackBy: trackByTravellerId"
+            [class.active]="selectedTravellerId === t.id"
+            (click)="selectTraveller(t.id)"
+          >
+            {{ t.full_name | titlecase }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingBookingDetails && !bookingDetailsError && bookingDetails?.travellers?.length === 0"
+           class="text-muted-foreground">
+        No travellers found for this booking.
+      </div>
+    </div>
+
+    <!-- Docs errors -->
+    <div *ngIf="selectedTravellerId && isLoadingDocs" class="text-muted-foreground mt-3">Loading documents...</div>
+    <div *ngIf="selectedTravellerId && !isLoadingDocs && docsError" class="text-muted-foreground mt-3">{{ docsError }}</div>
+    <div *ngIf="uploadError" class="text-muted-foreground mt-3">{{ uploadError }}</div>
+  </div>
+
+  <!-- Cards grid (your approved UI) -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+       *ngIf="selectedTravellerId && !isLoadingDocs && !docsError">
+
     <div
-      *ngFor="let doc of documents"
+      *ngFor="let doc of documents; trackBy: trackByUiDocId"
       class="glass-card rounded-xl p-6 flex flex-col h-full relative group"
     >
       <!-- Top row -->
       <div class="flex justify-between items-start mb-4">
         <div class="rounded-full p-2.5 bg-white/5 ring-1 ring-white/10">
-          <!-- icon placeholder (you can swap with lucide-angular later) -->
           <span class="inline-block h-5 w-5 align-middle" [class]="iconColor(doc)">📄</span>
         </div>
 
@@ -40,7 +105,7 @@
       </div>
 
       <div class="mt-auto space-y-3">
-        <!-- Uploaded file row (only when fileUrl exists and NOT rejected, same as your React logic) -->
+        <!-- Uploaded file row -->
         <div
           *ngIf="doc.fileUrl && doc.status !== 'rejected'"
           class="bg-white/5 rounded-lg p-3 flex items-center justify-between hover:bg-white/10 transition-colors"
@@ -50,13 +115,27 @@
             <span class="text-sm truncate text-foreground">{{ doc.fileName }}</span>
           </div>
 
-          <button
-            type="button"
-            class="h-7 w-7 rounded-lg hover:bg-white/5 grid place-items-center text-white/80 hover:text-white"
-            (click)="openPreview(doc)"
-          >
-            👁️
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="h-7 w-7 rounded-lg hover:bg-white/5 grid place-items-center text-white/80 hover:text-white"
+              (click)="openPreview(doc)"
+            >
+              👁️
+            </button>
+
+            <!-- Delete (only if dbId exists) -->
+            <button
+              *ngIf="doc.dbId"
+              type="button"
+              class="h-7 w-7 rounded-lg hover:bg-white/5 grid place-items-center text-white/80 hover:text-white"
+              [disabled]="deletingDocIds.has(doc.dbId)"
+              (click)="deleteDocument(doc)"
+              title="Delete"
+            >
+              {{ deletingDocIds.has(doc.dbId) ? '…' : '🗑️' }}
+            </button>
+          </div>
         </div>
 
         <!-- Action buttons -->
@@ -105,7 +184,7 @@
     </div>
   </div>
 
-  <!-- Upload Modal -->
+  <!-- Upload Modal (your modal, now supports supporting label) -->
   <app-modal
     [open]="!!uploadingId"
     [title]="'Upload Document'"
@@ -113,14 +192,27 @@
     (close)="closeUpload()"
   >
     <div class="space-y-6 text-center">
+
+      <!-- Supporting label input (only for supporting uploads) -->
+      <div *ngIf="uploadTarget?.kind === 'supporting'" class="supporting-name">
+        <label class="label text-muted-foreground">Document name</label>
+        <input
+          class="supporting-input"
+          placeholder="e.g. Flight Ticket / Hotel Voucher"
+          [(ngModel)]="supportingLabel"
+          name="supportingLabel"
+          [disabled]="isUploading"
+        />
+      </div>
+
       <div class="border-2 border-dashed border-white/10 rounded-xl p-10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer relative">
-    <input
-  type="file"
-  class="absolute inset-0 opacity-0 cursor-pointer"
-  (change)="onFileChange($event)"
-  [disabled]="isUploading"
-  accept="image/*,application/pdf"
-/>
+        <input
+          type="file"
+          class="absolute inset-0 opacity-0 cursor-pointer"
+          (change)="onFileChange($event)"
+          [disabled]="isUploading"
+          accept="image/*,application/pdf"
+        />
 
         <div class="flex flex-col items-center gap-3">
           <div class="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
@@ -128,7 +220,7 @@
           </div>
           <div>
             <p class="text-lg font-medium text-white">Click to upload or drag and drop</p>
-            <p class="text-sm text-muted-foreground mt-1">SVG, PNG, JPG or PDF (max. 5MB)</p>
+            <p class="text-sm text-muted-foreground mt-1">PNG, JPG or PDF (max. 5MB)</p>
           </div>
         </div>
       </div>
@@ -142,9 +234,12 @@
 
       <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-left">
         <p class="text-xs text-blue-300">
-          <strong>Note:</strong> You can only replace this document within 7 days of upload. Once verified by our team,
-          changes will be locked.
+          <strong>Note:</strong> Once verified by our team, changes will be locked.
         </p>
+      </div>
+
+      <div *ngIf="uploadError" class="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-left">
+        <p class="text-xs text-red-300">{{ uploadError }}</p>
       </div>
     </div>
   </app-modal>

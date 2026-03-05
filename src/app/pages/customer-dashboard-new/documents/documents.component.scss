@@ -2,10 +2,8 @@
   --border-subtle: rgba(255,255,255,0.08);
 }
 
-/* matches your "border-border-subtle" utility expectation */
 .border-border-subtle { border-color: var(--border-subtle); }
 
-/* glass-card effect like screenshot */
 .glass-card{
   background: radial-gradient(1200px 500px at 50% -20%, rgba(255,255,255,0.08), transparent 60%),
               rgba(255,255,255,0.04);
@@ -19,10 +17,131 @@
   box-shadow: 0 26px 70px rgba(0,0,0,0.7);
 }
 
-/* optional: if you use these Tailwind-like color tokens */
+/* optional tokens used by your utility-like classes */
 .text-muted-foreground { color: rgba(255,255,255,0.55); }
 .text-foreground { color: rgba(255,255,255,0.92); }
 .bg-muted { background: rgba(255,255,255,0.06); }
-.text-primary { color: #8b5cf6; } /* example purple */
+.text-primary { color: #8b5cf6; }
 .bg-primary { background: #8b5cf6; }
 .text-primary-foreground { color: #0b0b0f; }
+
+/* page shell helpers */
+.documents-shell {
+  padding: 6px;
+}
+
+/* top header row */
+.documents-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.documents-actions .doc-btn{
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.92);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 200ms ease;
+}
+.documents-actions .doc-btn:hover{
+  background: rgba(255,255,255,0.07);
+}
+
+/* booking/traveller selector card */
+.selector-card{
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  padding: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.selector-title{
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.booking-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.pill{
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+  padding: 10px 12px;
+  cursor:pointer;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width: 220px;
+  transition: 200ms ease;
+}
+.pill:hover{ background: rgba(255,255,255,0.07); }
+.pill.active{
+  border-color: rgba(139,92,246,0.55);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+}
+.pill-title{
+  color: rgba(255,255,255,0.92);
+  font-size: 13px;
+  font-weight: 600;
+}
+.pill-sub{ font-size: 11px; }
+
+.traveller-area{ margin-top: 12px; }
+
+.traveller-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.traveller-chip{
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.92);
+  border-radius: 999px;
+  padding: 8px 10px;
+  cursor:pointer;
+  transition: 200ms ease;
+}
+.traveller-chip:hover{ background: rgba(255,255,255,0.07); }
+.traveller-chip.active{
+  border-color: rgba(139,92,246,0.55);
+  background: rgba(139,92,246,0.14);
+}
+
+/* modal supporting name input */
+.supporting-name{
+  text-align:left;
+}
+.supporting-name .label{
+  display:block;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.supporting-input{
+  width:100%;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.92);
+  padding: 10px 12px;
+  border-radius: 10px;
+  outline:none;
+}
+.supporting-input:focus{
+  border-color: rgba(139,92,246,0.65);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.18);
+}
+.supporting-input:disabled{
+  opacity: 0.6;
+}
