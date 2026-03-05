@@ -41,14 +41,13 @@ $danger-muted: #442222;
   display: flex;
 
   .med-and-large-screen-side-bar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
     .sidebar-container {
-      position: sticky;
-      top: 0;
-
       padding-inline: 1.75rem;
       padding-block: 1.25rem;
       width: clamp(175px, 22vw, 275px);
-      height: 100vh;
       border-right: 1px solid #1f1f1f;
 
       display: flex;
@@ -56,9 +55,7 @@ $danger-muted: #442222;
 
       .logo {
         margin-bottom: 1.75rem;
-
-        .com-logo {
-        }
+        
         .com-name {
           font-size: 25px;
           font-weight: 400;

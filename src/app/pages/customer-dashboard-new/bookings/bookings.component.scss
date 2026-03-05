@@ -638,12 +638,40 @@ $danger-muted: #442222;
     grid-column: 1 / -1;
     display: flex;
     gap: 10px;
+
+    .remove-btn {
+      background-color: #ff3f35;
+      padding-inline: 1rem;
+      padding-block: 0.2rem;
+      border-radius: 4px;
+      cursor: auto;
+      
+      &:hover {
+        cursor: pointer;
+        background-color: #ff5047;
+      }
+    }
   }
 
   .traveller-form-actions {
     display: flex;
     gap: 10px;
     margin-top: 12px;
+
+    .add-btn, .save-btn {
+      padding-inline: 1rem;
+      padding-block: 0.2rem;
+      border-radius: 4px;
+      color: #ffffff;
+      background-color: #8a5bf5;
+      cursor: auto;
+      transition: all 0.3s ease-in-out;
+      
+      &:hover {
+        cursor: pointer;
+        background-color: #996efe;
+      }
+    }
   }
 
   @media screen and (max-width: 520px) {
