@@ -164,7 +164,13 @@
             <option value="with-flight">With Flight</option>
             <option value="without-flight">Without Flight</option>
           </select>
+          <div class="info-banner" *ngIf="bookingData.flightOption">
+  <small>
+    <b>Estimated Total:</b> ₹{{ getEstimatedTotalInr() | number:'1.0-0' }}
+  </small>
+</div>
         </div>
+
 
         <!-- Flight Number (holiday + without-flight only) -->
         <div class="form-group" *ngIf="!isGroup && bookingData.flightOption === 'without-flight'">

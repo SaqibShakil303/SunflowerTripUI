@@ -299,6 +299,19 @@ onDepartureChange() {
     }
   }
 
+  getUnitPriceInr(): number {
+  if (!this.tour) return 0;
+  const opt = this.bookingData.flightOption;
+  if (opt === 'with-flight') return Number(this.tour.price_with_flight || 0);
+  if (opt === 'without-flight') return Number(this.tour.price_per_person || 0);
+  return 0;
+}
+
+getEstimatedTotalInr(): number {
+  const guests = Number(this.bookingData.adults || 0) + Number(this.bookingData.children || 0);
+  return this.getUnitPriceInr() * guests;
+}
+
   async submitBooking(form: NgForm) {
      if (!isPlatformBrowser(this.platformId)) {
       return; // SSR render path — do nothing
@@ -308,6 +321,26 @@ onDepartureChange() {
     this.stateSvc.setBooking(this.bookingData);   // keep your local persistence
     this.loading = true;
 
+// ✅ Guard: flight option must be selected
+if (!this.bookingData.flightOption) {
+  this.snackBar.open('Please select Flight Option (Yes/No) to continue.', 'Close', {
+    duration: 3000,
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+  });
+  return;
+}
+
+// ✅ Extra safety: allow only expected values
+if (!['with-flight', 'without-flight'].includes(this.bookingData.flightOption)) {
+  this.snackBar.open('Invalid Flight Option selected. Please choose again.', 'Close', {
+    duration: 3000,
+    horizontalPosition: 'center',
+    verticalPosition: 'top',
+  });
+  this.bookingData.flightOption = '';
+  return;
+}
     try {
       // 1) Load Razorpay checkout script
       await this.checkout.loadScript();
@@ -347,6 +380,7 @@ const guests = Number(this.bookingData.adults) + Number(this.bookingData.childre
       
     };
 console.log('Creating order with payload:', createPayload);
+
       const order = await this.checkout.create(createPayload).toPromise();
       // order = { key, orderId, amount, currency, bookingId }
 
