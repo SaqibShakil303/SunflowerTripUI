@@ -325,4 +325,9 @@ deleteTooltip(doc?: TravellerDocument | null): string {
     this.previewDoc = null;
     this.previewSafeUrl = null;
   }
+
+  isoToIndianDate(iso: any) {
+    if(iso) return new Date(iso).toLocaleDateString("en-IN");
+    return null;
+  }
 }

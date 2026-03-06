@@ -5,13 +5,13 @@
       <div class="sidebar-container">
         <div class="logo">
           <div class="com-icon"></div>
-          <h1 class="com-name text-white font-lato">Sunflower Trip</h1>
+          <h1 class="com-name text-white font-lato" (click)="gotoHome()">Sunflower Trip</h1>
         </div>
         <div class="nav-container">
           <ul class="nav-list">
             <li class="nav-item">
               <a
-                routerLink="/customer-dashboard"
+                routerLink="/customer-dashboard/account"
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
               >
@@ -76,17 +76,15 @@
       <div class="notification-btn"><i class="far fa-bell"></i></div>
       <div class="user-info-wrapper">
         <div class="user-info">
-          <div class="username-text font-lato">User Name</div>
-          <div class="user-email-text font-lato">{{ "email@example.com" }}</div>
-              <!-- <div class="username-text font-lato">{{ user?.name }}</div>
-          <div class="user-email-text font-lato">{{ user?.email }}</div> -->
+          <div class="username-text font-lato">{{user?.name | titlecase}}</div>
+          <div class="user-email-text font-lato">{{ user?.email }}</div>
         </div>
         <div class="quick-dropdown-menu-wrapper">
           <button
             class="user-logo font-lato"
             popovertarget="quick-dropdown-menu"
           >
-            UN
+            {{getNickname()}}
           </button>
           <div
             class="quick-action-dropdown-menu"

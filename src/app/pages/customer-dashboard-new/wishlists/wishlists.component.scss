@@ -75,9 +75,15 @@ $danger-muted: #442222;
           font-size: 15px;
           overflow: hidden;
 
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: center;
+
           .tour-img {
             position: relative;
             overflow: hidden;
+            width: 100%;
             height: 260px;
             anchor-name: --img-container;
 
@@ -113,6 +119,7 @@ $danger-muted: #442222;
           .tour-details-wrapper {
             padding-inline: 1.15rem;
             padding-top: 1.15rem;
+            flex: 1;
 
             .row-flex-between {
               display: flex;
@@ -239,4 +246,8 @@ $danger-muted: #442222;
       }
     }
   }
+}
+
+.not-found-text {
+  color: #6f6f6f;
 }
