@@ -95,19 +95,28 @@
     }
   }
 
-  .btn-primary {
-    padding: 1rem 2rem;
-    background: #4cd7d0;
-    color: #0a1828;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s;
+  .action-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 
-    &:hover {
-      background: #3bc2bb;
+    .btn-primary {
+      flex: 1;
+      padding: 1rem 2rem;
+      background: #4cd7d0;
+      color: #0a1828;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #3bc2bb;
+      }
     }
   }
+  
 }
 
 @keyframes tickAnim {

@@ -45,6 +45,7 @@ $danger-muted: #442222;
     top: 0;
     height: 100vh;
     .sidebar-container {
+      height: 100vh;
       padding-inline: 1.75rem;
       padding-block: 1.25rem;
       width: clamp(175px, 22vw, 275px);
@@ -59,6 +60,7 @@ $danger-muted: #442222;
         .com-name {
           font-size: 25px;
           font-weight: 400;
+          cursor: pointer;
         }
       }
 

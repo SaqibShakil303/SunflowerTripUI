@@ -146,20 +146,6 @@
                     {{ drawerGuests }}
                   </span>
                 </div>
-
-                <!-- Optional extras -->
-                <div class="text-secondary font-lato" style="margin-top: 10px; font-size: 13px;"
-                     *ngIf="selectedDetails.booking_details">
-                  <span *ngIf="selectedDetails.booking_details.children">
-                    Children: {{ selectedDetails.booking_details.children }}
-                    <span *ngIf="parseChildAges(selectedDetails.booking_details.child_ages)">
-                      (Ages: {{ parseChildAges(selectedDetails.booking_details.child_ages) }})
-                    </span>
-                  </span>
-                  <span *ngIf="selectedDetails.booking_details.flight_number" style="margin-left: 12px;">
-                    Flight: {{ selectedDetails.booking_details.flight_number }}
-                  </span>
-                </div>
               </div>
 
               <div class="booking-details-action-wrapper">
@@ -169,6 +155,80 @@
                 <button class="booking-details-action-btn receipt-btn" disabled>
                   View Receipt
                 </button>
+              </div>
+
+               <!-- Optional extras -->
+              <div class="booking-details-info font-lato">
+                <div class="text-secondary font-lato" *ngIf="selectedDetails.booking_details" style="font-size: 14px; margin-top: 1.275rem;">
+                  <div class="booking-details-info-content">
+                    <div>
+                      <div class="font-lato">Name</div>
+                      <span class="font-lato" style="font-size: 16px; color: white;">{{selectedDetails.booking_details.name}}</span>
+                    </div>
+                    <div>
+                      <div class="font-lato">Email</div>
+                      <span class="font-lato" style="font-size: 16px; color: white;">{{selectedDetails.booking_details.email}}</span>
+                    </div>
+                    <div>
+                      <div class="font-lato">Phone</div>
+                      <span class="font-lato" style="font-size: 16px; color: white;">
+                        {{selectedDetails.booking_details.phone}}
+                      </span>
+                    </div>
+                    <div>
+                      <div class="font-lato">Booked On</div>
+                      <span class="font-lato" style="font-size: 16px; color: white;">{{selectedDetails.booking_details.created_at | date:'MMM d, y'}}</span>
+                    </div>
+                    
+                    <div>
+                      <div class="font-lato">Travellers</div>
+                        <div style="margin-left: 2rem;">
+                          <div>
+                            <span class="font-lato">Adults</span>
+                            <span class="font-lato" style="font-size: 14px; color: white; margin-left: 24px;">
+                              {{selectedDetails.booking_details.adults}}
+                            </span>
+                          </div>
+                          <div *ngIf="selectedDetails.booking_details.children">
+                            <span class="font-lato">Children</span>
+                            <span class="font-lato" style="font-size: 14px; color: white; margin-left: 12px;">
+                              {{selectedDetails.booking_details.children}}
+                            </span>
+                            <span *ngIf="parseChildAges(selectedDetails.booking_details.child_ages)">
+                              <span class="font-lato" style="margin-left: 11px;">Ages</span>
+                              <span style="font-size: 14px; color: white; margin-left: 5px;">
+                                {{parseChildAges(selectedDetails.booking_details.child_ages)}}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedDetails.booking_details.flight_number">
+                      <div class="font-lato">Flight Number</div>
+                        <span class="font-lato" style="font-size: 16px; color: white;">
+                          {{selectedDetails.booking_details.flight_number}}
+                        </span>
+                      </div>
+                      <div>
+                      <div class="font-lato">Flight Option</div>
+                        <span class="font-lato" style="font-size: 16px; color: white;">
+                          {{selectedDetails.booking_details.flight_option}}
+                        </span>
+                    </div>
+                    <div>
+                      <div class="font-lato">Meal Plan</div>
+                        <span class="font-lato" style="font-size: 16px; color: white;">
+                          {{selectedDetails.booking_details.meal_plan}}
+                        </span>
+                    </div>
+                    <div>
+                      <div class="font-lato">Travell Date</div>
+                        <span class="font-lato" style="font-size: 16px; color: white;">
+                          {{selectedDetails.booking_details.travel_date | date:'MMM d, y'}}
+                        </span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div class="booking-details-payment-info-wrapper">

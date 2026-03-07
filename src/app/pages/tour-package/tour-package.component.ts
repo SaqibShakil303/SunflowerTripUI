@@ -22,6 +22,8 @@ import { ChatWidgetComponent } from '../../components/chat-widget/chat-widget.co
 import { DestinationService } from '../../services/destination/destination.service';
 import { TourFilterComponent } from '../../common/tour-filter/tour-filter.component';
 import { StatePersistenceService } from '../../services/state-persistence/state-persistence.service';
+import { WishlistService } from '../../services/wishlist/wishlist.service';
+import { AuthService } from '../../services/authService/auth.service';
 
 @Component({
   selector: 'app-tour-package',
@@ -48,16 +50,25 @@ export class TourPackageComponent implements OnInit {
   error: string | null = null;
   previousParams: any = null;
   private lastScrollY = 0;
+  isUserLoggedin: boolean = false;
+  user: any = null;
+  wishlist: any [] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private toursSvc: TourService,
     private destSvc: DestinationService,
-    private stateSvc: StatePersistenceService
+    private stateSvc: StatePersistenceService,
+    private wishlistService: WishlistService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.isUserLoggedin = this.authService.isAuthenticated();
+    this.user = this.authService.getUser();
+    this.loadWishlistData();
+
     // Fetch destination and category data for filter dropdowns
     this.destSvc.getNamesAndLocations().subscribe({
       next: (data) => {
@@ -191,5 +202,47 @@ export class TourPackageComponent implements OnInit {
 
   trackByTour(index: number, tour: Tour) {
     return tour.id; // or slug
+  }
+
+  loadWishlistData() {
+    this.wishlistService.getByUserId(this.user.id).subscribe({
+      next: (data: any) => {
+        this.wishlist = data.data || [];
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    })
+  }
+
+  handleAddWishlist(data: {user_id: number, tour_id: number}) {
+    console.log(data);
+    this.wishlistService.create(data).subscribe({
+      next: (data) => {
+        this.loadWishlistData();
+      },
+      error: (error) => console.log(error)
+    });
+  }
+  
+  handleRemoveWishlist(id: number) {
+    this.wishlistService.deleteById(this.getWishlistItem(id).id).subscribe({
+      next: (data) => {
+        this.loadWishlistData();
+      },
+      error: (error) => console.log(error)
+    })
+  }
+
+  isInWishlist(tourId: number) {
+    return this.wishlist.some(
+      (item: any) => item.tour_id === tourId && item.user_id === this.user.id
+    );
+  }
+
+  getWishlistItem(tourId: number) {
+    return this.wishlist.find(
+      (item: any) => item.tour_id === tourId && item.user_id === this.user.id
+    );
   }
 }

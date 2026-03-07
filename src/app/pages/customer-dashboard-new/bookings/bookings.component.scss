@@ -447,6 +447,18 @@ $danger-muted: #442222;
             }
           }
 
+          .booking-details-info-content {
+            border: 1px solid #1f1f1f;
+            border-radius: 11px;
+            padding: 1.25rem;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: stretch;
+            gap: 0.5rem;
+          }
+
           .booking-details-payment-info-wrapper {
             border: 1px solid #1f1f1f;
             border-radius: 11px;

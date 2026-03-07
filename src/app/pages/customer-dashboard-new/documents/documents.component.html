@@ -150,6 +150,7 @@
                 </div>
 
                 <h3 class="doc-title font-lato">Passport</h3>
+                <p><small class="font-lato text-secondary">Uploaded At {{isoToIndianDate(docs.required.passport.uploaded_at)}}</small></p>
                 <p class="doc-desc font-lato text-secondary">
                   {{ docs.required.passport.status === 'not_uploaded'
                       ? 'Please upload requested document.'
@@ -210,6 +211,7 @@
                 </div>
 
                 <h3 class="doc-title font-lato">Visa</h3>
+                <p><small class="font-lato text-secondary">Uploaded At {{isoToIndianDate(docs.required.visa.uploaded_at)}}</small></p>
                 <p class="doc-desc font-lato text-secondary">
                   {{ docs.required.visa.status === 'not_uploaded'
                       ? 'Please upload requested document.'
@@ -280,6 +282,7 @@
                 </div>
 
                 <h3 class="doc-title font-lato">ID Proof</h3>
+                <p><small class="font-lato text-secondary">Uploaded At {{isoToIndianDate(docs.required.id_proof.uploaded_at)}}</small></p>
                 <p class="doc-desc font-lato text-secondary">
                   {{ docs.required.id_proof.status === 'not_uploaded'
                       ? 'Please upload requested document.'

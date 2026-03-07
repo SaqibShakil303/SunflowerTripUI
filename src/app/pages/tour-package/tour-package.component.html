@@ -100,6 +100,17 @@
             View Tour
           </button>
         </div>
+
+        <div class="wishlist-btn-wrapper" *ngIf="isUserLoggedin && !isInWishlist(tour.id)">
+          <button class="wishlist-btn add-wl-btn" (click)="handleAddWishlist({user_id: user.id, tour_id: tour.id})">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="wishlist-btn-wrapper" *ngIf="isUserLoggedin && isInWishlist(tour.id)">
+          <button class="wishlist-btn remove-wl-btn" (click)="handleRemoveWishlist(tour.id)">
+            <i class="fas fa-heart"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
