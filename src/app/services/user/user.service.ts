@@ -35,6 +35,10 @@ export class UserService {
     return this.http.put(`${this.apiUrl}/users/create-new-password`, {email, password}).pipe(timeout(8000), catchError(this.handleError))
   }
 
+  updateAccount(id: string, data: {}) {
+    return this.http.put(`${this.apiUrl}/users/update-account/${id}`, data);
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
       let errorMessage = 'An unknown error occurred!';
       if (error.error instanceof ErrorEvent) {
