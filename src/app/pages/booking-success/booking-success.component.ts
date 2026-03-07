@@ -32,4 +32,8 @@ export class BookingSuccessComponent implements OnInit {
     this.router.navigate(['/']);
         this.stateSvc.clearBooking // Clear booking data when navigating home
   }
+   goToDashboard() {
+    this.router.navigate(['customer-dashboard/account']);
+        this.stateSvc.clearBooking // Clear booking data when navigating home
+  }
 }
