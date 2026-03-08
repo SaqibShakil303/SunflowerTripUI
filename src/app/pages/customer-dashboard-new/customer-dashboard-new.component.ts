@@ -26,10 +26,10 @@ export class CustomerDashboardNewComponent implements OnInit {
 
   ngOnInit() {
     this.userSerivce
-      .getUserByEmail(this.authService.getUser().email)
+      .getUserById(this.authService.getUser().id)
       .subscribe({
         next: (data: any) => {
-          this.user = data.user || null;
+          this.user = data.data || null;
         },
       });
   }

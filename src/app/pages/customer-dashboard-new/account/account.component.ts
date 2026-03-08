@@ -50,17 +50,16 @@ export class AccountComponent implements OnInit {
 
   getUserAccount() {
     return this.userService
-      .getUserByEmail(this.authService.getUser().email)
+      .getUserById(this.authService.getUser().id)
       .subscribe({
         next: (data: any) => {
-          this.user = data?.user;
+          this.user = data?.data;
           this.name = this.user.name;
           this.phone = this.user.contact_no;
           this.email = this.user.email;
         },
         error: (err) => console.log(err),
         complete: () => {
-          console.log(this.user);
           this.userLoading = false;
         },
       });
@@ -228,16 +227,15 @@ export class AccountComponent implements OnInit {
 
   updateEmail(form: NgForm) {
     if (this.user && form && this.user.email !== form.value.email) {
-      const emailChanged =
-        form.value.email && form.value.email !== this.user.email;
       this.userService
         .updateAccount(this.user.id, { email: form.value.email })
         .subscribe({
           next: (data: any) => {
-            if (data.success && emailChanged) {
+            if (data.success) {
+              this.getUserAccount();
               document.getElementById('update-email-form')?.hidePopover();
               this.snackBar.open(
-                'Email update successful. You can now login with your new email. You will be logged out in 10 seconds.',
+                'Email update successful. You can now login with your new email.',
                 'close',
                 {
                   horizontalPosition: 'center',
@@ -245,11 +243,6 @@ export class AccountComponent implements OnInit {
                   duration: 10000,
                 },
               );
-
-              setTimeout(() => {
-                this.authService.logout();
-                this.router.navigate(['login']);
-              }, 10000);
             }
           },
           error: (error: HttpErrorResponse) => {

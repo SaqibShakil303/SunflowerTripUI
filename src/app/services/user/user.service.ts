@@ -24,7 +24,11 @@ export class UserService {
   }
 
     getUserByEmail(email: string) {
-    return this.http.get(`${this.apiUrl}/users/${email}`).pipe( timeout(8000), catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}/users/email/${email}`).pipe( timeout(8000), catchError(this.handleError));
+  }
+
+  getUserById(id: number) {
+    return this.http.get(`${this.apiUrl}/users/id/${id}`).pipe( timeout(8000), catchError(this.handleError));
   }
 
   addContactNo(userId: string, contactNo: string) {
