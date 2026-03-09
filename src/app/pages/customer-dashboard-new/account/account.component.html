@@ -12,17 +12,133 @@
     </div>
   </div>
 </div>
-
-@if (user) {
+@if (userLoading && !user) {
+  <span class="font-lato" style="color: #434343; margin-left: 1rem"
+    >please wait...</span
+  >
+}
+@if (!userLoading && user) {
   <div class="customer-details-container">
-    <div class="customer-details-item">
-      <span class="customer-details-item-label">Name: </span
-      ><span class="customer-details-item-value">{{ user?.name || "--" }}</span>
+    <div class="customer-details-item flex gap-3">
+      <label for="name"
+        ><span class="customer-details-item-label">Name: </span></label
+      >
+
+      <div>
+        <span class="customer-details-item-value">{{
+          user?.name || "--"
+        }}</span>
+        <button class="name-edit-btn" popovertarget="update-name-form">
+          <i class="fas fa-pen"></i>
+        </button>
+      </div>
+
+      <div id="update-name-form" class="update-name-form-popup" popover="auto">
+        <h1>Update name</h1>
+
+        <form #updateNameForm="ngForm" (ngSubmit)="updateName(updateNameForm)">
+          <div class="custom-input-container">
+            <input
+              id="name"
+              type="text"
+              [(ngModel)]="name"
+              name="name"
+              required
+              placeholder=" "
+              autocomplete="name"
+              pattern="^[a-zA-Z ]+$"
+              #nameRef="ngModel"
+            />
+
+            <label for="name" [class.filled]="name"> Name </label>
+
+            <i class="fa fa-user input-icon"></i>
+
+            <!-- show error for name -->
+            @if (nameRef?.dirty || nameRef?.touched) {
+              @if (nameRef?.errors?.["required"]) {
+                <span class="err-msg">*name is required</span>
+              }
+
+              @if (nameRef?.errors?.["pattern"]) {
+                <span class="err-msg">*enter valid name</span>
+              }
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="name-submit-btn"
+            [disabled]="updateNameForm.invalid || user.name === updateNameForm.value.name"
+            type="submit"
+          >
+            Save
+          </button>
+        </form>
+      </div>
     </div>
-    <div class="customer-details-item add-contact-form-container">
-      <span class="customer-details-item-label">Contact No: </span>
+    <div class="customer-details-item flex gap-3 add-contact-form-container">
+      <label for="phone"
+        ><span class="customer-details-item-label">Contact No: </span></label
+      >
       @if (user?.contact_no) {
-        <span class="customer-details-item-value">{{ user?.contact_no }}</span>
+        <div>
+          <span class="customer-details-item-value">{{
+            user?.contact_no
+          }}</span>
+          <button class="name-edit-btn" popovertarget="update-phone-form">
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
+
+        <div
+          id="update-phone-form"
+          class="update-phone-form-popup"
+          popover="auto"
+        >
+          <h1>Update phone</h1>
+
+          <form
+            #updatePhoneForm="ngForm"
+            (ngSubmit)="updatePhone(updatePhoneForm)"
+          >
+            <div class="custom-input-container">
+              <input
+                id="phone"
+                type="text"
+                [(ngModel)]="phone"
+                name="phone"
+                required
+                placeholder=" "
+                autocomplete="tel"
+                pattern="^(?:\+91|91)?[6-9]\d{9}$"
+                #phoneRef="ngModel"
+              />
+
+              <label for="phone" [class.filled]="phone">Phone</label>
+
+              <i class="fa fa-phone input-icon"></i>
+
+              <!-- show error for phone element -->
+              @if (phoneRef?.dirty || phoneRef?.touched) {
+                @if (phoneRef?.errors?.["required"]) {
+                  <span class="err-msg">*phone is required</span>
+                }
+                @if (phoneRef?.errors?.["pattern"]) {
+                  <span class="err-msg">*enter valid phone number</span>
+                }
+              }
+            </div>
+
+            <button
+              type="submit"
+              class="contact-no-submit-btn"
+              [disabled]="updatePhoneForm.invalid || user?.contact_no === updatePhoneForm.value.phone"
+            >
+              Save
+            </button>
+          </form>
+        </div>
       } @else {
         <button class="add-contact-no-btn" popovertarget="add-contact-form">
           Add
@@ -75,9 +191,69 @@
         </div>
       }
     </div>
-    <div class="customer-details-item">
-      <span class="customer-details-item-label">Email: </span
-      ><span class="customer-details-item-value">{{ user?.email }}</span>
+    <div class="customer-details-item flex gap-3">
+      <label for="email"
+        ><span class="customer-details-item-label">Email: </span></label
+      >
+     
+        <div>
+          <span class="customer-details-item-value">{{ user?.email }}</span>
+          @if (!user.googleId) {
+            <button class="name-edit-btn" popovertarget="update-email-form">
+              <i class="fas fa-pen"></i>
+            </button>
+          }
+        </div>
+     
+        <div
+          id="update-email-form"
+          class="update-email-form-popup"
+          popover="auto"
+        >
+          <h1>Update email</h1>
+
+          <form
+            #updateEmailForm="ngForm"
+            (ngSubmit)="updateEmail(updateEmailForm)"
+          >
+            <div class="custom-input-container">
+              <input
+                id="email"
+                type="email"
+                [(ngModel)]="email"
+                name="email"
+                required
+                placeholder=" "
+                autocomplete="email"
+                pattern=".+@.+\..+"
+                #emailRef="ngModel"
+              />
+
+              <label for="email" [class.filled]="email">Email</label>
+
+              <i class="fa fa-envelope input-icon"></i>
+
+              <!-- show error for email element -->
+              @if (emailRef?.dirty || emailRef?.touched) {
+                @if (emailRef?.errors?.["required"]) {
+                  <span class="err-msg">*email is required</span>
+                }
+                @if (emailRef?.errors?.["pattern"]) {
+                  <span class="err-msg">*enter valid email</span>
+                }
+              }
+            </div>
+
+            <button
+              type="submit"
+              class="email-submit-btn"
+              [disabled]="updateEmailForm.invalid || user?.email === updateEmailForm.value.email"
+            >
+              Save
+            </button>
+          </form>
+        </div>
+      
     </div>
     <div class="customer-details-item">
       <span class="customer-details-item-label">Email Verified: </span
@@ -155,7 +331,9 @@
               ></ng-otp-input>
             </div>
             <div class="otp-form-btn-container">
-              <button type="button" class="otp-resend-btn" (click)="getOtp()">Resend OTP</button>
+              <button type="button" class="otp-resend-btn" (click)="getOtp()">
+                Resend OTP
+              </button>
               <button
                 type="submit"
                 class="otp-submit-btn"
