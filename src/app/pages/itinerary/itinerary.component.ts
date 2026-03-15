@@ -102,7 +102,7 @@ export class ItineraryComponent implements OnDestroy {
       children: [0],
       childAges: this.fb.array([]),
       duration: [1],
-      date: [''],
+      date: ['', Validators.required],
       budget: [''],
       hotelCategory: [''],
       travelType: [''],

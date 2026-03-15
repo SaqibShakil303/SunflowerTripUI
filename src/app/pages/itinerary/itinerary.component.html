@@ -168,6 +168,9 @@
           <div class="form-group">
             <label for="date">Tentative Travel Date</label>
             <input id="date" type="date" formControlName="date" />
+            {{
+              itineraryForm.get("date")?.hasError("required") && "date is required"
+            }}
           </div>
           <div class="form-group">
             <label for="budget">Budget Range (INR)</label>
