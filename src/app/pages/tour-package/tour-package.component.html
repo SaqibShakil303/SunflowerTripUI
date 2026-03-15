@@ -6,10 +6,10 @@
   >
     <div class="overlay"></div>
     <div class="hero-content container">
-      <h1 class="title appear-from-bottom">
+      <h1 class="title">
         Explore the Places<br />One Adventure at a Time
       </h1>
-      <p class="subtitle appear-from-left">
+      <p class="subtitle">
         Hand-picked tours across continents for every kind of traveler.
       </p>
     </div>
@@ -31,7 +31,7 @@
     <div *ngIf="!loading && !error && tours.length > 0" class="tours-grid">
       <div
         *ngFor="let tour of tours; let i = index"
-        class="tour-card appear-from-left"
+        class="tour-card"
         [style.transitionDelay]="i * 120 + 'ms'"
         #tourCard
       >
@@ -82,7 +82,7 @@
     <div class="tours-grid">
       <div
         *ngFor="let tour of tours; let i = index; trackBy: trackByTour"
-        class="tour-card appear-from-left"
+        class="tour-card"
         [style.transitionDelay]="i * 120 + 'ms'"
         #tourCard
       >

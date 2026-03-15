@@ -143,7 +143,7 @@ export class ToursComponent implements AfterViewInit {
   }
 
   loadWishlistData() {
-    this.wishlistService.getByUserId(this.user.id).subscribe({
+    this.wishlistService.getByUserId(this.user?.id).subscribe({
       next: (data: any) => {
         this.wishlist = data.data || [];
       },
@@ -174,13 +174,13 @@ export class ToursComponent implements AfterViewInit {
 
   isInWishlist(tourId: number) {
     return this.wishlist.some(
-      (item: any) => item.tour_id === tourId && item.user_id === this.user.id
+      (item: any) => item.tour_id === tourId && item.user_id === this.user?.id
     );
   }
 
   getWishlistItem(tourId: number) {
     return this.wishlist.find(
-      (item: any) => item.tour_id === tourId && item.user_id === this.user.id
+      (item: any) => item.tour_id === tourId && item.user_id === this.user?.id
     );
   }
 }

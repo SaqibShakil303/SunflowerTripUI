@@ -56,17 +56,17 @@ export class ServicesComponent implements AfterViewInit {
     }
 
     // apply animations
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        entry.isIntersecting ? entry.target.classList.add("visible") : null;
+    // const observer = new IntersectionObserver(entries => {
+    //   entries.forEach(entry => {
+    //     entry.isIntersecting ? entry.target.classList.add("visible") : null;
         
-      });
-    },
-    { threshold: 0.2, rootMargin: "0px 0px -100px 0px" }
-    );
-    document.querySelectorAll(".appear-from-left").forEach(el => {
-      observer.observe(el);
-    });
+    //   });
+    // },
+    // { threshold: 0.2, rootMargin: "0px 0px -100px 0px" }
+    // );
+    // document.querySelectorAll(".appear-from-left").forEach(el => {
+    //   observer.observe(el);
+    // });
   }
 
   navigateTo(route: string, queryParams?: any) {
