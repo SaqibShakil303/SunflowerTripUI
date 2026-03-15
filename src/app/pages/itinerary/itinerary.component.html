@@ -99,7 +99,7 @@
               class="error"
               *ngIf="
                 itineraryForm.get('phone')?.invalid &&
-                (itineraryForm.get('[phone]')?.touched || isSubmitted)
+                (itineraryForm.get('phone')?.touched || isSubmitted)
               "
             >
               {{
@@ -163,6 +163,7 @@
               type="number"
               formControlName="duration"
               min="1"
+              [disabled]="itineraryForm.get('travelType')?.value === 'customized'"
             />
           </div>
           <div class="form-group">
