@@ -77,7 +77,7 @@
         <div class="form-group" *ngIf="tour?.is_customizable">
           <label for="booking-days">Days (Customized)</label>
           <input id="booking-days" type="number" class="form-control"
-                 [(ngModel)]="bookingData.days" name="days" min="1" placeholder="Enter number of days" />
+                 [(ngModel)]="bookingData.days" name="days" min="1" placeholder="Enter number of days" readonly disabled />
         </div>
 
         <!-- Guests -->
@@ -115,34 +115,36 @@
         <!-- Hotel Rating -->
         <div class="form-group">
           <label for="booking-hotel-rating">Hotel Rating</label>
+          <div class="form-static">hotel as per incl in group</div>
 
           <!-- GROUP -->
-          <div *ngIf="isGroup" class="form-static">as per incl in group</div>
+          <!-- <div *ngIf="isGroup" class="form-static">as per incl in group</div> -->
 
           <!-- HOLIDAY -->
-          <select *ngIf="!isGroup" id="booking-hotel-rating" class="form-control"
+          <!-- <select *ngIf="!isGroup" id="booking-hotel-rating" class="form-control"
                   [(ngModel)]="bookingData.hotelRating" name="hotelRating" required>
             <option value="" disabled selected>Select hotel rating</option>
             <option value="3">3-Star</option>
             <option value="4">4-Star</option>
             <option value="5">5-Star</option>
-          </select>
+          </select> -->
         </div>
 
         <!-- Meal Plan -->
         <div class="form-group">
           <label for="booking-meal-plan">Meal Plan</label>
+          <div class="form-static">meals as per itinerary</div>
 
           <!-- GROUP -->
-          <div *ngIf="isGroup" class="form-static">meals according to the group</div>
+          <!-- <div *ngIf="isGroup" class="form-static">meals according to the group</div> -->
 
           <!-- HOLIDAY -->
-          <select *ngIf="!isGroup" id="booking-meal-plan" class="form-control"
+          <!-- <select *ngIf="!isGroup" id="booking-meal-plan" class="form-control"
                   [(ngModel)]="bookingData.mealPlan" name="mealPlan" required>
             <option value="" disabled selected>Select meal plan</option>
             <option value="no-meal">No Meal</option>
             <option value="breakfast">Only Breakfast</option>
-          </select>
+          </select> -->
         </div>
 
         <!-- Flight Option -->
@@ -161,7 +163,7 @@
           <select *ngIf="!isGroup" id="booking-flight-option" class="form-control"
                   [(ngModel)]="bookingData.flightOption" name="flightOption" required>
             <option value="" disabled selected>Select flight option</option>
-            <option value="with-flight">With Flight</option>
+            <!-- <option value="with-flight">With Flight</option> -->
             <option value="without-flight">Without Flight</option>
           </select>
           <div class="info-banner" *ngIf="bookingData.flightOption">
@@ -173,12 +175,12 @@
 
 
         <!-- Flight Number (holiday + without-flight only) -->
-        <div class="form-group" *ngIf="!isGroup && bookingData.flightOption === 'without-flight'">
+        <!-- <div class="form-group" *ngIf="!isGroup && bookingData.flightOption === 'without-flight'">
           <label for="booking-flight-number">Flight Number (Optional)</label>
           <input id="booking-flight-number" type="text" class="form-control"
                  [(ngModel)]="bookingData.flightNumber" name="flightNumber"
                  placeholder="Enter flight number for pick up" />
-        </div>
+        </div> -->
 
         <!-- Travel Date / Departures + Seats -->
   <div class="form-group">

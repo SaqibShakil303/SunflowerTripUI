@@ -221,6 +221,8 @@ private hydrateGroupDefaults() {
   if (changes['isOpen']?.currentValue && this.tour) {
       this.isGroup = this.tour.category === 'group';
 
+      this.bookingData.days = this.tour.duration_days;
+
       // restore cached state
       const savedBooking = this.stateSvc.booking;
       const savedEnquiry = this.stateSvc.enquiry;
