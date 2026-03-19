@@ -22,7 +22,7 @@ export class DestinationComponent implements OnInit {
   isDestinationLoading = signal(true);
   isDestinationNotFound = signal(false);
 
-  bestAttractionPreviewImage = signal<string | null>('../../../assets/Bali-Destination-Page/Why Bali Shines.jpg');
+  bestAttractionPreviewImage = signal<string | null>(null);
 
   constructor(
     private route: ActivatedRoute,
