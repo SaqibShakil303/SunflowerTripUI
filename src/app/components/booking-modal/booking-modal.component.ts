@@ -218,11 +218,19 @@ private hydrateGroupDefaults() {
 
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['isOpen']?.currentValue) {
+      this.resetForms(); // clean start every time
+    }
   if (changes['isOpen']?.currentValue && this.tour) {
       this.isGroup = this.tour.category === 'group';
 
+      this.bookingData.days = this.tour.duration_days;
+
       // restore cached state
       const savedBooking = this.stateSvc.booking;
+      if (savedBooking) {
+        this.bookingData = { ...this.bookingData, ...savedBooking };
+      }
       const savedEnquiry = this.stateSvc.enquiry;
       this.bookingData = { ...this.bookingData, ...savedBooking };
       this.enquiryData = { ...this.enquiryData, ...savedEnquiry };
@@ -287,6 +295,8 @@ onDepartureChange() {
 
   
   closeModal() {
+    this.stateSvc.clearBooking();
+    this.resetForms()
     this.isOpen = false;
     this.close.emit();
   }
@@ -417,7 +427,8 @@ console.log('Creating order with payload:', createPayload);
 
             // optional: emit to parent if you still want
             this.stateSvc.setBooking(this.bookingData);
-      this.onSubmitBooking.emit({ ...this.bookingData, tourId: this.tour?.id });
+            this.onSubmitBooking.emit({ ...this.bookingData, tourId: this.tour?.id });
+            this.resetForms();
             this.closeModal();
             this.router.navigate(
               ['/booking/success', verify.bookingId],

@@ -57,28 +57,28 @@ export class ItineraryComponent implements OnDestroy {
     this.videoLoaded.set(false);
   }
 
-  ngAfterViewInit() {
-    // apply animations
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.isIntersecting ? entry.target.classList.add('visible') : null;
-        });
-      },
-      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
-    );
+  // ngAfterViewInit() {
+  //   // apply animations
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         entry.isIntersecting ? entry.target.classList.add('visible') : null;
+  //       });
+  //     },
+  //     { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+  //   );
 
-    document.querySelectorAll('.appear-from-bottom').forEach((el) => {
-      observer.observe(el);
-    });
-    document.querySelectorAll('.appear-from-left').forEach((el) => {
-      observer.observe(el);
-    });
-    document.querySelectorAll('.appear-from-right').forEach((el) => {
-      observer.observe(el);
-    });
+  //   document.querySelectorAll('.appear-from-bottom').forEach((el) => {
+  //     observer.observe(el);
+  //   });
+  //   document.querySelectorAll('.appear-from-left').forEach((el) => {
+  //     observer.observe(el);
+  //   });
+  //   document.querySelectorAll('.appear-from-right').forEach((el) => {
+  //     observer.observe(el);
+  //   });
 
-  }
+  // }
 
   private destroy$ = new Subject<void>();
   isBengali = false;
@@ -102,7 +102,7 @@ export class ItineraryComponent implements OnDestroy {
       children: [0],
       childAges: this.fb.array([]),
       duration: [1],
-      date: [''],
+      date: ['', Validators.required],
       budget: [''],
       hotelCategory: [''],
       travelType: [''],
@@ -124,6 +124,24 @@ this.itineraryForm.get('children')!.valueChanges
         }
         this.cdr.markForCheck();
       });
+
+          this.itineraryForm.get('travelType')!.valueChanges
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((type: string) => {
+            const durationControl = this.itineraryForm.get('duration');
+
+            if (type === 'customized') {
+              durationControl?.disable();
+              durationControl?.setValue(null);
+            } else {
+              durationControl?.enable();
+            if (!durationControl?.value) {
+              durationControl?.setValue(1);
+            }
+          }
+
+          this.cdr.markForCheck();
+          });
   }
   // toggleLanguage(): void {
   //   this.isBengali = !this.isBengali;

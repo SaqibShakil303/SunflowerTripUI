@@ -60,24 +60,24 @@ export class FAQComponent {
     });
   }
 
-  ngAfterViewInit() {
-    // apply animations
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.isIntersecting ? entry.target.classList.add('visible') : null;
-        });
-      },
-      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
-    );
+  // ngAfterViewInit() {
+  //   // apply animations
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         entry.isIntersecting ? entry.target.classList.add('visible') : null;
+  //       });
+  //     },
+  //     { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+  //   );
 
-    this.faqQuestions.changes.subscribe(() => {
-      this.faqQuestions.forEach((item) => observer.observe(item.nativeElement));
-    });
+  //   this.faqQuestions.changes.subscribe(() => {
+  //     this.faqQuestions.forEach((item) => observer.observe(item.nativeElement));
+  //   });
 
-    // initial render
-    this.faqQuestions.forEach((item) => observer.observe(item.nativeElement));
-  }
+  //   // initial render
+  //   this.faqQuestions.forEach((item) => observer.observe(item.nativeElement));
+  // }
 
  toggleFaq(clickedItem: any): void {
   this.faqs().forEach(item => {

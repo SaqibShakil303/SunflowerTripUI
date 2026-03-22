@@ -32,13 +32,13 @@
 
   <div class="container">
     <div class="section-title">
-      <h2 class="appear-from-left">Design Your Dream Trip</h2>
-      <p class="appear-from-left" [style.transitionDelay]="'300ms'">
+      <h2 class="">Design Your Dream Trip</h2>
+      <p class="" [style.transitionDelay]="'300ms'">
         Share your vision, and we’ll craft a personalized itinerary just for
         you.
       </p>
     </div>
-    <div class="form-wrapper appear-from-bottom" [@fadeInUp]>
+    <div class="form-wrapper" [@fadeInUp]>
       <!-- <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div> -->
       <!-- <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div> -->
       <form [formGroup]="itineraryForm" (ngSubmit)="onSubmit()">
@@ -99,7 +99,7 @@
               class="error"
               *ngIf="
                 itineraryForm.get('phone')?.invalid &&
-                (itineraryForm.get('[phone]')?.touched || isSubmitted)
+                (itineraryForm.get('phone')?.touched || isSubmitted)
               "
             >
               {{
@@ -163,11 +163,15 @@
               type="number"
               formControlName="duration"
               min="1"
+              [disabled]="itineraryForm.get('travelType')?.value === 'customized'"
             />
           </div>
           <div class="form-group">
             <label for="date">Tentative Travel Date</label>
             <input id="date" type="date" formControlName="date" />
+            {{
+              itineraryForm.get("date")?.hasError("required") && "date is required"
+            }}
           </div>
           <div class="form-group">
             <label for="budget">Budget Range (INR)</label>

@@ -97,34 +97,34 @@ export class TourPackageComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-    // apply animations
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.isIntersecting ? entry.target.classList.add('visible') : null;
-        });
-      },
-      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
-    );
+  // ngAfterViewInit() {
+  //   // apply animations
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         entry.isIntersecting ? entry.target.classList.add('visible') : null;
+  //       });
+  //     },
+  //     { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+  //   );
 
-    document.querySelectorAll('.appear-from-bottom').forEach((el) => {
-      observer.observe(el);
-    });
-    document.querySelectorAll('.appear-from-left').forEach((el) => {
-      observer.observe(el);
-    });
-    document.querySelectorAll('.appear-from-right').forEach((el) => {
-      observer.observe(el);
-    });
+  //   document.querySelectorAll('.appear-from-bottom').forEach((el) => {
+  //     observer.observe(el);
+  //   });
+  //   document.querySelectorAll('.appear-from-left').forEach((el) => {
+  //     observer.observe(el);
+  //   });
+  //   document.querySelectorAll('.appear-from-right').forEach((el) => {
+  //     observer.observe(el);
+  //   });
 
-    this.cards.changes.subscribe(() => {
-      this.cards.forEach((card) => observer.observe(card.nativeElement));
-    });
+  //   this.cards.changes.subscribe(() => {
+  //     this.cards.forEach((card) => observer.observe(card.nativeElement));
+  //   });
 
-    // initial render
-    this.cards.forEach((card) => observer.observe(card.nativeElement));
-  }
+  //   // initial render
+  //   this.cards.forEach((card) => observer.observe(card.nativeElement));
+  // }
 
   mapParamsToFilters(params: any) {
     return {
