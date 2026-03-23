@@ -125,23 +125,23 @@ this.itineraryForm.get('children')!.valueChanges
         this.cdr.markForCheck();
       });
 
-          this.itineraryForm.get('travelType')!.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((type: string) => {
-            const durationControl = this.itineraryForm.get('duration');
+          // this.itineraryForm.get('travelType')!.valueChanges
+          //   .pipe(takeUntil(this.destroy$))
+          //   .subscribe((type: string) => {
+          //   const durationControl = this.itineraryForm.get('duration');
 
-            if (type === 'customized') {
-              durationControl?.disable();
-              durationControl?.setValue(null);
-            } else {
-              durationControl?.enable();
-            if (!durationControl?.value) {
-              durationControl?.setValue(1);
-            }
-          }
+          //   if (type === 'customized') {
+          //     durationControl?.disable();
+          //     durationControl?.setValue(null);
+          //   } else {
+          //     durationControl?.enable();
+          //   if (!durationControl?.value) {
+          //     durationControl?.setValue(1);
+          //   }
+          // }
 
-          this.cdr.markForCheck();
-          });
+          // this.cdr.markForCheck();
+          // });
   }
   // toggleLanguage(): void {
   //   this.isBengali = !this.isBengali;
