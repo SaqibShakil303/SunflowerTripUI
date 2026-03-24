@@ -6,6 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { Observable, forkJoin } from 'rxjs';
 import { Destination, Location, Attraction, Ethnicity, Cuisine, Activity} from '../../../models/destination.model';
 import { DestinationService } from '../../../services/destination/destination.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 // import { Destination, Location, Attraction, Ethnicity, Cuisine, Activity } from '../models/destination.model';
 
 @Component({
@@ -28,7 +29,8 @@ export class EditDestinationComponent implements OnInit {
     private dialogRef: MatDialogRef<EditDestinationComponent>,
     private cdr: ChangeDetectorRef,
     private destinationService: DestinationService,
-    @Inject(MAT_DIALOG_DATA) public data: Destination
+    @Inject(MAT_DIALOG_DATA) public data: Destination,
+    private snackBar: MatSnackBar,
   ) {
     this.destinationForm = this.createForm();
   }
@@ -385,12 +387,21 @@ onSubmit(): void {
 
     this.destinationService.updateDestination(formValue.id, updatedDestination).subscribe({
       next: (result) => {
+        this.snackBar.open('Destination updated successfully', 'Close', {
+            duration: 5000,
+            panelClass: ['success-snackbar']
+          });
         this.dialogRef.close(result);
         this.isSubmitting = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error updating destination:', err);
         this.isSubmitting = false;
+         this.snackBar.open('Failed to udate destination: ' + (err.error?.message || 'Unknown error'), 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
         this.cdr.detectChanges();
       }
     });
