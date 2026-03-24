@@ -84,10 +84,10 @@
                 <button class="btn btn-sm expand-btn" (click)="toggleExpanded(lead)">
                   <i class="fas" [class.fa-chevron-down]="!lead.isExpanded" [class.fa-chevron-up]="lead.isExpanded"></i>
                 </button>
-                <button class="btn btn-sm btn-danger delete-btn" (click)="deleteTripLead(lead)" [disabled]="lead.isDeleting">
+                <!-- <button class="btn btn-sm btn-danger delete-btn" (click)="deleteTripLead(lead)" [disabled]="lead.isDeleting">
                   <i class="fas fa-spinner fa-spin" *ngIf="lead.isDeleting"></i>
                   <i class="fas fa-trash" *ngIf="!lead.isDeleting"></i>
-                </button>
+                </button> -->
               </td>
             </tr>
             <tr *ngIf="lead.isExpanded" class="details-row">

@@ -87,11 +87,11 @@
                                     <i class="fas" [class.fa-chevron-down]="!enquiry.isExpanded" 
                                        [class.fa-chevron-up]="enquiry.isExpanded"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm delete-btn" (click)="deleteEnquiry(enquiry)"
+                                <!-- <button class="btn btn-danger btn-sm delete-btn" (click)="deleteEnquiry(enquiry)"
                                     [disabled]="enquiry.isDeleting" [title]="'Delete enquiry from ' + enquiry.name">
                                     <i class="fas fa-spinner fa-spin" *ngIf="enquiry.isDeleting"></i>
                                     <i class="fas fa-trash" *ngIf="!enquiry.isDeleting"></i>
-                                </button>
+                                </button> -->
                             </td>
                         </tr>
                         <!-- Expanded Details Row -->
@@ -162,7 +162,7 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+<!-- <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h3>Confirm Delete</h3>
@@ -187,4 +187,4 @@
             </button>
         </div>
     </div>
-</div>
+</div> -->

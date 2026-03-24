@@ -27,9 +27,9 @@ const routes: Routes = [
     path: '',
     component: AdminLayoutComponent,
     children: [
-      { path: 'users', component: UsersComponent },
+      // { path: 'users', component: UsersComponent },
       { path: 'enquiries', component: EnquiriesComponent },
-      { path: 'bookings', component: BookingsComponent },
+      // { path: 'bookings', component: BookingsComponent },
       { path: 'contacts', component: ContactsComponent },
       {
         path: 'destinations',

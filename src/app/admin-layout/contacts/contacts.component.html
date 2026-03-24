@@ -94,11 +94,11 @@
                                     <i class="fas" [class.fa-chevron-down]="!contact.isExpanded" 
                                        [class.fa-chevron-up]="contact.isExpanded"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm delete-btn" (click)="deleteContact(contact)"
+                                <!-- <button class="btn btn-danger btn-sm delete-btn" (click)="deleteContact(contact)"
                                     [disabled]="contact.isDeleting" [title]="'Delete contact from ' + contact.first_name">
                                     <i class="fas fa-spinner fa-spin" *ngIf="contact.isDeleting"></i>
                                     <i class="fas fa-trash" *ngIf="!contact.isDeleting"></i>
-                                </button>
+                                </button> -->
                             </td>
                         </tr>
                         <!-- Expanded Details Row -->
